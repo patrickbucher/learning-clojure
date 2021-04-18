@@ -1,6 +1,8 @@
 # Clojure
 
-## Getting Started
+Notes loosely based on [Getting Clojure](https://pragprog.com/titles/roclojure/getting-clojure/) by Russ Olsen.
+
+## Hello, Clojure
 
 Install Clojure and Leiningen on Arch Linux:
 
@@ -82,7 +84,30 @@ Use multiple expressions in the function body:
     15
 
 The last expression of the function body (here: `half-the-sum`) is returned.
-    
+
+Create and run a proper application using Leiningen:
+
+    $ lein new app hello-world
+    $ cd hello-world
+    $ lein run
+    Hello, World!
+
+Extend the example (`src/hello_world/core.clj`) as follows:
+
+    (ns hello-world.core
+      (:gen-class))
+
+    (defn greet [app whom]
+      (println app "greets" whom))
+
+    (defn -main
+      [& args]
+      (greet "Hello World" "the user"))
+
+And run it again:
+
+    $ lein run
+    Hello World greets the user
 
 ## TODO
 
