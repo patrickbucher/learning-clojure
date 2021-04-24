@@ -51,6 +51,11 @@ Bind a _symbol_ to a value:
     > (println result)
     156
 
+Concatenate multiple values as a string:
+
+    > (str 1 "to" 2)
+    "1to2"
+
 Write and call the "Hello World" program as a function:
 
     > (defn hello-world [] (println "Hello, World!"))
@@ -222,8 +227,173 @@ of vectors:
     > (conj '(1 2 3) "what")
     ("what" 1 2 3)
 
-## TODO
+## Maps, Keywords, and Sets
 
-functions left out so far:
+Maps are created using pairs within curly braces:
 
-- str
+    > {"title" "War and Peace" "author" "Lev Tolstoy" "year" 1869}
+    {"title" "War and Peace", "author" "Lev Tolstoy", "year" 1869}
+
+Commas between key-value pairs can be used for better readability, but are
+optional:
+
+    > {"title" "War and Peace", "author" "Lev Tolstoy", "year" 1869}
+    {"title" "War and Peace", "author" "Lev Tolstoy", "year" 1869}
+
+Maps can also be created using the `hash-map` function:
+
+    > (hash-map "title" "War and Peace" "author" "Lev Tolstoy" "year" 1869)
+    {"author" "Lev Tolstoy", "title" "War and Peace", "year" 1869}
+
+The left part of the pair is the _key_, the right part the _value_ of the entry.
+
+`get` looks up the value of an entry by its key:
+
+    > (def book {"title" "War and Peace" "author" "Lev Tolstoy" "year" 1869})
+    > (get book "author")
+    "Lev Tolstoy"
+
+Like vectors, elements can be accessed without an explicit function call:
+
+    > (book "title")
+    "War and Peace"
+    > (book "year")
+    1869
+    > (book "publisher")
+    nil
+
+Idiomatically, _keywords_ starting with a colon are used as map keys:
+
+    > (def book {:title "War and Peace" :author "Lev Tolstoy" :year 1869})
+    > book
+    {:title "War and Peace", :author "Lev Tolstoy", :year 1869}
+    > (book :title)
+    "War and Peace"
+
+Keywords can also be used for map lookups:
+
+    > (:title book)
+    "War and Peace"
+
+`assoc` returns a map with an element either overwritten or added:
+
+    > (def book {:title "War and Peace" :author "Lev Tolstoy" :year 1869})
+    {:title "War and Peace", :author "Lev Tolstoy", :year 1869}
+    > (assoc book :pages 2000)
+    {:title "War and Peace", :author "Lev Tolstoy", :year 1869, :pages 2000}
+    > (assoc book :pages 1987)
+    {:title "War and Peace", :author "Lev Tolstoy", :year 1869, :pages 1987}
+
+Using `assoc`, it's possible to add/modify multiple key-value pairs at once:
+
+    > (def employee {:name "Dilbert"})
+    > (assoc employee :job "Engineer" :salary 120000)
+    {:name "Dilbert", :job "Engineer", :salary 120000}
+
+`dissoc` removes a map's entry by its key:
+
+    > (def employee {:name "Dilbert" :note "smelly"})
+    > (dissoc employee :note)
+    {:name "Dilbert"}
+
+Like `assoc`, multiple keys can be used at once with `dissoc`:
+
+    > (def employee {:name "Dilbert" :note "smelly" :terminate "Jan 2023"})
+    > (dissoc employee :note :terminate)
+    {:name "Dilbert"}
+
+Keys not found in the map will be ignored silently:
+
+    > (dissoc employee :sex-appeal :girlfriend :hobbies)
+    {:name "Dilbert", :note "smelly", :terminate "Jan 2023"}
+
+`keys` returns the map's keys (in unspecified order:
+
+    > (def book {:title "War and Peace" :author "Lev Tolstoy" :year 1869})
+    > (keys book)
+    (:title :author :year)
+
+Use a `sorted-map` for specified key ordering:
+
+    > (def book (sorted-map :title "War and Peace" :author "Lev Tolstoy" :year 1869))
+    > (keys book)
+    (:author :title :year)
+
+`keys` returns the map's values in arbitrary, but matching the key's order:
+
+    > (vals book)
+    ("War and Peace" "Lev Tolstoy" 1869)
+    > (keys book)
+    (:title :author :year)
+
+A _set_ can be created as follows (commas being optional):
+
+    > #{"Dilbert", "Alice", "Wally"}
+    #{"Alice" "Wally" "Dilbert"}
+
+An element must not occur more than once:
+
+    > #{"Dilbert", "Alice", "Wally", "Dilbert"}
+    Syntax error reading source at (REPL:1:42).
+    Duplicate key: Dilbert
+
+`contains?` checks if an element is contained in a set:
+
+    > (def employees #{"Dilbert", "Alice", "Wally", "Ashok"})
+    > (contains? employees "Dilbert")
+    true
+    > (contains? employees "Pointy Haired Boss")
+    false
+
+This lookup can be done without calling a function, returning the element if it
+is contained, or `nil` if the element is missing:
+
+    > (employees "Dilbert")
+    "Dilbert"
+    > (employees "Ratbert")
+    nil
+
+When working with keywords, the order can be switched:
+
+    > (def genres #{:scifi :action :drama :love})
+    > (genres :scifi)
+    :scifi
+    > (:scifi genres)
+    :scifi
+
+Functions like `count`, `first`, and `rest` handle map entries as two-element vectors:
+
+    > (def employee {:name "Dilbert" :age 42 :job "Engineer"})
+    > (count employee)
+    3
+    > (first employee)
+    [:name "Dilbert"]
+    > (rest employee)
+    ([:age 42] [:job "Engineer"])
+
+A set can be extendes using `conj`:
+
+    > (conj genres :western)
+    #{:western :scifi :drama :action :love}
+
+An element won't be added a second time _without_) error:
+
+    > (conj genres :western)
+    #{:western :scifi :drama :action :love}
+    > (conj genres :western)
+    #{:western :scifi :drama :action :love}
+
+`disj` returns a set without the specified element:
+
+    > (disj genres :western)
+    #{:scifi :drama :action :love}
+
+No error occurs if the element is missing:
+
+    > (disj genres :comedy)
+    #{:scifi :drama :action :love}
+
+Be aware taht `nil` is a valid set entry and map key:
+
+    > (contains? #{:foo :bar nil} nil)
+    true
