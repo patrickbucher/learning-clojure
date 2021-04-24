@@ -148,7 +148,7 @@ Vectors can also be created using the `vector` function:
 
     > (first [1 2 3 4])
     1
-    > (first []_
+    > (first [])
     nil
 
 `rest` returns all the elements of a vector but the first as a _sequence_:
