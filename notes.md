@@ -397,3 +397,183 @@ Be aware taht `nil` is a valid set entry and map key:
 
     > (contains? #{:foo :bar nil} nil)
     true
+
+# Logic
+
+Conditional code can be executed using `if`:
+
+    (if (= guess secret-number)
+      (println "You guessed the secret number.")
+      (println "Sorry, wrong number guessed..."))
+
+If the boolean expression (first argument) holds true, the second argument is
+evaluated; otherwise, the (optional) third argument is evaluated.
+
+Being an expression, `if` returns a value:
+
+    (defn yield-rate [balance]
+      (if (>= balance 0) 0.125 12.5))
+
+    > (yield-rate 300)
+    0.125
+    > (yield-rate -150)
+    12.5
+
+`nil` will be returned if the condition evaluates to `false` and if there's no
+`else` branch.
+
+Comparison operators like `=`, `not=`, and `>=` are actually functions, which
+can take two or more arguments:
+
+    > (= 2 2 2 2 3)
+    false
+    > (= 2 2 2 2 2 2)
+    true
+
+    > (not= 1 1 1 1)
+    false
+    > (not= 1 1 2 1)
+    true
+
+    > (>= 9 6 4 4 1)
+    true
+    > (>= 9 6 4 5 1)
+    false
+
+Predicate functions return whether or not an expression is of some specific type:
+
+    > (number? 1987)
+    true
+    > (string? "Dilbert")
+    true
+    > (keyword? :title)
+    true
+    > (map? {:born 1987})
+    true
+    > (vector? [1 2 3])
+    true
+
+Multiple conditions can be combined using `and`, `or`, and `not`:
+
+    > (or (and (> 5 3) (< 1 6)) (not (= 3 1)))
+    true
+
+Both `or` and `and` are _short-circuit_ operations (nothing is printed here):
+
+    > (or (= 1 1) (println "strange"))
+    true
+    > (and (not= 1 1) (println "strange"))
+    false
+
+Every value besides `false` and `nil` is treated as _truthy_ (i.e. will be
+evaluated to `true`), even empty collections and the number 0:
+
+    > (if [] (println "[] is truthy"))
+    [] is truthy
+    nil
+
+    > (if 0 (println "0 is truthy"))
+    0 is truthy
+    nil
+
+Multiple expressions can be grouped together using `do`:
+
+    (if (= guess secret-number)
+      (do
+        (println "You guessed the secret number.")
+        (println "A winner is you.")
+        {:points 100})
+      (do
+        (println "You guessed the wrong number.")
+        (println "Shame on you.")
+        {:points 0}))
+
+The `do` expression evaluates to its last argument.
+
+If no `else` branch is required, `when` can be used instead of `if`, which
+allows for multiple expressions without using `do`:
+
+    (when (= guess secret-number)
+      (println "You guessed the secret number.")
+      (println "A winner is you.")
+      {:points 100})
+
+If the condition doesn't hold `true`, `nil` is returned (like `if`).
+
+Instead of nesting multiple `if`s, `cond` can be used for handling multiple
+conditions:
+
+    (defn check [guess secret-number]
+      (cond
+        (= guess secret-number) (println "correct")
+        (< guess secret-number) (println "too low")
+        (> guess secret-number) (println "too high")))
+
+    > (check 3 3)
+    correct
+    nil
+
+    > (check 4 3)
+    too high
+    nil
+
+    > (check 3 4)
+    too low
+    nil
+
+Idiomatically, a catch-all `:else` clause is added to make sure that every
+condition is handled:
+
+    (defn check [guess secret-number]
+      (cond
+        (= guess secret-number) (println "correct")
+        (< guess secret-number) (println "too low")
+        (> guess secret-number) (println "too high")
+        :else (println "You broke the universe")))
+
+Since `:else` is truthy, its branch will be evaluated unless any other branch
+was evaluated before. (Any truthy value could be used instead of `:else`.)
+
+For multiple equality comparisons against _constants_, `case` can be used
+instead of `cond`:
+
+    (defn color-hex-code [color]
+      (case color
+        :red "#ff0000"
+        :green "#00ff00"
+        :blue "#0000ff"
+        "unknown"))
+
+    > (color-hex-code :red)
+    "#ff0000"
+    > (color-hex-code :black)
+    "unknown"
+
+Exceptions can be handled using `try`/`catch`:
+
+    (defn safe-divide [dividend divisor]
+      (try
+        (/ dividend divisor)
+        (catch ArithmeticException e
+          (println "One does not simply divide by zero."))))
+
+    > (safe-divide 9 3)
+    3
+
+    > (safe-divide 9 0)
+    One does not simply divide by zero.
+    nil.
+
+Exceptions can be thrown using `throw` and `ex-info`:
+
+    (defn publish [book]
+      (when (< (:pages book) 50)
+        (throw
+          (ex-info "A book needs fifty pages or more!" book))))
+
+    > (publish {:title "Hello" :pages 30})
+    Execution error (ExceptionInfo) at user/publish (REPL:4).
+    A book needs fifty pages or more!
+
+`ex-info` expects a string message and a map argument, and can be caught as
+`clojure.lang.ExceptionInfo`.
