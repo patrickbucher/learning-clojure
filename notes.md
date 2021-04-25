@@ -954,3 +954,40 @@ updated:
 
     > (give-bonus dogbertix)
     {:name "Dogbertix", :ceo {:name "Dogbert", :salary 500000}}
+
+## Let
+
+`compute-bonus` needs to calculate the same value twice; once for the `if`
+condition, and once for the return value of the function:
+
+    (defn compute-bonus [employee bonus-rate max-bonus]
+      (if (<= (* (:salary employee) bonus-rate) max-bonus)
+        (* (:salary employee) bonus-rate)
+        max-bonus))
+
+    (def dilbert {:name "Dilbert" :salary 120000})
+
+    > (compute-bonus dilbert 0.1 5000)
+    5000
+
+    > (compute-bonus dilbert 0.1 25000)
+    12000.0
+
+`let` defines re-usable local bindings:
+
+    (defn compute-bonus [employee bonus-rate max-bonus]
+      (let [bonus (* (:salary employee) bonus-rate)]
+        (if (<= bonus max-bonus)
+          bonus
+          max-bonus)))
+
+The expression on the right-hand side is assigned to the symbol on the left-hand
+side of the vector. Multiple local bindings can be created at once:
+
+    > (let [a 1 b 2 c 3] (println (+ a b c)))
+    6
+
+Later bindings have access to earlier bindings to their left:
+
+    > (let [a 1 b (* 2 a) c (* 2 b)] (println a b c))
+    1 2 4
