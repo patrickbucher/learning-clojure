@@ -577,3 +577,224 @@ Exceptions can be thrown using `throw` and `ex-info`:
 
 `ex-info` expects a string message and a map argument, and can be caught as
 `clojure.lang.ExceptionInfo`.
+
+## More Capable Functions
+
+_Multi-arity_ functions accept different sets of parameters:
+
+    (defn greet
+      ([to-whom] (println "Hello" to-whom))
+      ([message to-whom] (println message to-whom)))
+
+    > (greet "John")
+    Hello John
+    > (greet "Hi" "John")
+    Hi John
+
+In order to reduce the amount of duplicated code, it's common that lower arity
+functions call the function with the highest arity by filling in the missing
+parameters with default values:
+
+    (defn greet
+      ([to-whom] (greet "Hello" to-whom))
+      ([message to-whom] (println message to-whom)))
+
+_Variadic_ functions accept a variable number of arguments:
+
+    (defn output-all [& args]
+      (println "args" args))
+
+    > (output-all "one")
+    args (one)
+    > (output-all "one" 2 "three" 4.0)
+    args (one 2 three 4.0)
+
+The arguments left of the ampersand are regular arguments:
+
+    (defn output-all [x y & args]
+      (println "x" x "y" y "args" args))
+
+    > (output-all "one" 2 "three" 4.0)
+    x one y 2 args (three 4.0)
+
+Multi-arity and variadic functions are good at dealing with a _different number_
+of arguments. _Multimethods_ are useful to deal with _different characteristics_
+of arguments. They consist of:
+
+1. A dispatch function (`defn`) that assigns a keyword to an argument.
+2. A multimethod (`defmulti`) that groups the implementations and refers to the
+   dispatch function.
+3. Multiple methods (`defmethod`), of which each handles one type of argument.
+
+Consider employees being stored in different formats:
+
+    ;; implicit fields: first name, job
+    (def dogbert ["Dogbert" "Head of Abuse"])
+    (def ashok ["Ashok" "Technical Intern"])
+
+    ;; relevant fields: name, position
+    (def alice {:name "Alice" :position "Engineer" })
+    (def wally {:name "Wally" :position "Engineer" })
+
+    ;; relevant fields: first-name, job
+    (def catbert {:first-name "Catbert" :job "HR Manager"})
+    (def dilbert {:first-name "Dilbert" :job "Engineer" :department "IT"})
+
+The dispatch function figures out which format such an entry has:
+
+    (defn dispatch-employee-format [employee]
+      (cond
+        (vector? employee) :vector-employee
+        (and (contains? employee :name)
+             (contains? employee :position)) :min-employee
+        (and (contains? employee :first-name)
+             (contains? employee :job)) :max-employee))
+
+The multimethod defines a method name and connects it to the dispatcher:
+
+    (defmulti normalize-employee dispatch-employee-format)
+
+The implementations all have the same name, but handle a different keyword, as
+mapped by the dispatcher function:
+
+    (defmethod normalize-employee :vector-employee [employee]
+      {:first-name (nth employee 0) :role (nth employee 1)})
+
+    (defmethod normalize-employee :min-employee [employee]
+      {:first-name (:name employee) :role (:position employee)})
+
+    (defmethod normalize-employee :max-employee [employee]
+      {:first-name (:first-name employee) :role (:job employee)})
+
+The different kind of employee data structures are converted to a common format:
+
+    > (normalize-employee dogbert)
+    {:first-name "Dogbert", :role "Head of Abuse"}
+    > (normalize-employee alice)
+    {:first-name "Alice", :role "Engineer"}
+    > (normalize-employee dilbert)
+    {:first-name "Dilbert", :role "Engineer"}
+
+If the dispatch method cannot match the argument submitted, an exception will be
+thrown:
+
+    > (normalize-employee {:first-name "Topper" :position "Head of Annoyance"})
+    Execution error (IllegalArgumentException) at user/eval2108 (REPL:1).
+    No method in multimethod 'normalize-employee' for dispatch value: null
+
+This condition can be handled properly by defining a `:default` branch in the
+dispatcher function.
+
+Implementations for multimethods can be defined in different files, which allows
+for extensibility. This allows for polymorphism not just based on type, but also
+based on values.
+
+Some functions are best implemented recursively:
+
+    (def employees [{:name "Dilbert" :salary 120000}
+                    {:name "Wally" :salary 130000}
+                    {:name "Alice" :salary 110000}
+                    {:name "Boss" :salary 380000}
+                    {:name "Ashok" :salary 54000}])
+
+    (defn sum-payroll
+      ([employees] (sum-payroll employees 0))
+      ([employees total]
+        (if (empty? employees)
+          total
+          (sum-payroll
+            (rest employees)
+            (+ total (:salary (first employees)))))))
+
+    > (sum-payroll employees)
+    794000
+
+The `sum-payroll` function could run out of stack space if the `employee` vector
+gets too big. Therefore, Clojure supports _tail call optimization_, by simply
+replacing the function call with `recur`:
+
+    (defn sum-payroll
+      ([employees] (sum-payroll employees 0))
+      ([employees total]
+        (if (empty? employees)
+          total
+          (recur
+            (rest employees)
+            (+ total (:salary (first employees)))))))
+
+The multi-arity function can be simplified to a single-arity function using a
+`loop` expression:
+
+    (defn sum-payroll [employees]
+      (loop [employees employees total 0]
+        (if (empty? employees)
+          total
+          (recur
+            (rest employees)
+            (+ total (:salary (first employees)))))))
+
+This construct defines and invokes a pseudo-function, where the `employees`
+parameter is initialized with the `employees` argument of the `sum-payroll`
+function; and `total` is initialized to `0`. This values will be re-initialized
+by `recur` (`employees` to `(rest employees)` and `total` to itself plus the
+current employees salary).
+
+In practice, higher-ordered functions such as `map` are preferred over
+`loop`/`recur` constructs.
+
+Since comments are dropped upon compilation, _docstrings_ provide a way of
+documenting code that will be preserved. They are accessible via the `doc`
+macro:
+
+    (defn average
+      "Computes the average of a and b."
+      [a b]
+      (/ (+ a b) 2.0))
+
+    > (average 3 2)
+    2.5
+
+    > (doc average)
+    -------------------------
+    user/average
+    ([a b])
+      Computes the average of a and b.
+    nil
+
+Docstrings can also be used for other constructs than functions:
+
+    > (def dilbert "The smelly IT guy..." {:name "Dilbert" :job "Engineer"})
+    > (doc dilbert)
+    -------------------------
+    user/dilbert
+      The smelly IT guy...
+    nil
+
+A map containing `:pre` and `:post` entries can be used to enforce pre- and
+post-conditions:
+
+    (defn give-raise [employee amount]
+      {:pre  [(<= amount 10000) (not= (:name employee) "Ashok")]
+       :post [(<= (:salary %) 180000)]}
+      (assoc employee :salary (+ (:salary employee) amount)))
+
+The `:pre` condition makes sure that a raise must not exceed 100000, and that
+an employee named Ashok will never get a raise.
+
+The `:post` condition makes sure that after a raise, no employee will have a
+salary of more than 180000. The return value is referred by `%`.
+
+    > (give-raise {:name "Dilbert" :salary 120000} 5000)
+    {:name "Dilbert", :salary 125000}
+
+    > (give-raise {:name "Wally" :salary 110000} 15000)
+    Execution error (AssertionError) at user/give-raise (REPL:1).
+    Assert failed: (<= amount 10000)
+
+    > (give-raise {:name "Ashok" :salary 45000} 1000)
+    Execution error (AssertionError) at user/give-raise (REPL:1).
+    Assert failed: (not= (:name employee) "Ashok")
+
+    > (give-raise {:name "Ted" :salary 175000} 8000)
+    Execution error (AssertionError) at user/give-raise (REPL:1).
+    Assert failed: (<= (:salary %) 180000)
