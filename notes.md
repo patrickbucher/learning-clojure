@@ -798,3 +798,52 @@ salary of more than 180000. The return value is referred by `%`.
     > (give-raise {:name "Ted" :salary 175000} 8000)
     Execution error (AssertionError) at user/give-raise (REPL:1).
     Assert failed: (<= (:salary %) 180000)
+
+## Functional Things
+
+Functions are values, which can be passed to other functions:
+
+    (def dilbert {:name "Dilbert" :job "Engineer" :salary 120000})
+    (def ashok {:name "Ashok" :job "Intern" :salary 45000})
+
+    (defn well-paid? [employee]
+      (> (:salary employee) 100000))
+
+    (defn nerd? [employee]
+      (= (:job employee) "Engineer"))
+
+    (defn both? [employee pf1 pf2]
+      (and (pf1 employee)
+           (pf2 employee)))
+
+    > (both? dilbert well-paid? nerd?)
+    true
+
+    > (both? ashok well-paid? nerd?)
+    false
+
+Anonymous functions can be defined using `fn`:
+
+    (both? dilbert
+      (fn [e] (> (:salary e) 100000))
+      (fn [e] (= (:name e) "Dilbert")))
+
+This can be used to created parametrized functions using a _lexical closure_:
+
+    (defn cheaper-func [max-salary]
+      (fn [employee]
+        (< (:salary employee) max-salary)))
+
+    (def working-poor? (cheaper-func 50000))
+    (def cheap-hire? (cheaper-func 100000))
+
+    > (working-poor? ashok)
+    true
+    
+    > (cheap-hire? dilbert)
+    false
+
+The `apply` function applies a function for each argument:
+
+    > (apply + [1 2 3])
+    6
