@@ -847,3 +847,110 @@ The `apply` function applies a function for each argument:
 
     > (apply + [1 2 3])
     6
+
+`partial` creates a new function by _partially_ filling in the arguments for an
+existing function. Here, the plus function is partially applied with a single
+number:
+
+    > (def increment (partial + 1))
+    > (increment 1)
+    2
+    > (increment 10)
+    11
+
+And here, the `give-raise` function is partially applied to define the `amount`
+parameter:
+
+    (def dilbert {:name "Dilbert" :salary 120000 :job "Engineer"})
+
+    (defn give-raise [amount employee]
+      (assoc employee :salary (+ amount (:salary employee))))
+
+    (def small-raise (partial give-raise 1000))
+
+    > (small-raise dilbert)
+    {:name "Dilbert", :salary 121000, :job "Engineer"}
+
+`complement` produces a new function by wrapping a function with a `not` call:
+
+    (defn is-cheap? [employee]
+      (<= (:salary employee) 100000))
+
+    (def is-expensive? (complement is-cheap?))
+
+    > (is-cheap? dilbert)
+    false
+    > (is-expensive? dilbert)
+    true
+
+`every-pred` combines multiple predicate function with `and`:
+
+    (defn cheap? [employee]
+      (<= (:salary employee) 100000))
+
+    (defn engineer? [employee]
+      (= "Engineer" (:job employee)))
+
+    (defn smelly? [employee]
+      (= "Dilbert" (:name employee)))
+
+    (def fire? (every-pred (complement cheap?) engineer? smelly?))
+
+    > (fire? {:name "Dilbert" :salary 120000 :job "Engineer"})
+    true
+
+    > (fire? {:name "Ted" :salary 180000 :job "Marketing"})
+    false
+
+Function literals or _lambdas_ can be defined using `#`:
+
+    > (apply #(+ %1 %2 %3) [1 2 3])
+    6
+
+Since there is no argument list, the arguments are referred to using `%1`, `%2`,
+etc. The highest-numbered argument defines the number of arguments:
+
+    > (apply #(+ %5 %6) [1 2 3 4 5 6])
+    11
+
+The arguments one to four (i.e. `[1 2 3 4]`) are ignored.
+
+If only a single argument is needed, it can be referred by `%` instead of `%1`:
+
+    > (apply #(* 2 %) [123])
+    246
+
+Use lambdas for very short and simple functions. Use `fn` if named arguments are
+useful. Use `defn` for lengthy functions with a proper name.
+
+`defn` can be defined in terms of `def` and `fn`:
+
+    (defn hello [to-whom]
+      (println "Hello" to-whom))
+
+Has the same effect as:
+
+    (def hello
+      (fn [to-whom]
+        (println "Hello" to-whom)))
+
+`update` works on a map by applying a function to a map's entry:
+
+    (def dilbert {:name "Dilbert" :salary 120000 :job "Engineer"})
+
+    (defn promote [employee raise-func]
+      (update employee :salary raise-func))
+
+    > (promote dilbert #(+ % 1000))
+    {:name "Dilbert", :salary 121000, :job "Engineer"}
+
+`update-in` accepts an additional path to locate the field in a nested map to be
+updated:
+
+    (def dogbertix {:name "Dogbertix" :ceo {:name "Dogbert" :salary 250000}})
+
+    (defn give-bonus [company]
+      (update-in company [:ceo :salary] #(* 2 %)))
+
+    > (give-bonus dogbertix)
+    {:name "Dogbertix", :ceo {:name "Dogbert", :salary 500000}}
