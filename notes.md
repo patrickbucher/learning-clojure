@@ -991,3 +991,84 @@ Later bindings have access to earlier bindings to their left:
 
     > (let [a 1 b (* 2 a) c (* 2 b)] (println a b c))
     1 2 4
+
+The function `compute-bonus` calculates the employee's bonus by looking up their
+bonus rate in a map:
+
+    (def employee-bonus-rates
+      {"Dilbert" 0.05 "Dogbert" 0.25 "Pointy-Haired Boss" 1.0})
+
+    (defn compute-bonus [salary employee-name bonus-rates min-bonus]
+      (let [bonus-rate (bonus-rates employee-name)
+            bonus (* salary bonus-rate)]
+        (if (< bonus min-bonus)
+          min-bonus
+          bonus)))
+
+    > (compute-bonus 120000 "Dilbert" employee-bonus-rates 1000)
+    6000.0
+
+    > (compute-bonus 200000 "Dogbert" employee-bonus-rates 10000)
+    50000.0
+
+The map of `employee-bonus-rates` has to be carried away wherever a bonus has to
+be calculated. A better approach is to return individual functions by employee
+that have their bonus rate parametrized:
+
+    (defn mk-compute-bonus-func [employee-name bonus-rates min-bonus]
+      (let [bonus-rate (bonus-rates employee-name)]
+        (fn [salary]
+          (let [bonus (* bonus-rate salary)]
+            (if (< bonus min-bonus)
+              min-bonus
+              bonus)))))
+
+    (def calc-dilbert-bonus
+      (mk-compute-bonus-func "Dilbert" employee-bonus-rates 1000))
+
+    (def calc-dogbert-bonus
+      (mk-compute-bonus-func "Dogbert" employee-bonus-rates 10000))
+
+    > (calc-dilbert-bonus 120000)
+    6000.0
+
+    > (calc-dogbert-bonus 200000)
+    50000.0
+
+`let` is used to bind local variables that are referred to by another function
+(lexical closure).
+
+The following function outputs book entries with their authors, if available:
+
+    (def books [{:title "War and Peace" :author "Lev Tolstoy"}
+                {:title "Beowulf"}
+                {:title "The Name of the Rose" :author "Umberto Eco"}
+                {:title "Till Eulenspiegel"}])
+
+    (defn output [book]
+      (let [author (:author book)]
+        (if author
+          (str (:title book) " by " author)
+          (:title book))))
+
+    > (map output books)
+    ("War and Peace by Lev Tolstoy" "Beowulf" "The Name of the Rose by Umberto Eco" "Till Eulenspiegel")
+
+`if` and `let` can be combined to `if-let`, making the function shorter:
+
+    (defn output [book]
+      (if-let [author (:author book)]
+        (str (:title book) " by " author)
+        (:title book)))
+
+First, the binding with `let` is created; second, the bound value is evaluated
+using `if` (yielding `true` for any truthy value).
+
+`when-let` combines `when` with `let` in the same way:
+
+    (defn writtey-by [book]
+      (when-let [author (:author book)]
+        (str (:title book) " was written by " author)))
+    
+    > (map writtey-by books)
+    ("War and Peace was written by Lev Tolstoy" nil "The Name of the Rose was written by Umberto Eco" nil)
