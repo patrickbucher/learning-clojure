@@ -1072,3 +1072,35 @@ using `if` (yielding `true` for any truthy value).
     
     > (map writtey-by books)
     ("War and Peace was written by Lev Tolstoy" nil "The Name of the Rose was written by Umberto Eco" nil)
+
+## Def, Symbols, and Vars
+
+Like keywords, symbols are values. Whereas keywords evaluate to themselves,
+symbols created with `def` are bound to other values. The symbol itself can be
+accessed programmatically using the single quote:
+
+    > (def first-name "Dilbert")
+    > first-name
+    "Dilbert"
+    > 'first-name
+    first-name
+    > (str 'first-name)
+    "first-name"
+    > (= 'first-name 'last-name)
+    false
+    > (= 'first-name 'first-name)
+    true
+
+A symbol and a value are bound together using a _var_, which is accessible
+through the pound character and the symbol:
+
+    > (def first-name "Dilbert")
+    #'user/first-name
+    > (def the-name #'first-name)
+
+Symbol and value then can be accessed as follows:
+
+    > (.-sym the-name)
+    first-name
+    > (.get the-name)
+    "Dilbert"
