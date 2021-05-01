@@ -1104,3 +1104,49 @@ Symbol and value then can be accessed as follows:
     first-name
     > (.get the-name)
     "Dilbert"
+
+Vars are _mutable_, so that bindings can be re-defined during development, say,
+in a REPL session.
+
+_Dynamic bindigs_ can be changed using `binding` and are, by convention,
+surrounded by asterisks (`*`) or "earmuffs":
+
+    > (def ^:dynamic *debug-enabled* false)
+    > *debug-enabled*
+    false
+
+    > (binding [*debug-enabled* true]
+        (println *debug-enabled*))
+    true
+
+Vars are _not_ supposed to be used like variables in other programming
+languages. Use `^:dynamic` vars and `binding` sparingly.
+
+The REPL provides some dynamic vars `*[n]` where `[n]` denotes the n-last
+result:
+
+    > (+ 2 1)
+    3
+    > (+ 5 4)
+    9
+    (- *1 *2) ; 9 - 3
+    6
+
+Dynamic vars can be changed using the `set!` function:
+
+    > (def employees ["Dilbert" "Wally" "Alice" "Ted" "Ashok"])
+    > employees
+    ["Dilbert" "Wally" "Alice" "Ted" "Ashok"]
+    > (set! *print-length* 2)
+    > employees
+    ["Dilbert" "Wally" ...]
+
+`*e` denotes the last exception thrown:
+
+    > (/ 3 0)
+    Execution error (ArithmeticException) at user/eval2038 (REPL:1).
+    Divide by zero
+    > *e
+    #error {
+     :cause "Divide by zero"
+     ...
