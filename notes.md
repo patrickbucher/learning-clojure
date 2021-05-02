@@ -1150,3 +1150,181 @@ Dynamic vars can be changed using the `set!` function:
     #error {
      :cause "Divide by zero"
      ...
+
+## Namespaces
+
+Vars, which represent the binding between a symbol and a value, live in
+_namespaces_. There is always one _current_ namespace, affected by calls of
+`def`.
+
+The REPL creates and uses a namespace called `user`:
+
+    > (def employee "Dilbert")
+    #'user/employee
+
+The `employee` symbol is bound to the value `"Dilbert"` within the `user`
+namespace.
+
+A new namespace can be created and made the current namespace using `ns`:
+
+    > (ns dilbertix)
+    > (def employees [:dilbert :alice :wally])
+    #'dilbertix/employees
+
+Calling `ns` with an existing namespace makes that namespace the current,
+without changing it:
+
+    > (ns user)
+    > (def today "Sunday")
+    #'user/today
+
+After switching back, the bindings are still available:
+
+    > (ns dilbertix)
+    > employees
+    [:dilbert :alice :wally]
+
+Symbols from other namespaces can be referred to using a _fully qualified
+symbol_:
+
+    > (ns user)
+    > dilbertix/employees
+
+Namespaces defined in other files need to be loaded before they can be used. The
+function `clojure.data/diff` is unavailable by default:
+
+    > (def engineers [:alice :dilbert :wally])
+    > (def high-performers [:alice :dilbert :topper])
+    > (clojure.data/diff engineers high-performers)
+    Execution error (ClassNotFoundException) at java.net.URLClassLoader/findClass (URLClassLoader.java:382).
+
+The `clojure.data` namespace can be made available using `require`:
+
+    > (require 'clojure.data)
+    > (clojure.data/diff engineers high-performers)
+    [[nil nil :wally] [nil nil :topper] [:alice :dilbert]]
+
+Given a new project skeleton:
+
+    $ lein new app dilbertix
+
+Containing the file `src/dilbertix/core.clj`:
+
+    (ns dilbertix.core
+      (:gen-class))
+
+    (defn -main
+      "I don't do a whole lot ... yet."
+      [& args]
+      (println "Hello, World!"))
+
+The namespace `dilbertix.core` and the file's location `dilbertix/core.clj`
+match together: A namespace `foo.bar` is to be found in a file `foo/bar.clj`.
+
+Dashes need to be converted to underscores: The namespace `foo-bar.qux` is to be
+found in the file `foo_bar/qux.clj`.
+
+Thus, a new namespace `dilbertix.employees` is to be defined within the project
+folder in the file `src/dilbertix/employees.clj`:
+
+    (ns dilbertix.employees)
+
+    (def job-satisfaction 0.0021)
+
+    (def employees [:dilbert :alice :wally])
+
+The namespace definition can be supplied with `:require` expressions:
+
+    (ns dilbertix.core
+      (:require dilbertix.employees)
+      (:gen-class))
+
+    (defn -main
+      [& args]
+      (println "Our Employees:" dilbertix.employees/employees))
+
+Notice the difference between the stand-alone `require`:
+
+    (require 'dilbertix.employees) ; symbol, quoted
+
+And the expression within the `ns` definition:
+
+    (:require dilbertix.employees) ; keyword, unquoted
+
+Aliases can be defined to make imported names shorter:
+
+    (require '[dilbertix.employees :as employees])
+
+Or within the namespace definition:
+
+    (ns dilbertix.core
+        (:require [dilbertix.employees :as employees]))
+
+Which allows for shorter references:
+
+    (println employees/job-satisfaction)
+
+Instead of:
+
+    (println dilbertix.employees/job-satisfaction)
+
+Aliases don't mask ordinary bindings, so an `employees` var would still be
+visible.
+
+Using `:refer`, vars from anothe rnamespace are pulled into the current
+namespace:
+
+    (require '[dilbertix.employees :refer [employees job-satisfaction])
+
+Which would mask an existing `employees` binding in the current namespace.
+Therefore, `:refer` should be used sparingly.
+
+The current namespace is available through the symbol `*ns*`:
+
+    > (println *ns*)
+    #object[clojure.lang.Namespace 0x38158523 user]
+
+Existing namespaces can be looked up by their name:
+
+    > (find-ns 'user)
+    #object[clojure.lang.Namespace 0x38158523 "user"]
+
+Namespaces can be discovered:
+
+    > (ns-map *ns*)
+    {primitives-classnames #'clojure.core/primitives-classnames, +' #'clojure.core/+' ...
+    ;; omitted
+
+The namespace is part of the symbol and can be extracted using the `namespace`
+function:
+
+    > (def hello "world")
+    > (namespace 'user/hello)
+    "user"
+
+The namespace `clojure.core` provides functions such as `println` or `first` and
+is made ready automatically:
+
+    (require '[clojure.core :refer :all])
+
+There is _no_ hierarchy of namespaces. The dots in `clojure.core.data` are just
+part of the name.
+
+Using `require`, a namespace only gets loaded once, which is sensible for code
+within files. In a REPL session, reloading modified code is common, and the
+`:reload` keyword can be used:
+
+    (require :reload '[dilbertix.employees :as employees])
+
+Symbols no longer needed can be removed using `ns-unmap`:
+
+    (ns-unmap 'dilbertix.employees)
+
+`defonce` makes sure a symbol is only bound to a value _once_, even if the
+definition is required using `:reload`:
+
+    (defonce answer-to-everything (summarize-all-books))
+
+If the symbol is supposed to be rebound nonetheless, it can be unmapped:
+
+    (ns-unmap *ns* 'answer-to-everything)
