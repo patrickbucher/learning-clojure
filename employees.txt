@@ -1,0 +1,7 @@
+Pointy Haired Boss;Manager;58;250000
+Dilbert;Engineer;42;120000
+Alice;Engineer;39;110000
+Wally;Engineer;52;130000
+Dogbert;Consultant;7;390000
+Topper;Salesman;35;850000
+Ted;Project Manager;45;280000

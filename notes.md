@@ -398,7 +398,7 @@ Be aware taht `nil` is a valid set entry and map key:
     > (contains? #{:foo :bar nil} nil)
     true
 
-# Logic
+## Logic
 
 Conditional code can be executed using `if`:
 
@@ -1328,3 +1328,280 @@ definition is required using `:reload`:
 If the symbol is supposed to be rebound nonetheless, it can be unmapped:
 
     (ns-unmap *ns* 'answer-to-everything)
+
+## Sequences
+
+The different collection types (maps, vectors, lists, sets) share a common
+wrapper interface called a _sequence_. That's why the `count` function (and many
+others) work on different kinds of collections:
+
+    > count [1 2 3]) ; vector: number of items
+    3
+    > (count {:name "John" :age 29}) ; map: number of key-value pairs
+    2
+
+The `seq` function wraps any collection in a sequence:
+
+    > (seq {:age 42 :name "Dilbert"})
+    ([:age 42] [:name "Dilbert"]) ; sequence of key-value pairs
+
+    > (seq ["Alice", "Dilbert", "Wally"])
+    ("Alice" "Dilbert" "Wally") ; looks like a list, is a sequence
+
+`seq` returns `nil` when invoked on an empty collection:
+
+    > (seq '()) ; empty list
+    nil
+    > (seq [])  ; empty vector
+    nil
+    > (seq {})  ; empty map
+    nil
+    > (seq #{}) ; empty set
+    nil
+
+Like `rest`, `next` returns all but the first elements of a sequence:
+
+    > (rest [1 2 3])
+    (2 3)
+    > (next [1 2 3])
+    (2 3)
+
+_Unlike_ `rest`, `next` returns `nil` the remainder is an empty sequence:
+
+    > (rest [1])
+    ()
+    > (next [1])
+    nil
+
+Always rely on `rest` and `next` returning an empty collection or `nil`,
+respectively; _never_ compare the result of `first` against `nil` for this
+purpuse:
+
+    ;; bad idea!
+    (defn is-empty [collection]
+      (= (first (seq collection)) nil))
+
+    > (is-empty [1 2 3])   ; correct
+    false
+    > (is-empty [])        ; correct
+    true
+    > (is-empty [nil 1 2]) ; wrong!
+    true
+
+    ;; better approach
+    (defn is-empty [collection]
+        (= (next (seq collection)) nil))
+
+    > (is-empty [1 2 3])   ; correct
+    false
+    > (is-empty [])        ; correct
+    true
+    > (is-empty [nil 1 2]) ; correct
+    false
+
+New elements can be added to the front of a sequence using `cons`:
+
+    > (cons 0 (seq [1 2 3]))
+    (0 1 2 3)
+    > (cons [:job "Engineer"] (seq {:name "Dilbert" :age 42}))
+    ([:job "Engineer"] [:name "Dilbert"] [:age 42])
+
+`rest`, `next`, `cons` (but _not_ `conj`), `sort`, `reverse` all return
+sequences.
+
+A _seqable_ is something that `seq` can turn into a sequence.
+
+`partition` chops a sequence (or _seqable_) into a sequence of smaller junks:
+
+    > (partition 2 [1 2 3 4 5])
+    ((1 2) (3 4))
+
+`interleave` zips two sequences together:
+
+    > (interleave [1 3 5 7 9] [2 4 6 8])
+    (1 2 3 4 5 6 7 8)
+
+`interpose` adds a separator value in between the elements:
+
+    > (interpose "and" ["Dilbert" "Wally" "Alice"])
+    ("Dilbert" "and" "Wally" "and" "Alice")
+    > (interpose '+ [1 2 3])
+    (1 + 2 + 3)
+
+`filter` accepts a predicate function and a sequence, and returns a new sequence
+holding the elements for which the predicate holds true:
+
+    > (defn negative? [x] (< x 0))
+    > (filter negative? [5 -5 10 -10])
+    (-5 -10)
+
+    (defn useful? [employee]
+        (not= (:job employee) "Manager"))
+
+    > (filter useful? [{:name "Pointy Haired Boss" :job "Manager"}
+                       {:name "Dilbert" :job "Engineer"}])
+    ({:name "Dilbert", :job "Engineer"})
+
+Like `filter`, `some` applies a predicate to the elements of a sequence. Unlike
+`filter`, it returns the first truthy value returned by the predicate:
+
+    > (some neg? [1 2 3])
+    nil
+    > (some neg? [1 2 -3])
+    true
+
+    (defn useful-name [employee]
+      (when
+        (not= (:job employee) "Manager")
+        (:name employee)))
+
+    > (some useful-name [{:name "Pointy Haired Boss" :job "Manager"}
+                         {:name "Dilbert" :job "Engineer"}])
+    "Dilbert"
+
+`map` transforms the elements of a sequence using a function:
+
+    (defn raise-salary [employee]
+      (assoc employee :salary (* 1.2 (:salary employee))))
+
+    > (map raise-salary [{:name "Dilbert" :salary 120000}
+                         {:name "Ashok" :salary 10000}])
+    ({:name "Dilbert", :salary 144000.0} {:name "Ashok", :salary 12000.0})
+
+    > (map :name [{:name "Dilbert" :salary 120000}
+                  {:name "Ashok" :salary 10000}])
+    ("Dilbert" "Ashok")
+
+`comp` (for "compose") produces a function by applying the argument functions
+from right to left (first, the salary is raised; second, the `:name` is
+extracted):
+
+    > (map (comp :name raise-salary)
+        [{:name "Dilbert" :salary 120000}
+         {:name "Ashok" :salary 10000}])
+    (144000.0 12000.0)
+
+`for` processes a sequence element by element:
+
+    > (def employees [{:name "Dilbert" :salary 120000}
+                      {:name "Ashok" :salary 10000}])
+    > (for [e employees] (:name e))
+    ("Dilbert" "Ashok")
+
+`reduce` combines the elements of a sequence into a single value. It works with
+a function that requires _two_ values: an accumulator and the current element:
+
+    > (reduce (fn [acc x] (+ acc x)) [1 2 3 4])
+    10
+    > (reduce (fn [acc x] (* acc x)) [1 2 3 4])
+    24
+
+The starting value of the accumulator can be defined, too:
+
+    > (reduce (fn [acc x] (+ acc x)) 100 [1 2 3 4])
+    110
+
+If the start value is left out, the first element will be used for it.
+
+Since arithmetic operators are functions, this can be simplified:
+
+    > (reduce + [1 2 3 4])
+    10
+    > (reduce * [1 2 3 4])
+    24
+
+Those higher-order functions can be used to compose elegant solutions:
+
+    (def employees [{:name "Dilbert" :salary 120000}
+                    {:name "Wally" :salary 130000}
+                    {:name "Alice" :salary 11000}
+                    {:name "Dogbert" :salary 180000}
+                    {:name "Topper" :salary 150000}])
+
+    (defn top-earners [n employees]
+      (apply
+        str
+        (interpose
+          " >= "
+          (map :name (take n (reverse (sort-by :salary employees)))))))
+
+    > (top-earners 3 employees)
+    "Dogbert >= Topper >= Wally"
+
+    > (top-earners 5 employees)
+    "Dogbert >= Topper >= Wally >= Dilbert >= Alice"
+
+    > (top-earners 1 employees)
+    "Dogbert"
+
+The definition of `top-earners` needs to be read from the inside out. The pointy
+arrow function `->>` allows for an easier to read syntax without any runtime
+performance overhead:
+
+    (defn top-earners [n employees]
+      (->>
+        employees
+        (sort-by :salary)
+        reverse
+        (take n)
+        (map :name)
+        (interpose " >= ")
+        (apply str)))
+
+The `->>` function uses the result of a function as the _last_ argument for the
+next function all; `->` as the _first_ argument for the subsequent function
+call.
+
+Since Clojure provides so many ways of processing sequences, turning something
+into a sequence can be a big step to solving that problem.
+
+`line-seq` turns the lines of a text file into a (lazy) sequence. Given this CSV
+employee data base (`employees.txt`):
+
+    Pointy Haired Boss;Manager;58;250000
+    Dilbert;Engineer;42;120000
+    Alice;Engineer;39;110000
+    Wally;Engineer;52;130000
+    Dogbert;Consultant;7;390000
+    Topper;Salesman;35;850000
+    Ted;Project Manager;45;280000
+
+`read-employee-db` turns it into a sequence of maps:
+
+    (require '[clojure.java.io :as io])
+    (require '[clojure.string :as str])
+
+    (defn split-by [sep]
+      (fn [line]
+        (str/split line sep)))
+
+    (defn to-employee [values]
+      (zipmap [:name :job :age :salary] values))
+
+    (defn read-employee-db [filename]
+      (with-open [r (io/reader filename)]
+        (map
+          (comp to-employee (split-by #";"))
+          (doall (line-seq r)))))
+
+    > (read-employee-db "employees.txt")
+    ((:name "Pointy Haired Boss" :job "Manager" :age "58" :salary "250000")
+     (:name "Dilbert" :job "Engineer" :age "42" :salary "120000")
+     (:name "Alice" :job "Engineer" :age "39" :salary "110000")
+     (:name "Wally" :job "Engineer" :age "52" :salary "130000")
+     (:name "Dogbert" :job "Consultant" :age "7" :salary "390000")
+     (:name "Topper" :job "Salesman" :age "35" :salary "850000")
+     (:name "Ted" :job "Project Manager" :age "45" :salary "280000"))
+
+Which then can be processed using the `top-earners` function from before:
+
+    > (top-earners 3 (read-employee-db "employees.txt"))
+    "Topper >= Dogbert >= Ted"
+
+Using regular expressions, strings can be turned into sequences (e.g. of words):
+
+    > (re-seq #"\w+" "this is some sentence to be split") ; split by whitespace
+    ("this" "is" "some" "sentence" "to" "be" "split")
+
+Even though sequences are extremely useful, data structures like maps and
+vectors loose _some_ of their power when wrapped as a sequence.
