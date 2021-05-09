@@ -1,8 +1,11 @@
-# Clojure
+---
+title: Notes on Clojure
+author: Patrick Bucher
+---
 
 Notes loosely based on [Getting Clojure](https://pragprog.com/titles/roclojure/getting-clojure/) by Russ Olsen.
 
-## Hello, Clojure
+# Hello, Clojure
 
 Install Clojure and Leiningen on Arch Linux:
 
@@ -114,7 +117,7 @@ And run it again:
     $ lein run
     Hello World greets the user
 
-## Vectors and Lists
+# Vectors and Lists
 
 Create a vector of numbers:
 
@@ -227,7 +230,7 @@ of vectors:
     > (conj '(1 2 3) "what")
     ("what" 1 2 3)
 
-## Maps, Keywords, and Sets
+# Maps, Keywords, and Sets
 
 Maps are created using pairs within curly braces:
 
@@ -398,7 +401,7 @@ Be aware taht `nil` is a valid set entry and map key:
     > (contains? #{:foo :bar nil} nil)
     true
 
-## Logic
+# Logic
 
 Conditional code can be executed using `if`:
 
@@ -578,7 +581,7 @@ Exceptions can be thrown using `throw` and `ex-info`:
 `ex-info` expects a string message and a map argument, and can be caught as
 `clojure.lang.ExceptionInfo`.
 
-## More Capable Functions
+# More Capable Functions
 
 _Multi-arity_ functions accept different sets of parameters:
 
@@ -799,7 +802,7 @@ salary of more than 180000. The return value is referred by `%`.
     Execution error (AssertionError) at user/give-raise (REPL:1).
     Assert failed: (<= (:salary %) 180000)
 
-## Functional Things
+# Functional Things
 
 Functions are values, which can be passed to other functions:
 
@@ -955,7 +958,7 @@ updated:
     > (give-bonus dogbertix)
     {:name "Dogbertix", :ceo {:name "Dogbert", :salary 500000}}
 
-## Let
+# Let
 
 `compute-bonus` needs to calculate the same value twice; once for the `if`
 condition, and once for the return value of the function:
@@ -1073,7 +1076,7 @@ using `if` (yielding `true` for any truthy value).
     > (map writtey-by books)
     ("War and Peace was written by Lev Tolstoy" nil "The Name of the Rose was written by Umberto Eco" nil)
 
-## Def, Symbols, and Vars
+# Def, Symbols, and Vars
 
 Like keywords, symbols are values. Whereas keywords evaluate to themselves,
 symbols created with `def` are bound to other values. The symbol itself can be
@@ -1151,7 +1154,7 @@ Dynamic vars can be changed using the `set!` function:
      :cause "Divide by zero"
      ...
 
-## Namespaces
+# Namespaces
 
 Vars, which represent the binding between a symbol and a value, live in
 _namespaces_. There is always one _current_ namespace, affected by calls of
@@ -1329,7 +1332,7 @@ If the symbol is supposed to be rebound nonetheless, it can be unmapped:
 
     (ns-unmap *ns* 'answer-to-everything)
 
-## Sequences
+# Sequences
 
 The different collection types (maps, vectors, lists, sets) share a common
 wrapper interface called a _sequence_. That's why the `count` function (and many
