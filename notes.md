@@ -1608,3 +1608,124 @@ Using regular expressions, strings can be turned into sequences (e.g. of words):
 
 Even though sequences are extremely useful, data structures like maps and
 vectors loose _some_ of their power when wrapped as a sequence.
+
+# Lazy Sequences
+
+Unlike sequences, _lazy sequences_ only make up their values as they are
+actually needed.
+
+`repeat` creates a lazy sequence that contains the given element unlimited
+times:
+
+    > (def words (repeat "duck"))
+
+There are, of course, not unlimited instances of the string `"duck"` put into
+memory, which would be impossible to do. The elements of the lazy sequence are
+only created when used:
+
+    > (nth words 3)
+    "duck"
+    > (nth words 123456)
+    "duck"
+
+    > (take 3 words)
+    ("duck" "duck" "duck")
+
+`cycle` creates a lazy sequence by repeating a given sequence endlessly:
+
+    > (take 7 (cycle [1 2 3]))
+    (1 2 3 1 2 3 1)
+
+`iterate` creates a lazy sequence based on a function. The first argument is a
+function to be called for each subsequent iteration; the secund argument is a
+starting value:
+
+    > (def counter (iterate inc 1))
+    > (take 3 counter)
+    (1 2 3)
+    > (take 12 counter)
+    (1 2 3 4 5 6 7 8 9 10 11 12)
+
+Note that the lazy sequence is _not consumed_ like an iterator in other
+programming languages.
+
+This `counter` sequence can be used to enumerate items of a sequence:
+
+    > (interleave ["Alive" "Dilbert" "Wally"] counter)
+    ("Alive" 1 "Dilbert" 2 "Wally" 3)
+
+Or:
+
+    > (zipmap counter ["Alive" "Dilbert" "Wally"])
+    {1 "Alive", 2 "Dilbert", 3 "Wally"}
+
+`map` is lazy, so it can be applied to unbound lazy sequences:
+
+    > (defn twice [x] (* 2 x))
+    > (def doubled (map twice counter))
+    > (take 7 doubled)
+    (2 4 6 8 10 12 14)
+
+Combined with `cycle`, `map` can be used to combine existing elements in all
+possible ways (permutations):
+
+    (def names ["Alice" "Dilbert" "Wally" "Ashok" "Dogbert"])
+    (def adjectives ["great" "lazy" "nerdy" "evil"])
+    (def professions ["engineer" "manager" "consultant"])
+
+    (defn combine-employees [name adjective profession]
+      (str name " the " adjective " " profession))
+
+    (def employees
+      (map combine-employees
+        (cycle names)
+        (cycle adjectives)
+        (cycle professions)))
+
+    > (take 8 employees)
+    ("Alice the great engineer" "Dilbert the lazy manager" "Wally the nerdy consultant"
+     "Ashok the evil engineer" "Dogbert the great manager" "Alice the lazy consultant"
+     "Dilbert the nerdy engineer" "Wally the evil manager")
+
+`lazy-seq` creates a lazy sequence from an existing sequence:
+
+    > (def numbers (lazy-seq [1 2 3]))
+    (take 2 numbers)
+    (1 2)
+
+Never output lazy sequences as if they were finite:
+
+    > (def counter (iterate inc 1))
+    > counter ; bad idea
+
+Or at least be sure to set `*print-length*` before doing so:
+
+    > (set! *print-length* 10)
+    > counter
+    (1 2 3 4 5 6 7 8 9 10 ...)
+
+`doall` realizes a lazy sequence, which should only be done for _finite_ lazy
+sequences:
+
+    > (doall counter) ; bad idea, again...
+
+`doseq` is similar to `for` and useful if the iteratio step is more interesting
+than the result:
+
+    > (def numbers (take 5 counter))
+    > (doseq [n numbers]
+        (println "Current iteration" n))
+    Current iteration 1
+    Current iteration 2
+    Current iteration 3
+    Current iteration 4
+    Current iteration 5
+
+Infinite sequences should not be sorted or reduced.
+
+Many functions are lazy, such as `take`.
+
+Notice that working with lazy sequences opens a timely gap between when the
+instruction to do something is given and when it is actyally done. This can
+cause troubles when working with side-effects (e.g. files read/written with
+`slurp`/`spit` whose content changes in the meantime).
