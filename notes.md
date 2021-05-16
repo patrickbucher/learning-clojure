@@ -1729,3 +1729,114 @@ Notice that working with lazy sequences opens a timely gap between when the
 instruction to do something is given and when it is actyally done. This can
 cause troubles when working with side-effects (e.g. files read/written with
 `slurp`/`spit` whose content changes in the meantime).
+
+# Destructuring
+
+_Destructuring_ is a tool for unpacking data structures with little syntax:
+
+    > (def employees ["Dilbert" "Wally"])
+    > (let [[nerd lazybone] employees]
+        (println nerd "is a nerd")
+        (println lazybone "is a lazybone"))
+    Dilbert is a nerd
+    Wally is a lazybone
+
+The left side vector of `let` describes the data to be extracted. The right side
+expression is the data structure to be unpacked.
+
+The unpacking need not be exhaustive. Values can be simply dropped on the right
+side:
+
+    > (let [[a b c] ["foo" "bar" "baz" "qux"]] ; "qux" ignored
+        (println a b c))
+    foo bar baz
+
+And the dummy symbol `_` can be used to drop values from the left side:
+
+    > (let [[_ a _ b] ["foo" "bar" "baz" "qux"]] ; "foo" and "qux" ignored
+        (println a b))
+    bar qux
+
+Nested structures can be destructured using a nested pattern on the left side:
+
+    > (def teams [["Dilbert" "Alice" "Wally"] ["Dogbert" "Ratbert" "Catbert"]])
+    > (let [[[dilbert _ wally] [dogbert _ catbert]] teams]
+        (println dilbert wally dogbert catbert))
+
+Anything that can be turned into a sequence can be destructured:
+
+    > (let [[one _ _ four] '(1 2 3 4)]
+        (println one four))
+    1 4
+
+    > (let [[b a r] "bar"]
+        (println b a r))
+    b a r
+
+    > (let [[a _ b _ c] (iterate inc 1)]
+        (println a b c))
+    1 3 5
+
+Destructuring can not only be used with `let`, but also when calling functions:
+
+    > (defn fire [[scapegoat-one scapegoat-two]]
+        (println scapegoat-one "and" scapegoat-two "are fired!"))
+    > (fire ["Dilbert" "Alice" "Wally" "Dogbert"])
+    Dilbert and Alice are fired!
+
+When destructuring maps, the variable to be bound stands on the left, and the
+keyword for the value to be extracted stands on the right:
+
+    > (def employees {:engineer "Dilbert" :consultant "Dogbert" :slacker "Wally"})
+    > (let [{scapegoat :engineer} employees]
+        (println scapegoat))
+    Dilbert
+
+Nested data structures can be destructured, too:
+
+    > (def company {:name "Random Inc."
+                    :employees [{:name "Dilbert" :role "Engineer"}
+                                {:name "Dogbert" :role "Consultant"}]})
+    > (let [{[{looser-job :role} {leech :name}] :employees} company]
+        (println looser-job "is the worst job and" leech "is a leech"))
+    Engineer is the worst job and Dogbert is a leech
+
+If all of a map's values are to be bound, listing all the keys is cumbersome:
+
+    > (def employees [{:name "Dilbert" :role "Engineer" :age 42}
+                      {:name "Dogbert" :role "Consultant" :age 7}])
+    > (defn describe [{name :name role :role age :age}]
+        (println name "is a" age "year old" role))
+    > (map describe employees)
+    Dilbert is a 42 year old Engineer
+    Dogbert is a 7 year old Consultant
+
+The `:keys` keyword allows for a shorter mapping:
+
+    > (defn describe [{:keys [name role age]}]
+        (println name "is a" age "year old" role))
+
+If the passed value should not only be destructured, but also retained in its
+entirety, the `:as` keyword can be used.
+
+    > (defn add-greeting [{:keys [name role age] :as employee}]
+        (assoc employee
+               :greeting
+               (str "I'm a " age " year old " role " called " name)))
+    > (map add-greeting employees)
+    ({:name "Dilbert", :role "Engineer", :age 42,
+      :greeting "I'm a 42 year old Engineer called Dilbert"}
+     {:name "Dogbert", :role "Consultant", :age 7,
+      :greeting "I'm a 7 year old Consultant called Dogbert"})
+
+Default values can be provided using the `:or` keyword:
+
+    > (defn email [{:keys [user host domain]
+                    :or {user "root", host "localhost", domain "local"} :as parts}]
+        (str user "@" host "." domain))
+    > (email {:user "john"})
+    "john@localhost.local"
+    > (email {:host "dilbertix" :domain "com"})
+    "root@dilbertix.com"
+
+Destructuring can't be used directly with `def`, only within `let`.
