@@ -1883,7 +1883,8 @@ don't get the speed optimization of the record's defined fields:
 
     > (def dilbert-secret (assoc dilbert :note "Smelly and ugly guy"))
     > dilbert-secret
-    #user.Employee{:name "Dilbert", :age 42, :job "Engineer", :salary 120000, :note "Smelly and ugly guy"}
+    #user.Employee{:name "Dilbert", :age 42, :job "Engineer",
+                   :salary 120000, :note "Smelly and ugly guy"}
 
 While the speed advantage of records is only noticable for large amounts of
 data, the documentation provided by records is always helpful:
@@ -1891,8 +1892,10 @@ data, the documentation provided by records is always helpful:
     > (defrecord Poet [name century works])
     > (defrecord FictionalCharacter [name show traits])
 
-    > (def homer-1 (->Poet "Homer" "8th/7th B.C." ["Iliad" "Odyssey"]))
-    > (def homer-2 (->FictionalCharacter "Homer" "The Simpsons" ["lazy" "stupid" "impulsive"]))
+    > (def homer-1
+        (->Poet "Homer" "8th/7th B.C." ["Iliad" "Odyssey"]))
+    > (def homer-2
+        (->FictionalCharacter "Homer" "The Simpsons" ["lazy" "stupid" "impulsive"]))
 
 `class` returns the underlying type of a record instance:
 
@@ -1923,4 +1926,141 @@ This offers one primitive way to create polymorphic functions:
     > (output homer-2)
     Homer the [lazy stupid impulsive] character from The Simpsons
 
-However, _protocols_ are a better alternative for this purpose.
+However, _protocols_ are a better alternative for this purpose. A protocol
+(here: `Person`) defines a set of functions (here: `describe`, `greet`) that can
+be performed on different kinds of records implementing that protocol:
+
+    (defprotocol Person
+      (describe [this])
+      (greet [this msg]))
+
+The functions of the protocol need to be implemented by the records. The
+protocol name (here: `Person`) is followed by the _method definitions_:
+
+    (defrecord Poet [name century works]
+      Person
+      (describe [this]
+        (str
+          (:name this)
+          ", the author of " (clojure.string/join ", " (:works this))
+          " who lived in " (:century this)))
+      (greet [this msg]
+        (str
+          msg " " (:name this)
+          ", author of " (clojure.string/join ", " (:works this)))))
+
+    (defrecord FictionalCharacter [name show traits]
+      Person
+      (describe [this]
+        (str
+          (:name this)
+          ", the " (clojure.string/join ", " (:traits this))
+          " character from " (:show this)))
+      (greet [this msg]
+        (str
+          msg " " (:name this)
+          ", you " (clojure.string/join ", " (:traits this))
+          " character from " (:show this))))
+
+The first argument (conventionally called `this`) refers to the instance the
+function is called on:
+
+    > (def homer-1
+        (->Poet "Homer" "8th/7th B.C." ["Iliad" "Odyssey"]))
+    > (describe homer-1)
+    "Homer, the author of Iliad, Odyssey who lived in 8th/7th B.C."
+    > (greet homer-1 "Greetings")
+    "Greetings Homer, author of Iliad, Odyssey"
+
+    > (def homer-2
+        (->FictionalCharacter "Homer" "The Simpsons" ["lazy" "stupid" "impulsive"]))
+    > (describe homer-2)
+    "Homer, the lazy, stupid, impulsive character from The Simpsons"
+    > (greet homer-2 "Hi")
+    "Hi Homer, you lazy, stupid, impulsive character from The Simpsons"
+
+New protocols can be created and implemented for existing types using
+`extend-protocol`:
+
+    (defprotocol Greetable
+      (say-hi [this]))
+
+    (extend-protocol Greetable
+      Employee
+      (say-hi [employee]
+        (str "Hello, I'm " (:name employee) ". I work as a " (:job employee) "."))
+      Poet
+      (say-hi [poet]
+        (str "Greetings, I'm " (:name poet) ", author of "
+             (clojure.string/join ", " (:works poet)) "."))
+      FictionalCharacter
+      (say-hi [character]
+        (str "Hi, I'm " (:name character) " from " (:show character) ".")))
+
+    > (say-hi dilbert)
+    "Hello, I'm Dilbert. I work as a Engineer."
+
+    > (say-hi homer-1)
+    "Greetings, I'm Homer, author of Iliad, Odyssey"
+
+    > (say-hi homer-2)
+    "Hi, I'm Homer from The Simpsons."
+
+It is also possible to implement protocols for existing data types:
+
+    (extend-protocol Greetable
+      String
+      (say-hi [string]
+        (str "Hi, I'm the String '" string "'."))
+      Boolean
+      (say-hi [bool]
+        (str "Hi, I'm the Boolean '" bool "'.")))
+    
+    > (say-hi "foobar")
+    "Hi, I'm the String 'foobar'."
+
+    > (say-hi false)
+    "Hi, I'm the Boolean 'false'."
+
+Records and their instances resemble classes and objects, but they don't have
+hierarchies and are immutable. Protocols are similar to abstract classes or
+interfaces, but more flexible: They can be implemented without touching the
+definition of the type the methods are implemented for; and, again, they don't
+come in hierarchies. Also, most object-oriented programming languages require
+the programmer to use classes, objects, and interfaces. Records and protocols,
+however, are optional: Better start without them, and only use them if they
+bring some tangible benefit.
+
+Protocols and multimethods have a lot in common, but also some differences:
+
+- Multimethods define single, stand-alone operations. Protocols group related
+  operations together.
+- Multimethods support an arbitrary dispatch mechanism. Protocols dispatch based
+  on a type.
+
+Simple one-off implementations of a protocol as a single instance (say, for test
+doubles) can be created using `reify`:
+
+    (def dirty-harry
+      (reify Person
+        (describe [_] "Lieutenant Harry Callahan, San Francisco Police Department")
+        (greet [_ msg] (str msg ", punk. Feeling lucky today?"))))
+
+    > (describe dirty-harry)
+    "Lieutenant Harry Callahan, San Francisco Police Department"
+
+    > (greet dirty-harry "Hi, there")
+    "Hi there, punk. Feeling lucky today?"
+
+Since `this` wasn't used in any of the method bodies, it was replaced by `_`.
+
+The methods defined for a protocol could pollute the namespace:
+
+    > (defprotocol Items (count [this]))
+    Warning: protocol #'user/Items is overwriting function count
+
+When in doubt, put protocols in their own namespace.
+
+`deftype` is a more generic version of `defrecord` and requires the programmer
+to provide all of the behaviour of a new type. This is more work than defining a
+new record, but allows for more flexibility.
