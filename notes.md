@@ -1840,3 +1840,87 @@ Default values can be provided using the `:or` keyword:
     "root@dilbertix.com"
 
 Destructuring can't be used directly with `def`, only within `let`.
+
+# Records and Protocols
+
+A common tradeoff in programming is between _generic_ and _specialized_
+solutions. Maps are _generic_ and very flexible. They can deal with arbitrary
+keys, which comes with a runtime penalty when dealing with huge amounts of data.
+
+_Records_ are specialized data structures dealing only a set of predefined keys:
+
+    > (defrecord Employee [name age job salary])
+
+`defrecord` creates three `var`s: one for the record type, and two factory
+functions `->Employee` and `map->Employee` to create instances of the record
+type:
+
+    > (def dilbert (->Employee "Dilbert" 42 "Engineer" 120000))
+
+    > (def alice (map->Employee
+        {:name "Alice"
+         :age 37
+         :job "Engineer"
+         :salary 110000}))
+
+An instance of a record can be used like a map:
+
+    > (:name dilbert)
+    "Dilbert"
+
+    > (:job alice)
+    "Engineer"
+
+    > (keys dilbert)
+    (:name :age :job :salary)
+
+    > (def alice-promoted (assoc alice :salary 120000 :job "Head of Engineering"))
+    > alice-promoted
+    #user.Employee{:name "Alice", :age 37, :job "Head of Engineering", :salary 120000}
+
+It's also possible to associate _extra fields_ with a record; however, those
+don't get the speed optimization of the record's defined fields:
+
+    > (def dilbert-secret (assoc dilbert :note "Smelly and ugly guy"))
+    > dilbert-secret
+    #user.Employee{:name "Dilbert", :age 42, :job "Engineer", :salary 120000, :note "Smelly and ugly guy"}
+
+While the speed advantage of records is only noticable for large amounts of
+data, the documentation provided by records is always helpful:
+
+    > (defrecord Poet [name century works])
+    > (defrecord FictionalCharacter [name show traits])
+
+    > (def homer-1 (->Poet "Homer" "8th/7th B.C." ["Iliad" "Odyssey"]))
+    > (def homer-2 (->FictionalCharacter "Homer" "The Simpsons" ["lazy" "stupid" "impulsive"]))
+
+`class` returns the underlying type of a record instance:
+
+    > (class homer-1)
+    user.Poet
+
+    > (class homer-2)
+    user.FictionalCharacter
+
+`instance?` (like Java's `instanceof`) checks if an instance if of a specific record type:
+
+    > (instance? FictionalCharacter homer-1)
+    false
+
+    > (instance? FictionalCharacter homer-2)
+    true
+
+This offers one primitive way to create polymorphic functions:
+
+    (defn output [x]
+      (if (instance? FictionalCharacter x)
+        (println (:name x) "the" (:traits x) "character from" (:show x))
+        (println (:name x) "the author of" (:works x) "who lived" (:century x))))
+    
+    > (output homer-1)
+    Homer the author of [Iliad Odyssey] who lived 8th/7th B.C.
+
+    > (output homer-2)
+    Homer the [lazy stupid impulsive] character from The Simpsons
+
+However, _protocols_ are a better alternative for this purpose.
