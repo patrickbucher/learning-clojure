@@ -2064,3 +2064,81 @@ When in doubt, put protocols in their own namespace.
 `deftype` is a more generic version of `defrecord` and requires the programmer
 to provide all of the behaviour of a new type. This is more work than defining a
 new record, but allows for more flexibility.
+
+# Tests
+
+For the following example, a new project `company` is created:
+
+    $ lein new company
+
+A fixed set of employees is defined in `src/company/employees.clj`:
+
+    (ns company.employees)
+
+    (def employees [{:name "Dilbert" :age 42 :job "Engineer" :salary 120000}
+                    {:name "Alice" :age 37 :job "Engineer" :salary 115000}
+                    {:name "Wally" :age 47 :job "Engineer" :salary 130000}
+                    {:name "Pointy Haired Boss" :age 57 :job "Manager" :salary 250000}
+                    {:name "Ashok" :age 22 :job "Intern" :salary 18000}
+                    {:name "Dogbert" :age 7 :job "Consultant" :salary 470000}
+                    {:name "Catbert" :age 9 :job "Head of HR" :salary 190000}])
+
+Some functions to operate on a set of employees are provided in `src/company/core.clj`:
+
+    (ns company.core)
+
+    (defn find-by-name
+      "Search for an employee by name (unique result)"
+      [employees by-name]
+      (first (filter #(= (:name %1) by-name) employees)))
+
+    (defn find-by-position
+      "Search for an employee by job (multiple results)"
+      [employees by-job]
+      (filter #(= (:job %1) by-job) employees))
+
+    (defn sum-salaries
+      "Sum up the salaries of all given employees"
+      [employees]
+      (reduce #(+ %1 %2) (map #(:salary %1) employees)))
+
+Unit tests can be created using the `clojure.test` library. In
+`src/company/core_test.clj`, test cases for the functions in `company.core` are
+defined. The test functions from `clojure.core`, the functions to be tested from
+`company.core`, and the static set of employees in `company.employees` are
+required:
+
+    (ns company.core-test
+      (:require [clojure.test :refer :all])
+      (:require [company.core :as cc])
+      (:require [company.employees :as ce]))
+
+A simple test is defined using `deftest` and the `is` assertion function:
+
+    (deftest test-finding-employee-by-name
+      (is (not (nil? (cc/find-by-name ce/employees "Dilbert")))))
+
+The tests can be executed with Leiningen:
+
+    $ lein test
+    lein test company.core-test
+
+    Ran 1 tests containing 1 assertions.
+    0 failures, 0 errors.
+
+Multiple test cases can be grouped together and described using `testing` as
+so-called _subtests_ or _contexts_:
+
+    (deftest test-finding-employee-by-name
+      (testing "Finding employees"
+        (is (not (nil? (cc/find-by-name ce/employees "Dilbert"))))
+        (is (not (nil? (cc/find-by-name ce/employees "Catbert")))))
+      (testing "Not finding employees"
+        (is (nil? (cc/find-by-name ce/employees "Sharkbert")))
+        (is (nil? (cc/find-by-name ce/employees "Competent Boss")))))
+
+    $ lein test
+    lein test company.core-test
+
+    Ran 1 tests containing 4 assertions.
+    0 failures, 0 errors
