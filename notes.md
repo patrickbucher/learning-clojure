@@ -2092,11 +2092,6 @@ Some functions to operate on a set of employees are provided in `src/company/cor
       [employees by-name]
       (first (filter #(= (:name %1) by-name) employees)))
 
-    (defn find-by-position
-      "Search for an employee by job (multiple results)"
-      [employees by-job]
-      (filter #(= (:job %1) by-job) employees))
-
     (defn sum-salaries
       "Sum up the salaries of all given employees"
       [employees]
@@ -2118,13 +2113,18 @@ A simple test is defined using `deftest` and the `is` assertion function:
     (deftest test-finding-employee-by-name
       (is (not (nil? (cc/find-by-name ce/employees "Dilbert")))))
 
-The tests can be executed with Leiningen:
+The test can be executed with Leiningen:
 
     $ lein test
     lein test company.core-test
 
     Ran 1 tests containing 1 assertions.
     0 failures, 0 errors.
+
+To test another function, another `deftest` is created:
+
+    (deftest test-sum-up-employee-salaries
+      (is (= 1293000 (cc/sum-salaries ce/employees))))
 
 Multiple test cases can be grouped together and described using `testing` as
 so-called _subtests_ or _contexts_:
@@ -2136,9 +2136,3 @@ so-called _subtests_ or _contexts_:
       (testing "Not finding employees"
         (is (nil? (cc/find-by-name ce/employees "Sharkbert")))
         (is (nil? (cc/find-by-name ce/employees "Competent Boss")))))
-
-    $ lein test
-    lein test company.core-test
-
-    Ran 1 tests containing 4 assertions.
-    0 failures, 0 errors

@@ -10,3 +10,6 @@
   (testing "Not finding employees"
     (is (nil? (cc/find-by-name ce/employees "Sharkbert")))
     (is (nil? (cc/find-by-name ce/employees "Competent Boss")))))
+
+(deftest test-sum-up-employee-salaries
+  (is (= 1293000 (cc/sum-salaries ce/employees))))
