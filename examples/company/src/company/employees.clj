@@ -1,5 +1,22 @@
-(ns company.employees)
+(ns company.employees
+  (:require [clojure.spec.alpha :as s]))
 
+(s/def ::name string?)
+
+(s/def ::age int?)
+
+(s/def ::job string?)
+
+(s/def ::salary int?)
+
+(s/def ::employee
+  (s/keys :req-un [::name
+                   ::age
+                   ::job
+                   ::salary]))
+
+(s/def ::employees (s/coll-of ::employee))
+ 
 (def employees [{:name "Dilbert" :age 42 :job "Engineer" :salary 120000}
                 {:name "Alice" :age 37 :job "Engineer" :salary 115000}
                 {:name "Wally" :age 47 :job "Engineer" :salary 130000}

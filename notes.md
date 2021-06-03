@@ -2373,3 +2373,306 @@ result) being mapped to `expected`. The test consists of comparing a property of
 `actual` (the job of the employee) to the `expected` value. This helps keeping
 the test definition separate from the test examples, which makes it less
 effortful to add more test cases.
+
+# Spec
+
+Clojure programmers are often more concerned with the _shape_ of data rather
+than its _type_. The question is rather "is this a vector of maps each providing a
+`:name` key?" than "is this a `NamedItemsVector`?".
+
+The shape of data can be verified by providing functions such as this:
+
+    (defn employee? [x]
+      (and
+        (map? x)
+        (string? (:name x))
+        (pos-int? (:age x))
+        (string? (:job x))
+        (pos-int? (:salary x))))
+
+    > (employee? {:name "Dilbert" :age 42 :job "Engineer" :salary 120000})
+    true
+    > (employee? {:name "Clint Eastwood" :age 82 :role "Dirty Harry"})
+    false
+
+This manual approach doesn't scale well. Consider matching the shape of strings:
+Writing a state machine manually for every pattern neither scales well. Instead,
+_regular expressions_ are used to describe those patterns. The
+[`clojure.spec`](https://clojure.org/about/spec) library provides facilities to
+define and check the shape of data; it works like regular expressions for data
+structures:
+
+    > (require '[clojure.spec.alpha :as s])
+
+`clojure.spec` is about to be finished, and therefore is used under the
+namespace `.alpha` for the time being.
+
+The `s/valid?` function expects a predicate function and a value and returns
+whether or not the value passes the validation:
+
+    > (s/valid? number? 44)
+    true
+    > (s/valid? string? 44)
+    false
+
+Multiple predicates can be combined using `clojure.spec/and`:
+
+    (def n-leq-100
+      (s/and number? #(<= % 100)))
+
+    > (s/valid? n-leq-100 99)
+    true
+
+    > (s/valid? n-leq-100 101)
+    false
+
+A predicate function `n-leq-100` is called a _spec_. The whole library and
+concept is called `clojure.spec`.
+
+Predicates can also be combined using `clojure.spec/or`, which requires
+additional keywords describing the checks:
+
+    (def far-from-zero?
+      (s/or :positive #(> % +10)
+            :negative #(< % -10)))
+
+    > (s/valid? far-from-zero? 5)
+    false
+    > (s/valid? far-from-zero? 15)
+    true
+    > (s/valid? far-from-zero? -5)
+    false
+    > (s/valid? far-from-zero? -15)
+    true
+
+The keywords `:positive` and `:negative` are useful for providing feedback in
+case the value fails to match the spec (more of which later).
+
+Multiple predicates can be combined to build new predicates:
+
+    (def n-pos? #(>= % 0))
+    (def n-leq-100? #(<= % 100))
+    (def n-even? #(= (mod % 2) 0))
+    (def n-pos-even-leq-100
+      (s/and
+        n-pos?
+        n-leq-100?
+        n-even?))
+
+    > (s/valid? n-pos-even-leq-100 99)
+    false
+    > (s/valid? n-pos-even-leq-100 98)
+    true
+
+`spec/coll-of` can be used to check if something is a collection of something:
+
+    (def coll-of-strings? (s/coll-of string?))
+
+    > (s/valid? coll-of-strings? ["John" "Doe"])
+    true
+    > (s/valid? coll-of-strings? ["one" "two" "three" 4 "five"])
+    false
+
+`spec/cat` can be used to create _this_ should follow _that_ specs (descriptive
+keywords are needed):
+
+    (def s-n-s-n? (s/cat :s1 string? :n1 number? :s2 string? :n2 number?))
+
+    > (s/valid? s-n-s-n? ["Dilbert" 42 "Ashok" 21])
+    true
+    > (s/valid? s-n-s-n? ["Dilbert" "Alice" "Dogbert" "Wally"])
+    false
+
+Specs for maps can be written using the `keys` function (using the `employees`
+database from the last chapter `src/company/employees.clj`):
+
+    (ns company.employees
+      (:require [clojure.spec.alpha :as s]))
+
+    (def employee-s?
+      (s/keys :req-un [:company.employees/name
+                       :company.employees/age
+                       :company.employees/job
+                       :company.employees/salary]))
+
+    > (require '[clojure.spec.alpha :as s])
+    > (require '[company.employees :as ce])
+    > (s/valid? ce/employee-s? {:name "Dilbert" :age 42 :job "Engineer" :salary 120000})
+    true
+    > (s/valid? ce/employee-s? {:name "Ashok" :age 27 :job "Intern"})
+    false
+
+Here, namespace-qualified keys (`:company.employees/name`) have been used.
+However, the `-un` part of `:req-un` means _unqualified_, so the keys of a map
+value don't have to be qualified in order to match.
+
+In order to use specs in different locations, they can be stored in a _global
+registry_ ("global" means JVM-wide) using `clojure.spec/def`. This registers an
+employee record as `:company.employees/employee`:
+
+    (s/def :company.employees/employee
+      (s/keys :req-un [:company.employees/name
+                       :company.employees/age
+                       :company.employees/job
+                       :company.employees/salary]))
+
+The spec can be used globally under its global name:
+
+    > (s/valid? :company.employees/employee
+        {:name "Dilbert" :age 42 :job "Engineer" :salary 120000})
+    true
+
+Keywords must be fully qualified in the spec definition because of the global
+registry, otherwise they could collide with other keywords. However, from within
+the namespace `company.employees`, the shortcut `::name` can be used instead of
+`:company.employees.name`. Thus, the above spec can be simplified:
+
+    (s/def :company.employees/employee
+      (s/keys :req-un [::name
+                       ::age
+                       ::job
+                       ::salary]))
+
+`clojure.spec` tries to look up the fully qualified keys in the registry. If a
+spec is found, the value associated with that key is validated against it.
+(Otherwise, no validation takes place.)
+
+Let's create additional specs for the map keywords:
+
+    (s/def ::name string?)
+
+    (s/def ::age int?)
+
+    (s/def ::job string?)
+
+    (s/def ::salary int?)
+
+    (s/def ::employee
+      (s/keys :req-un [::name
+                       ::age
+                       ::job
+                       ::salary]))
+
+    (s/def ::employees (s/coll-of ::employee))
+
+    > (s/valid? :company.employees/employee
+        {:name "Dilbert" :age 42 :job "Engineer" :salary 120000})
+    true
+    > (s/valid? :company.employees/employee
+        {:name "Ashok" :age 27 :job "Intern" :salary "nothing"})
+    false
+
+When using heavily nested specs, it's often unclear _why_ a particular value
+failed to match a spec. In this case, `clojure.spec/explain` can be used (just
+like `valid`):
+
+    > (s/explain :company.employees/employee
+        {:name "Ashok" :age 27 :job "Intern" :salary "nothing"})
+    "nothing" - failed: int? in: [:salary] at: [:salary] spec: :company.employees/salary
+
+`explain` always returns `nil` and prints its result. The related function
+`clojure.spec/conform`, on the other side, returns the (positively) matching
+value, or `:clojure.spec.alpha/invalid` in case of a mismatch:
+
+    > (s/conform :company.employees/employee
+        {:name "Dilbert" :age 42 :job "Engineer" :salary 120000})
+    {:name "Dilbert", :age 42, :job "Engineer", :salary 120000}
+    > (s/conform :company.employees/employee
+        {:name "Ashok" :age 27 :job "Intern" :salary "nothing"})
+    :clojure.spec.alpha/invalid
+
+Specs can also be used to validate the arguments of a function. One way is to
+use `:pre` and `:post` conditions with functions (`src/company/core.clj`):
+
+    (ns company.core
+      (:require [company.employees])
+      (:require [clojure.spec.alpha :as s]))
+
+    (defn find-by-name
+      "Search for an employee by name (unique result)"
+      [employees by-name]
+      {:pre [(s/valid? :company.employees/employees employees)
+             (s/valid? :company.employees/name by-name)]}
+      (first (filter #(= (:name %1) by-name) employees)))
+
+A more convenient way is to define those conditions separately from the function
+using `clojure.spec/fdef`:
+
+    (s/fdef find-by-name
+            :args (:by-name :company.employees/name))
+
+Those checks come with a significant performance penalty and are therefore
+deactivated by default. They can be activated by explicitly instrumenting a
+function:
+
+    > (require '[company.employees])
+    > (require '[clojure.spec.alpha :as s])
+    > (require '[clojure.spec.test.alpha :as st])
+
+    > (st/instrument 'company.core/find-by-name)
+    > (find-by-name company.employees/employees "Dilbert")
+    {:name "Dilbert", :age 42, :job "Engineer", :salary 120000}
+
+    > (find-by-name company.employees/employees :dilbert)
+    Execution error - invalid arguments to company.core/find-by-name at ...
+    :dilbert - failed: string? at: [:by-name] spec: :company.employees/name
+
+This should only be used during development and testing.
+
+Creating specs provides much information that can be used for generating test
+data. Consider the function `introduce` (`src/company/employees.clj`) and its
+spec:
+
+    (defn introduce [employee]
+      (str "Hello, my name is "
+           (:name employee)
+           ", I'm "
+           (:age employee)
+           " years old."))
+
+    (s/fdef introduce :args (s/cat :employee :company.employees/employee))
+
+    > (st/instrument 'company.core/introduce)
+    > (introduce (find-by-name company.employees/employees "Dilbert"))
+    "Hello, my name is Dilbert, I'm 42 years old."
+
+Using the `:ret` keyword, the return value of the function can be checked if it
+contains the static portion of the text:
+
+    (s/fdef introduce
+            :args (s/cat :employee :company.employees/employee)
+            :ret (s/and string?
+                        (partial re-find #"Hello, my name is ")
+                        (partial re-find #"I'm ")
+                        (partial re-find #" years old.")))
+
+The function must be instrumented for testing:
+
+    > (require '[clojure.spec.test.alpha :as stest])
+    > (stest/check 'company.core/introduce)
+    ({:spec #object[clojure.spec.alpha$fspec_impl$reify__2524 0x58782ed6
+     "clojure.spec.alpha$fspec_impl$reify__2524@58782ed6"],
+     :clojure.spec.test.check/ret {:result true, :pass? true, :num-tests 1000,
+                                   :time-elapsed-ms 431, :seed 1622747931886},
+     :sym company.core/introduce})
+
+The `:fn` keyword can be used to provide a function for performing additional
+checks. The `employee-exists` function gets both the arguments (`args`) and the
+return value (`ret`) of the instrumented function as arguments. The employee's
+name is extracted, and it is checked, if that name is contained in the return
+value:
+
+    (defn employee-exists [{:keys [args ret]}]
+      (let [employee (-> args :employee :name)]
+        (not (neg? (.indexOf ret employee)))))
+
+    (s/fdef introduce
+            :args (s/cat :employee :company.employees/employee)
+            :ret (s/and string?
+                        (partial re-find #"Hello, my name is ")
+                        (partial re-find #"I'm ")
+                        (partial re-find #" years old."))
+            :fn employee-exists)
+
+When dealing with keyword specs, double-check that there are no typos. Misnamed
+keywords won't be validated by a spec.
