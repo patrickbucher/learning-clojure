@@ -2136,3 +2136,240 @@ so-called _subtests_ or _contexts_:
       (testing "Not finding employees"
         (is (nil? (cc/find-by-name ce/employees "Sharkbert")))
         (is (nil? (cc/find-by-name ce/employees "Competent Boss")))))
+
+In order to test a property of the code, one needs to work with examples that
+_exercise that property_. Instead of making up examples manually, the
+[`test.check`](https://github.com/clojure/test.check) library can be used for
+_Property-Based Testing_. First, `test.check` needs to be added as a dependency
+(`project.clj`):
+
+    :dependencies [[org.clojure/clojure "1.10.1"]
+                   [org.clojure/test.check "1.1.0"]]
+
+Random data can then be created using _generators_:
+
+    > (require '[clojure.test.check.generators :as gen])
+    > (gen/sample gen/string-alphanumeric)
+    ("" "M" "Lw" "cs9" "CtQU" "yOg95" "YE" "3XTEL" "001qEF3w" "ZTwzwZ")
+
+`gen/string-alphanumeric` generates an endless stream of alphanumeric strings
+(including empty ones), `gen/sample` takes a sample of that stream. In order to
+test the functions for the employee data base, the constrained generators for
+the following map keywords are needed:
+
+- `:name`: alphanumeric, non-empty
+- `:age`: numeric, positive, non-zero
+- `:job`: alphanumeric, non-empty
+- `:salary`: numeric, positive, non-zero
+
+The constraints can be modeled using `such-that` predicates:
+
+    (def text-gen
+      (gen/such-that not-empty gen/string-alphanumeric))
+
+    > (gen/sample text-gen)
+    ("1JB" "91" "t" "FJyD" "34eM" "3h0a5" "9fhzo" "8v31R" "00O83F" "PNEEsZQMe")
+
+    (def num-gen
+      (gen/such-that (complement zero?) gen/pos-int))
+
+    > (gen/sample num-gen)
+    (1 3 1 3 2 4 1 3 5 5)
+
+A single employee map can be created using those functions:
+
+    (def employee-gen
+      (gen/hash-map :name text-gen
+                    :age num-gen
+                    :job text-gen
+                    :salary num-gen))
+
+    > (gen/sample employee-gen)
+    ({:name "wlf", :age 3, :job "8", :salary 1}
+     {:name "5", :age 1, :job "ZR", :salary 1}
+     {:name "Hd", :age 2, :job "L3", :salary 3}) ; output shortened
+
+An endless supply of non-empty employee databases (vectors) can be generated:
+
+    (def payroll-gen
+      (gen/not-empty (gen/vector employee-gen)))
+
+    > (gen/sample payroll-gen)
+    ([{:name "uQ", :age 2, :job "Zl", :salary 2}]
+     [{:name "VR", :age 2, :job "ME", :salary 2}
+      {:name "vj", :age 3, :job "8", :salary 1}]
+     [{:name "BYsO", :age 2, :job "p7", :salary 2}]) ; output shortened
+
+In order to conduct tests, a random example has to be plucked from the test
+data. Here, `gen/let` is used to create a map containing a payroll together with
+one single employee taken from that payroll (from the `inventory` built by
+`inventory-gen`, assign a random, single element to `book`):
+
+    (def payroll-and-employee-gen
+      (gen/let [payroll payroll-gen
+                employee (gen/elements payroll)]
+        {:payroll payroll :employee employee}))
+
+    > (gen/smaple payroll-and-employee-gen)
+    ({:payroll [{:name "Y0", :age 2, :job "K0", :salary 1}],
+      :employee {:name "Y0", :age 2, :job "K0", :salary 1}}
+      :employee {:name "Q", :age 3, :job "T", :salary 1}}
+     {:payroll [{:name "qv", :age 3, :job "2ys", :salary 3}
+                {:name "n", :age 2, :job "893", :salary 1}
+                {:name "2g", :age 3, :job "cLx", :salary 2}],
+      :employee {:name "2g", :age 3, :job "cLx", :salary 2}}) ; output shortened
+
+Once the functions to generate the test data are ready, the property needs to be
+expressed with property test functions, provided by the `test.check` library:
+
+    > (require '[clojure.test.check.properties :as prop])
+
+A _theorem_—e.g. the increment of a number is bigger than that number—can be
+expressed using `prop/for-all`:
+
+    (prop/for-all [i gen/pos-int]
+      (< i (inc i)))
+
+Computers can't prove theorems, but only execute tests, for which `test.check`
+provides functions:
+
+    > (require '[clojure.test.check :as tc])
+
+To perform a test, a limit (e.g. 50) of examples to be considered needs to be
+supplied using `tc/quick-check`, which wraps the theorem from above:
+
+    (tc/quick-check 50    
+      (prop/for-all [i gen/pos-int]
+        (< i (inc i))))
+
+This function produces an output describing the tests conducted:
+
+    {:result true, :pass? true, :num-tests 50, :time-elapsed-ms 4,
+     :seed 1622715897727}
+
+(The `seed` value could be used to reproduce the random data that was
+generated.)
+
+Finally, these tools can be combined to write property test functions:
+
+    (def tc/quick-check 50
+      (prop/for-all [p-and-e payroll-and-employee-gen]
+        (= (cc/find-by-name (:payroll p-and-e) (-> p-and-e :employee :name))
+           (:employee i-and-e))))
+
+For each payroll/employee sample, the function to be tested `cc/find-by-name` is
+called with the whole payroll and the randomly picked employee's name. The
+result is than compared to random employee extracted by the generator before.
+
+In order to integrate this property-based test into the native test runner,
+`defspec` from `test.check` can be used:
+
+    > (require '[clojure.test.check.clojure-test :as ctest])
+
+The test can then be defined using `ctest/decspec` as follows:
+
+    (ctest/defspec find-by-name-finds-employee 50
+      (prop/for-all [p-and-e payroll-and-employee-gen]
+        (= (cc/find-by-name (:payroll p-and-e) (-> p-and-e :employee :name))
+           (:employee p-and-e))))
+
+Which then can be tested using Leiningen:
+
+    $ lein test
+
+    lein test company.core-property-test
+    {:result true, :num-tests 50, :seed 1622716789601, :time-elapsed-ms 92,
+     :test-var "find-by-name-finds-employee"}
+
+    lein test company.core-test
+
+    Ran 3 tests containing 6 assertions.
+    0 failures, 0 errors.
+
+Here's the whole property-based test for the employee database
+(`test/company/core_property_test.clj`):
+
+    (ns company.core-property-test
+      (:require [clojure.test :refer :all])
+      (:require [company.core :as cc])
+      (:require [clojure.test.check :as tc])
+      (:require [clojure.test.check.clojure-test :as ctest])
+      (:require [clojure.test.check.generators :as gen])
+      (:require [clojure.test.check.properties :as prop]))
+
+    (def text-gen
+      (gen/such-that not-empty gen/string-alphanumeric))
+
+    (def num-gen
+      (gen/such-that (complement zero?) gen/pos-int))
+
+    (def employee-gen
+      (gen/hash-map :name text-gen
+                    :age num-gen
+                    :job text-gen
+                    :salary num-gen))
+
+    (def payroll-gen
+      (gen/not-empty (gen/vector employee-gen)))
+
+    (def payroll-and-employee-gen
+      (gen/let [payroll payroll-gen
+                employee (gen/elements payroll)]
+        {:payroll payroll :employee employee}))
+
+    (ctest/defspec find-by-name-finds-employee 50
+      (prop/for-all [p-and-e payroll-and-employee-gen]
+        (= (cc/find-by-name (:payroll p-and-e) (-> p-and-e :employee :name))
+           (:employee p-and-e))))
+
+While unit tests are easier to implement and understand, they often cover only a
+few hand-picked examples, leaving much of the input space untested.
+Property-based testing is harder to implement and understand, but covers a much
+wider space of possible inputs. However, one might jump to the wrong conclusion
+that _all_ possibilities are covered, where generators probably miss some basic
+but crucial cases (e.g. picking 0 as a random number for testing division by
+zero).
+
+Therefore, it's a good idea to start with some unit tests covering the basic
+cases (say, all combinations of a devision with positive and negative numbers,
+and zero). Property-based tests can then be introduced to cover more of the
+input space.
+
+Notice that property-based tests are non-deterministic. Re-starting a failed
+test pipeline might yield a test run without errors, but the underlying error
+remains.
+
+Even having only one single trivial test case is way better than having no test
+cases at all:
+
+    (require '[clojure.test :refer :all])
+    (require '[company.core :as cc])
+    (require '[company.employees :as ce])
+
+    (deftest test-sum-up-employee-salaries
+      (is (= 1293000 (cc/sum-salaries ce/employees))))
+
+This test case reveals a lot about the code base being tested:
+
+- There is a namespace called `company.core`, providing more or less useful
+  functions.
+- There is a namespace called `company.employees`, providing an actual database
+  of employee records.
+- There is a function `sum-salaries` that calculates the total salaries of an
+  employee database, returning a positive integer.
+
+Simple unit tests can be made more powerful by using parameters with `are`:
+
+    (deftest test-finding-employee-by-name-parametrized
+      (testing "Finding employees by their name, checking their roles"
+        (are [actual expected] (= (:job actual) expected)
+             (cc/find-by-name ce/employees "Dilbert") "Engineer"
+             (cc/find-by-name ce/employees "Ashok") "Intern"
+             (cc/find-by-name ce/employees "Dogbert") "Consultant")))
+
+Here, three examples are provided, each consisting of two expressions: The left
+(the actual function call) being mapped to `actual`, the right (the expected
+result) being mapped to `expected`. The test consists of comparing a property of
+`actual` (the job of the employee) to the `expected` value. This helps keeping
+the test definition separate from the test examples, which makes it less
+effortful to add more test cases.
