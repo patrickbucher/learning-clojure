@@ -2676,3 +2676,144 @@ value:
 
 When dealing with keyword specs, double-check that there are no typos. Misnamed
 keywords won't be validated by a spec.
+
+# Interoperating with Java
+
+Since Clojure is based on the Java Virtual Machine, Java code can be used
+directly from Clojure using its interoperation facilities (_interop_). The
+Clojure REPL is also a great tool to explore Java APIs.
+
+Java offers the class `java.io.File`, which abstracts the concept of a file.
+The [JavaDoc](https://docs.oracle.com/javase/8/docs/api/java/io/File.html) shows
+that there is a constructor expecting a `pathname`. A file can, thus, created as
+follows (note the additional dot after `java.io.File`).
+
+    > (def employees-file (java.io.File. "employees.txt"))
+
+Methods of the created `File` instance can be called with a dot in front of the
+method name:
+
+    > (.exists employees-file)
+    false
+    > (.getAbsolutePath employees-file)
+    "/home/patrick/employees.txt"
+
+Some classes, such as `java.awt.Rectangle`, offer public fields, which can be
+accessed by prepending a dot and a minus:
+
+    > (def rect (java.awt.Rectangle. 0 0 15 25))
+    > (.-width rect)
+    15
+    > (.-height rect)
+    25
+
+When refering to a class repeatedly, typing out the fully qualified class name
+becomes tedious. Therefore, classes can be imported. Use `import` from the REPL:
+
+    > (import java.io.File)
+
+Or `:import` of `ns` within a `.clj` source file:
+
+    (:ns company.core
+      (:import java.io.File))
+
+Once imported, `File` can be used as follows:
+
+    (def backup (File. "backup.txt"))
+
+To import multiple classes from the same package, just put them into a list
+separated by space (which must be quoted in the REPL):
+
+    > (import '(java.io File InputStream))
+
+And without quotation from a `.clj` source file:
+
+    (:ns company.core
+      (:import (java.io File InputStream))
+
+Classes from the package `java.lang` are automatically imported.
+
+Static fields and methods can be accessed using a forward slash:
+
+    > (def dump (File. (str "data" File/separator "dump.txt")))
+    > (.getAbsolutePath dump)
+    "/home/patrick/data/dump.txt"
+
+    > (def temp (File/createTempFile "employees" ".txt"))
+    > (.getAbsolutePath temp)
+    "/tmp/employees6472489788961466629.txt"
+
+Java libraries can be used just like Clojure libraries. Let's import the Gson
+library for reading and writing JSON to the `company` project (`project.clj`):
+
+    :dependencies [[org.clojure/clojure "1.10.1"]
+                   [org.clojure/test.check "1.1.0"]
+                   [com.google.code.gson/gson "2.8.0"]] ; new import
+
+The library can be used—and explored—from the REPL:
+
+    $ lein repl
+
+First, the `Gson` class needs to be imported (here, tab completion comes in
+handy to figure out the package structure):
+
+    > (import com.google.gson.Gson)
+
+Second, a `Gson` object needs to be initialized:
+
+    > (def gson-obj  (Gson.))
+
+Now Clojure values can be turned into JSON strings:
+
+    > (.toJson gson-obj 42)
+    "42"
+
+    > (.toJson gson-obj [7 14 21 28])
+    "[7,14,21,28]"
+
+    > (def employees [{:name "Dilbert" :age 42 :job "Engineer" :salary 120000}
+                      {:name "Alice" :age 37 :job "Engineer" :salary 115000}
+                      {:name "Wally" :age 47 :job "Engineer" :salary 130000}])
+    > (.toJson gson-obj employees)
+    "[{\":name\":\"Dilbert\",\":age\":42,\":job\":\"Engineer\",\":salary\":120000},
+      {\":name\":\"Alice\",\":age\":37,\":job\":\"Engineer\",\":salary\":115000},
+      {\":name\":\"Wally\",\":age\":47,\":job\":\"Engineer\",\":salary\":130000}]"
+
+Even though interoperability between Clojure and Java works almost seamlessly, a
+few differences have to be considered.
+
+First, a Java method is not a function, and, thus, cannot be bound like a
+Clojure functon to a symbol:
+
+    > (.count [1 2 3])
+    3
+    > (def count-method .count)
+    Syntax error compiling at (/tmp/form-init2910488673606898294.clj:1:1).
+    Unable to resolve symbol: .count in this context
+
+However, it is possible to turn a method into a function using `memfn`:
+
+    > (def count-method (memfn count))
+    > (count-method [1 2 3])
+    3
+
+This is helpful when dealing with higher-order functions, such as `map`:
+
+    > (def files [(File. "source.txt") (File. "target.txt")]) 
+    > (map (memfn exists) files)
+    (false false)
+
+Second, many Java objects are mutable, which might be surprising after dealing
+with Clojure's immutable collections:
+
+    > (import java.util.Vector)
+    > (def employees (java.util.Vector.))
+    > (.addElement employees "Dilbert")
+    > (.addElement employees "Alice")
+    > (.addElement employees "Wally")
+    > employees
+    ["Dilbert" "Alice" "Wally"]
+
+Rather than returning a vector with the element added, `nil` is returned, and
+the element added as a side effect. Use Clojure's collections instead, unless
+mutability is needed.
