@@ -2974,4 +2974,5 @@ promise):
 
 `pmap` is a function that, from the outside, works like `map`, but, on the
 inside, uses multiple threads to process the elements in parallel (hence the
-name; _parallel_ map).
+name; _parallel_ map). Parallel processing comes with some performance overhead
+and should only be used if it brings a net performance win.
