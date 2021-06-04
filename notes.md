@@ -2817,3 +2817,161 @@ with Clojure's immutable collections:
 Rather than returning a vector with the element added, `nil` is returned, and
 the element added as a side effect. Use Clojure's collections instead, unless
 mutability is needed.
+
+# Threads, Promises, and Futures
+
+Threads are a very powerful, but also dangerous tool, especially when used in
+the context of mutable values. At runtime, a Clojure program is a Java program,
+and every Java program runs a single main thread. Additional threads can be
+started by using Java's `Thread` class:
+
+    > (defn say-hello [] (println "Hello!"))
+    > (def thread (Thread. say-hello))
+    > (.start thread)
+    Hello!
+
+A Clojure function `say-hello` is defined, and a thread is created based on that
+function (which is a `Runnable`). Once the thread is started, the function is
+executed.
+
+The effect of multiple threads running can be shown by putting one thread to
+sleep for a while:
+
+    > (defn say-hello []
+        (println "Hello, once!")
+        (Thread/sleep 1000)
+        (println "Hello, again!"))
+    > (def thread (Thread. say-hello))
+    > (.start thread)
+    Hello, once!
+    ;; waiting for a second, the REPL is not blocking...
+    Hello, again!
+
+When multiple threads are running, program execution gets non-deterministic,
+unless control mechanisms are put in place. Let's consider these two functions
+working on a shared variable:
+
+    (def employee-of-the-month "Dilbert")
+    (defn make-alice-eom []
+      (def employee-of-the-month "Alice"))
+    (defn make-wally-eom []
+      (def employee-of-the-month "Wally"))
+
+The behaviour is completely deterministic when the functions are executed one
+after another:
+
+    > (make-alice-eom)
+    > (make-wally-eom)
+    employee-of-the-month
+    "Wally"
+
+However, when the functions are executed in separate threads, the result depends
+on mere chance:
+
+    (defn race-condition []
+        (let [thread-alice (Thread. make-alice-eom)
+              thread-wally (Thread. make-wally-eom)]
+          (.start thread-alice)
+          (.start thread-wally)))
+
+    > (race-condition)
+    > employee-of-the-month
+    "Wally"
+
+Even though the thread started later will usually finish later in this example,
+no such guarantee can be given. Not modifying shared variables and using
+immutable data structures helps to avoid such race conditions. Notice that
+dynamic vars live in thread local storage, and, thus, can be used safely from
+different threads.
+
+Some threads do their work in the background, but we need to make sure that they
+can finish their work before the main thread finishes using `join`:
+
+    (defn delete-cache []
+      (.delete (java.io.File. "/tmp/cache.txt")))
+
+    > (def delete-thread (Thread. delete-cache))
+    > (.start delete-thread)
+    > (.join delete-thread)
+
+`join` waits until the thread is finished and then returns `nil`.
+
+It is often useful to get back a result from a computation performed in a
+thread. A _promise_ is some kind of a value trap that will deliver a value when
+demanded. A promise is created using the `promise` function:
+
+    > (def the-result (promise))
+
+A value is delivered using the `deliver` function:
+
+    > (deliver the-result "Dilbert")
+
+The value then can be grabbed using `deref` or using `@`:
+
+    > (println "The result is:" (deref the-result))
+    The result is: Dilbert
+    > (println "The result is:" @the-result)
+    The result is: Dilbert
+
+Once set, the value of a promise can't be changed again; the value trap was shut!
+
+Promises are useful in the context of multiple threads. Consider this employee
+database, to which two functions shall be applied concurrently:
+
+    (def employees [{:name "Dilbert" :age 42 :salary 120000}
+                    {:name "Ashok"   :age 27 :salary  18000}
+                    {:name "Topper"  :age 37 :salary 250000}])
+
+    (defn average-age [employees]
+      (float (/ (reduce + (map :age employees)) (count employees))))
+
+    (defn average-salary [employees]
+      (float (/ (reduce + (map :salary employees)) (count employees))))
+
+The two calculations can be executed in separate threads and deliver their
+results using a promise. The parallel processing (given multiple CPUs) might
+come in handy as the database grows:
+
+    (defn perform-calculations [employees]
+      (let [age-prom (promise)
+            pay-prom (promise)]
+        (.start (Thread. #(deliver age-prom (average-age employees))))
+        (.start (Thread. #(deliver pay-prom (average-salary employees))))
+        (println "Average age:" @age-prom)
+        (println "Average salary:" @pay-prom)))
+
+    > (perform-calculations employees)
+    Average age: 35.333332
+    Average salary: 129333.336
+
+No `join` is needed, since the threads are done after delivering their values.
+
+This whole process can be simplified by using a _future_, which is a promise
+that brings its own thread along:
+
+    (defn perform-calculations [employees]
+      (let [age-future (future (average-age employees))
+            pay-future (future (average-salary employees))]
+        (println "Average age:" @age-future)
+        (println "Average salary:" @pay-future)))
+
+    > (perform-calculations employees)
+    Average age: 35.333332
+    Average salary: 129333.336
+
+A function call wrapped using `future` will be executed in its own thread and
+deliver its return value to be grabbed using `deref` or `@`.
+
+In general, prefer futures over promises, because they don't require dealign
+with threads directly. For more fine-grained control, consider using Java's
+thread-pool facilities (`java.util.concurrent.Executors`).
+
+In practice, it is often a sensible approach to provide a timeout (here: 500
+milliseconds) and a fallback value (here: the keyword `:timeout` with a
+promise):
+
+    (deref calc-prom 500 :timeout)
+
+`pmap` is a function that, from the outside, works like `map`, but, on the
+inside, uses multiple threads to process the elements in parallel (hence the
+name; _parallel_ map).
