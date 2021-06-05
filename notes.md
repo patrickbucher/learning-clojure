@@ -3365,3 +3365,155 @@ the computation for bigger `n`.
 
 The function returned by `memoize` has its own atom, which serves as a cache for
 the results having been computed.
+
+# Read and Eval
+
+Clojure's syntax might look strange on the first sight, but is crucial for how
+the language works. There are two critical functions in Clojure—`read` and
+`eval`—that relate to Clojure's syntax.
+
+Clojure code looks a lot like data literals:
+
+    '(dilbert pointy-haired-boss [alice]
+       (wally ratbert
+         (dogbert "some characters from dilbert...")))
+
+Just replace the Dilbert character names by some other symbols, and almost have
+Clojure code:
+
+    '(defn say-hello [friendly]
+       (if friendly
+         (println "Hello, my dear!")))
+
+Just remove the quote, and you have an executable Clojure function.
+
+    (defn say-hello [friendly]
+      (if friendly
+        (println "Hello, my dear!")))
+
+    > (say-hello true)
+    Hello, my dear!
+
+Clojure code _is_ just Clojure data, and Clojure function calls _are_ lists.
+Clojure is _homoiconic_, which means, code and data are the same thing.
+
+The `read` function reads data, by default from the REPL (`stdin`), until
+`[Return]` is entered:
+
+    > (read)
+    1
+    1
+    > (read)
+    "hello"
+    "hello"
+    > (read)
+    (defn say-hi []
+      (println "Hi!"))
+    (defn say-hi [] (println "Hi!"))
+
+The `read` function just returns returns the expression it read.
+
+`read-string` reads a string and turns it into a Clojure value (notice the
+escaped double quotes around the text `Hi`):
+
+    > (read-string "(defn say-hi [] (println \"Hi!\"))"
+    (defn say-hi [] (println "Hi!"))
+
+Once data has been read (from whatever source), it can be evaluated as Clojure
+code using the `eval` function:
+
+    > (def some-function-call '(+ 2 3))
+    > (eval some-function-call)
+    5
+
+The code in the quoted list `(+ 2 3)` is compiled and run as Clojure code.
+
+Some data types, like numbers, strings, and keywords, just evaluate to
+themselves:
+
+    > (eval 42)
+    42
+    > (eval "Dilbert")
+    "Dilbert"
+    > (eval :salary)
+    :salary
+
+A Clojure function consists of different data structures—lists, vectors—which
+can all be made up as data, and then be combined to a list, which makes up an
+actual function that can be evaluated:
+
+    > (def function-name 'say-hi)
+    > (def args (vector 'to-whom))
+    > (def output (list 'println "Hi," 'to-whom))
+    > (def whole-function (list 'defn function-name args output))
+
+    > (eval whole-function) ; creates function say-hi
+    > (say-hi "Joe")
+    Hi, Joe
+
+The two functions `read` and `eval` combined can be used to read Clojure code
+from an external source, say, user-specific settings from a config file. No
+extra language or syntax has to be made up: The full power of Clojure is
+supported out of the box.
+
+It's also possible to define a very simple REPL using `read` and `eval`:
+
+    (defn my-repl []
+      (loop []
+        (println (eval (read)))
+        (recur)))
+
+    > (my-repl)
+    (println "Hello")
+    Hello
+    (println (+ 3 2))
+    5
+    ; Hit Ctrl-D to finish
+
+A toy version of the function `eval` can be implemented as an ordinary Clojure
+function:
+
+    (defn my-eval [expr]
+      (cond
+        (string? expr) expr
+        (keyword? expr) expr
+        (number? expr) expr
+        (symbol? expr) (my-eval-symbol expr)
+        (vector? expr) (my-eval-vector expr)
+        (list? expr) (my-eval-list expr)
+        :else :unknown-expression))
+
+Strings, keywords, and numbers just evaluate to themselves, so the `expr` is
+just returned.
+
+Symbols need to be looked up in the current environment:
+
+    (defn my-eval-symbol [expr]
+      (.get (ns-resolve *ns* expr)))
+
+Vectors needs to be processed recursively:
+
+    (defn my-eval-vector [expr]
+      (vec (map my-eval expr)))
+
+And lists, which can be function calls, need to be separated into the function
+name `f` and the argument list `args`, which are then applied using `apply`:
+
+    (defn my-eval-list [expr]
+      (let [evaled-items (map my-eval expr)
+            f (first evaled-items)
+            args (rest evaled-items)]
+        (apply f args)))
+
+    > (my-eval '(println "Hello"))
+    Hello
+
+A real `eval` function _compiles_ the given expression to Clojure code, which
+then can be executed a lot faster. Therefore, `eval` is not to be used as an
+everyday tool, but only for special cases: it is just _too powerful_ and
+therefore _too dangerous_. It also is slower than regular Clojure code, due to
+the additional compilation step.
+
+Reading in code from arbitrary sources can also be very dangerous. Use the
+`read` function from `clojure.edn` if you don't trust the source. But `read` is
+also not a tool for everyday use, so only use it if really needed.
