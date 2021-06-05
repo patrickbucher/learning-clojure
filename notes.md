@@ -2976,3 +2976,392 @@ promise):
 inside, uses multiple threads to process the elements in parallel (hence the
 name; _parallel_ map). Parallel processing comes with some performance overhead
 and should only be used if it brings a net performance win.
+
+# State
+
+The less mutable state a program has, the easier it is to understand. However,
+modeling things that do change over time requires state.
+
+Consider this employee database with a `hire` to add new employees to it:
+
+    (def employees [{:name "Dilbert" :job "Engineer" :salary 120000}
+                    {:name "Alice" :job "Engineer" :salary 110000}
+                    {:name "Dogbert" :job "Consultant" :salary 250000}])
+
+    (defn hire [employee]
+      (conj employees employee))
+
+    > (hire {:name "Wally" :job "Engineer" :salary 130000})
+    [{:name "Dilbert", :job "Engineer", :salary 120000}
+     {:name "Alice", :job "Engineer", :salary 110000}
+     {:name "Dogbert", :job "Consultant", :salary 250000}
+     {:name "Wally", :job "Engineer", :salary 130000}]
+
+    > employees
+    [{:name "Dilbert", :job "Engineer", :salary 120000}
+     {:name "Alice", :job "Engineer", :salary 110000}
+     {:name "Dogbert", :job "Consultant", :salary 250000}]
+
+The function produces a new list with the additional employee, but the original
+list of employees remains the same.
+
+The state of the `employees` vector _could_ be changed using `def` (notice the
+exclamation mark in `hire!` to denote the side-effect):
+
+    (defn hire! [employee]
+      (def employees (conj employees employee)))
+
+    > (hire! {:name "Wally" :job "Engineer" :salary 130000})
+    > employees
+    [{:name "Dilbert", :job "Engineer", :salary 120000}
+     {:name "Alice", :job "Engineer", :salary 110000}
+     {:name "Dogbert", :job "Consultant", :salary 250000}
+     {:name "Wally", :job "Engineer", :salary 130000}]
+
+The `employees` vector was updated, however, _not in a thread-safe manner_ (see
+previous chapter).
+
+Thread-safe state change can be achieved by using _atoms_, which wraps the value
+to be changed:
+
+    (def employees 
+      (atom [{:name "Dilbert" :job "Engineer" :salary 120000}
+             {:name "Alice" :job "Engineer" :salary 110000}
+             {:name "Dogbert" :job "Consultant" :salary 250000}]))
+
+    (defn hire! [employee]
+      (swap! employees #(conj % employee)))
+
+The `atom` function wraps the `employees` vector, which then can be updated in a
+thread-safe manner using the `swap!`, which takes two arguments: first, the atom
+to be updated (`employees`), second, a function to be applied to produce the new
+value to be stored in the atom. Note that `employees` is no longer a vector, but
+a vector wrapped in an atom.
+
+The employees database can now be updated thread-safely in place:
+
+    > (hire! {:name "Wally" :job "Engineer" :salary 130000})
+
+To access the value wrapped in the atom, use `deref` or `@` (as with promises
+and futures):
+
+    > (deref employees)
+    [{:name "Dilbert", :job "Engineer", :salary 120000}
+     {:name "Alice", :job "Engineer", :salary 110000}
+     {:name "Dogbert", :job "Consultant", :salary 250000}
+     {:name "Wally", :job "Engineer", :salary 130000}] ; new entry
+
+    > @employees
+    [{:name "Dilbert", :job "Engineer", :salary 120000}
+     {:name "Alice", :job "Engineer", :salary 110000}
+     {:name "Dogbert", :job "Consultant", :salary 250000}
+     {:name "Wally", :job "Engineer", :salary 130000}] ; new entry
+
+Any value can be wrapped in an atom, consider this counter:
+
+    (def counter (atom 0))
+
+    (defn increase-counter! [amount]
+      (swap! counter + amount))
+
+The `swap!` function applies the `+` function to the `counter` atom. The
+`amount` value is handed over to the `+` function by `swap!`:
+
+    > (increase-counter! 1)
+    > @counter
+    1
+    > (increase-counter! 5)
+    > @counter
+    6
+
+When an atom is updated using `swap!`, it performs the following steps to
+guarantee thread safety:
+
+1. The current value of the atom is read.
+2. The update function is called to produce the new value.
+3. The current value of the atom is read _again_, and compared to the value read
+   previously.
+    - If the value _did not change_ in the meantime, the value is updated.
+    - If the value _did change_ in the meantime, the whole process is repeated
+      from the first step.
+
+Note that the update function can be called multiple times for a single update!
+Therefore it's important, that the update function has no side effects!
+
+Sometimes, there are multiple values that need to be synchronized. Consider this
+empty employee database, for which also the total number of employees, and the
+total salary needs to be kept track of:
+
+    (def employees (atom []))
+
+    (def total-payroll (atom 0))
+
+    (def total-staff (atom 0))
+
+The `hire!` function tries to keep track of those three atoms:
+
+    (defn hire! [employee]
+      (swap! employees #(conj % employee))
+      (swap! total-payroll #(+ (:salary employee)))
+      (swap! total-staff inc))
+
+    > (hire! {:name "Dogbert" :salary 250000})
+    > (hire! {:name "Dilbert" :salary 120000})
+
+    > @employees
+    [{:name "Dogbert", :salary 250000}
+     {:name "Dilbert", :salary 120000}]
+    > @total-payroll
+    370000
+    > @total-staff
+    2
+
+This seems to work fine, but the atoms are out of sync _between_ the calls to
+`swap!`:
+
+    (defn hire! [employee]
+      (swap! employees #(conj % employee))
+      ; out of sync
+      (swap! total-payroll #(+ (:salary employee)))
+      ; out of sync
+      (swap! total-staff inc))
+
+The three values must be updated either _all together_ or _not at all_, like an
+_atomic_ database transaction.
+
+Such groups of atoms can be managed as _refs_, which are a lot like atoms, but
+use different functions. First, `ref` is used instead of `atom` for the
+wrapping:
+
+    (def employees (ref []))
+
+    (def total-payroll (ref 0))
+
+    (def total-staff (ref 0))
+
+Second, `alter` is used instread of `swap!`. And, third, all the updates
+belonging to the same transaction are grouped together using `dosync`:
+
+    (defn hire! [employee]
+      (dosync
+        (alter employees #(conj % employee))
+        (alter total-payroll #(+ % (:salary employee)))
+        (alter total-staff inc)))
+
+Now all the values are kept perfectly in sync. When read, all the three values
+being altered within the same call to `dosync` will either yield all the old or
+all the new values:
+
+    > (hire! {:name "Catbert" :salary 180000})
+    > (hire! {:name "Alice" :salary 120000})
+    > @employees
+    [{:name "Catbert", :salary 180000}
+     {:name "Alice", :salary 120000}]
+    > @total-payroll
+    300000
+    > @total-staff
+    2
+
+If the old value of a `ref` is not of interest, use `ref-set` instead of
+`alter`, providing just the new value.
+
+Sometimes, modifications to values should be accompanied by some side effects,
+say, writing changes to a file when new items are added. Consider the function
+`notify-new-hire` together with the old version of `hire!` working on a single
+atom. Every time a new employee is hired, `notify-new-hire` is called:
+
+    (def employees (atom []))
+
+    (defn notify-new-hire [employee]
+      (println "Watch out for" (:name employee)))
+
+    (defn hire! [employee]
+      (notify-new-hire employee)
+      (swap! employees #(conj % employee)))
+
+    > (hire! {:name "Alice" :salary 120000})
+    Watch out for Alice
+
+This works fine—until an update has to be retried because the values have been
+modified in between. In this case, `notify-new-hire` would be executed multiple
+times, which is not wanted.
+
+An _agent_ is an atom that can be combined with side-effects. Instead of calling
+`swap!`, the function `send` is used to both update the agent, and to produce
+the side effect:
+
+    (def employees (agent []))
+
+    (defn notify-new-hire [employee]
+      (println "Watch out for" (:name employee)))
+
+    (defn hire! [employee]
+      (send employees
+            (fn [old-employees]
+              (notify-new-hire employee)
+              (conj old-employees employee))))
+
+Notice that an anonymous function (`fn`) has been used instead of a lambda
+expression. Every agent has its own queue of functions. When `hire!` gets
+called, the call to the anonymous function gets queued up. `send` worls
+asynchronously, i.e. it returns immediately after the function was put into the
+queue. The agent pops an outstanding function call from the queue and executes
+it. The side effect (calling `notify-new-hire`) and the update are then
+performed:
+
+    > (hire! {:name "Ratbert" :salary 0})
+    Watch out for Ratbert
+    > (hire! {:name "Alice" :salary 115000})
+    Watch out for Alice
+    > @employees
+    [{:name "Ratbert", :salary 0}
+     {:name "Alice", :salary 115000}]
+
+Since agents perform their updates in their own thread, exceptions caused by a
+failed update are not reported immediately. Consider this agent for tracking
+donations:
+
+    (def donations (agent 0))
+
+    (defn praise-donor [amount donor]
+      (println "Praise" donor "for donating" amount "coins!"))
+
+    (defn donate! [amount donor]
+      (send donations
+            (fn [old-donations]
+              (praise-donor amount donor)
+              (+ old-donations amount))))
+
+    > (donate! 100 "John")
+    Praise John for donating 100 coins!
+    > @donations
+    0
+
+If the arguments `amount` (integer) and `donor` (string) are swapped, the
+operation cannot be completed:
+
+    > (donate! "Jane" 200)
+    Praise 200 for donating Jane coins!
+    > @donations
+    100
+
+The message from the side effect looks suspicious, and the `donations` haven't
+been increased. But the error can go unnoticed until the next update is done:
+
+    > (donate! 300 "Jim")
+    Execution error (ClassCastException) at user/donate!$fn (REPL:5).
+    java.lang.String cannot be cast to java.lang.Number
+
+In this case, the agent has to be re-started using `agent-restart`. The error
+condition can be detected using `agent-error`:
+
+    (if (agent-error donations)
+      (restart-agent donations 0 :clear-actions true))
+
+However, the value managed by the agent is reset to 0 in the process.
+
+Make sure to call `shutdown-agents` at the end of the `-main` function of your
+program, so that the agent's threads get properly terminated:
+
+    (defn -main []
+      ;; working with agents
+      (shutdown-agents))
+
+Use the following guidelines to pick the proper mechanism for your state
+changes:
+
+1. If a value remains _mostly stable_, put it into a `var`.
+2. If a number of values need to be updated together without side effects, use
+   `ref`s.
+3. If the update of values is to be accompanied by side effects, or if the
+   update function takes a lot of time, use an `agent`.
+4. If you have a single value that changes without additional side effects, us
+   an `atom`.
+
+Instead of using `ref`s, the values to be updated could also be grouped into a
+single data structure, which is then wrapped in an `atom`:
+
+    (def payroll (atom {:total-staff 0
+                        :total-payroll 0
+                        :employees []}))
+
+    (defn hire! [employee]
+      (swap! payroll
+             (fn [old]
+               (assoc old
+                      :total-staff (inc (:total-staff old))
+                      :total-payroll (+ (:total-payroll old) (:salary employee))
+                      :employees (conj (:employees old) employee)))))
+
+    > (hire! {:name "Alice" :salary 115000})
+    > (hire! {:name "Dogbert" :salary 250000})
+    > @payroll
+    {:total-staff 2,
+     :total-payroll 365000,
+     :employees [{:name "Alice", :salary 115000}
+                 {:name "Dogbert", :salary 250000}]}
+
+There are various functions in Clojure making use of atoms, e.g. `memoize`,
+which wraps a function with a cache that maps the arguments to the computed
+return values. Consider this Fibonacci function:
+
+    (defn fib [n]
+      (println "Computing Fibonacci number for" n)
+      (cond
+        (= n 0) 1
+        (= n 1) 1
+        (> n 1) (+ (fib (- n 1)) (fib (- n 2)))
+        :else (throw (ex-info "fib(n) only defined for n >= 0"))))
+
+    > (fib 1)
+    Computing Fibonacci number for 1
+    1
+
+    > (fib 2)
+    Computing Fibonacci number for 2
+    Computing Fibonacci number for 1
+    Computing Fibonacci number for 0
+    2
+
+    > (fib 3)
+    Computing Fibonacci number for 4
+    Computing Fibonacci number for 3
+    Computing Fibonacci number for 2
+    Computing Fibonacci number for 1
+    Computing Fibonacci number for 0
+    Computing Fibonacci number for 1
+    Computing Fibonacci number for 2
+    Computing Fibonacci number for 1
+    Computing Fibonacci number for 0
+    5
+
+The function is called with the same argument multiple times, which slows down
+the computation for bigger `n`.
+
+`memoize` wraps the function so that it caches its return values by argument:
+
+    > (def fib (memoize fib))
+    > (fib 1)
+    Computing Fibonacci number for 1
+    1
+    > (fib 2)
+    Computing Fibonacci number for 2
+    Computing Fibonacci number for 0
+    2
+    > (fib 3)
+    Computing Fibonacci number for 3
+    3
+    > (fib 4)
+    Computing Fibonacci number for 4
+    5
+    > (fib 10)
+    Computing Fibonacci number for 10
+    Computing Fibonacci number for 9
+    Computing Fibonacci number for 8
+    Computing Fibonacci number for 7
+    Computing Fibonacci number for 6
+    Computing Fibonacci number for 5
+    89
+
+The function returned by `memoize` has its own atom, which serves as a cache for
+the results having been computed.
