@@ -3520,3 +3520,349 @@ the additional compilation step.
 Reading in code from arbitrary sources can also be very dangerous. Use the
 `read` function from `clojure.edn` if you don't trust the source. But `read` is
 also not a tool for everyday use, so only use it if really needed.
+
+# Macros
+
+Code is both useful and painful: it solves problems, but also creates new
+problems of its own. Writing more _expressive_ code leads to _less_ code. The
+usefulnes of code is kept, but the pain is reduced; _less code, less pain_.
+
+_Macros_ are a powerful tool in LISP-like languages (such as Clojure) to
+automate some part of code writing.
+
+Consider a rating system in which numbers are interpreted in three categories:
+
+- positive numbers: good
+- zero: indifferent
+- negative numbers: bad
+
+This rating system could be used to print a depiction of the rating in English:
+
+    (defn print-rating [rating]
+      (cond
+        (pos? rating) (println "good")
+        (zero? rating) (println "indifferent")
+        :else (println "bad")))
+
+    > (print-rating 3)
+    good
+    > (print-rating 0)
+    indifferent
+    > (print-rating -5)
+    bad
+
+Another implementation could be required to turn the rating number into a
+keyword for further programmatic processing:
+
+    (defn evaluate-rating [rating]
+      (cond
+        (pos? rating) :good
+        (zero? rating) :indifferent
+        :else :bad))
+
+    > (evaluate-rating 3)
+    :good
+    > (evaluate-rating 0)
+    :indifferent
+    > (evaluate-rating -1)
+    :bad
+
+Structurally, the two usages of `cond` are identical, they just have different
+consequences. The commonalities of the two functions could be factored out into
+a new function, `arithmetic-if`:
+
+    (defn arithmetic-if [n pos zero neg]
+      (cond
+        (pos? n) pos
+        (zero? n) zero
+        (neg? n) neg))
+
+The function accepts both the number `n` to be categorized, and the three
+possible _consequences_ of a match: `pos`, `zero`, and `neg`.
+
+This works great, if a value has to be returned, as in `evaluate-rating`, which
+can be refactored in terms of `arithmetic-if`:
+
+    (defn evaluate-rating [rating]
+      (arithmetic-if rating :good :indifferent :bad))
+
+    > (evaluate-rating 5)
+    :good
+    > (evaluate-rating 0)
+    :indifferent
+    > (evaluate-rating -7)
+    :bad
+
+The same refactoring applied to `print-rating`, however, produces surprising
+results:
+
+    (defn print-rating [rating]
+      (arithmetic-if rating
+                     (println "good")
+                     (println "indifferent")
+                     (println "bad")))
+
+    > (print-rating 4)
+    good
+    indifferent
+    bad
+    > (print-rating 0)
+    good
+    indifferent
+    bad
+    > (print-rating -2)
+    good
+    indifferent
+    bad
+
+All three `println` function calls are executed! When `arithmetic-if` is
+invoked, the arguments get evaluated. This is unproblematic for `n`, which is a
+number and, therefore, evaluates to itself. Function calls like `println`,
+however, are evaluated by their actual execution.
+
+If `arithmetic-if` expected functions as its last three parameters,
+`print-rating` could be implemented based on the former:
+
+    (defn arithmetic-if [n pos-f zero-f neg-f]
+      (cond
+        (pos? n) (pos-f)
+        (zero? n) (zero-f)
+        (neg? n) (neg-f)))
+
+    (defn print-rating [rating]
+      (arithmetic-if rating
+                     #(println "good")
+                     #(println "indifferent")
+                     #(println "bad")))
+
+    > (print-rating 4)
+    good
+    > (print-rating 0)
+    indifferent
+    > (print-rating -2)
+    bad
+
+However, the implementation of `evaluate-rating` now becomes more complicated,
+thwarting the gains made using `arithmetic-if` as an abstraction:
+
+    (defn evaluate-rating [rating]
+      (arithmetic-if rating
+                     #(identity :good)
+                     #(identity :indifferent)
+                     #(identity :bad)))
+
+    > (evaluate-rating 7)
+    :good
+    > (evaluate-rating 0)
+    :indifferent
+    > (evaluate-rating -5)
+    :bad
+
+What `arithmetic-if` is really supposed to do is to transform code written like
+this:
+
+    ;; evaluate-rating
+    (arithmetic-if rating
+      :good
+      :indifferent
+      :bad)
+
+    ;; print-rating
+    (arithmetic-if rating
+      (println "good")
+      (println "indifferent")
+      (println "bad"))
+
+Into code being executed like this:
+
+    ;; evaluate-rating
+    (cond
+      (pos? rating) :good
+      (zero? rating) :indifferent
+      :else :bad)
+
+    ;; print-rating
+    (cond
+      (pos? rating) (println "good")
+      (zero? rating) (println "indifferent")
+      :else (println "bad"))
+
+Since Clojure code _is_ just data, this transformation can be made using a
+function building up another function:
+
+    (defn arithmetic-if-to-cond [n pos zero neg]
+      (list 'cond (list 'pos? n) pos
+                  (list 'zero? n) zero
+                  :else neg))
+
+Fed with parameters protected with a single quote from evaluation, this function
+produces the desired `cond` forms:
+
+    > (arithmetic-if-to-cond 'rating
+                             '(println "good")
+                             '(println "indifferent")
+                             '(println "bad"))
+    (cond
+      (pos? rating) (println "good")
+      (zero? rating) (println "indifferent")
+      :else (println "bad"))
+
+    > (arithmetic-if-to-cond 'rating
+                             ':good
+                             ':indifferent
+                             ':bad)
+    (cond
+      (pos? rating) :good
+      (zero? rating) :indifferent
+      :else :bad)
+
+However, those `cond` forms are _still just data_, and not compiled code that
+actually can be used. Here, macros come into play, which are defined using
+`defmacro`:
+
+    (defmacro arithmetic-if [n pos zero neg]
+      (list 'cond (list 'pos? n) pos
+                  (list 'zero? n) zero
+                  :else neg))
+
+`print-rating` can now be implemented without using lambdas or quotation:
+
+    (defn print-rating [rating]
+      (arithmetic-if rating
+                     (println "good")
+                     (println "indifferent")
+                     (println "bad")))
+
+    > (print-rating 4)
+    good
+    > (print-rating 0)
+    indifferent
+    > (print-rating -2)
+    bad
+
+Which is also the case for `evaluate-rating`:
+
+    (defn evaluate-rating [rating]
+      (arithmetic-if rating
+                     :good
+                     :indifferent
+                     :bad))
+
+    > (evaluate-rating 7)
+    :good
+    > (evaluate-rating 0)
+    :indifferent
+    > (evaluate-rating -5)
+    :bad
+
+The Clojure compilation process works as follows: First, source code is read,
+i.e. turned into data structures (lists, vectors, etc.). Second, _macro
+expansion_ is performed, modifying those data structures. Third, those modified
+data structures with expanded macros are turned into byte code by the actual
+compilation step.
+
+Unlike C, Clojure macros work on the code as a _data structures_, not on code as
+mere _program text_, which makes Clojure macros more powerful and _less_
+dangerous than C macros.
+
+The `arithmetic-if` macro from above requires a lot of quotes to prevent the
+expressions from being evaluated. Clojure provides a templating system called
+_syntax quoting_, which makes macros more readable:
+
+    (defmacro arithmetic-if [n pos zero neg]
+      `(cond
+         (pos? ~n) ~pos
+         (zero? ~n) ~zero
+         :else ~neg))
+
+Syntax quoting starts with a backquote (before `cond`). Within the quoted form,
+expressions from the outside are referred to using a tilde prefix, which
+prevents them from being evalauted when the macro is expanded before compilation.
+
+There are a few other syntax specialities when it comes to using macros with
+syntax quoting. Consider the `conjunction` macro, which works like
+`and`—"conjunction" just being a fancy word for "and":
+
+    (defmacro conjunction
+      ([] true)
+      ([x] x)
+      ([x & next]
+       `(let [current# ~x]
+          (if current# (conjunction ~@next) current#))))
+
+The macro works as follows:
+
+1. For an empty list of conditions, `true` is returned (first base case).
+2. For a single condition, the evaluated condition is returned (second base
+   case).
+3. For a list of more than one condition (general case), the following logic is
+   applied:
+    1. The first condition is bound to `current#`; the suffix `#` being used to
+      guarantee a unique symbol.
+    2. If the `current#` condition evaluates to `true`, the `conjunction` macro
+       is "called" recursively with the next condition in the list. This `next`
+       symbol is prefixed both by `~` for syntax quoting, and an `@`—more of
+       which later.
+    3. Otherwise, if `current#` evaluates to `false`, `current#` itself is
+       returned, which terminates the recursive process.
+
+In order to understand the `@` prefix, consider this alternative implementation
+of `defn` as a macro called `my-defn`:
+
+    (defmacro my-defn [name args & body]
+      `(def ~name (fn ~args ~body)))
+
+A function to add two numbers is created using `my-defn`:
+
+    (my-defn add-two-numbers [a b] (+ a b))
+
+Unfortunately, the function won't work:
+
+    > (add-two-numbers 3 4)
+    Execution error (ClassCastException) at user/add-two-numbers (REPL:1).
+    java.lang.Long cannot be cast to clojure.lang.IFn
+
+Let's see what code the macro actually generated using `macroexpand-1`, the
+first tool to be grabbed if macros not behave as intended:
+
+    > (macroexpand-1 '(my-defn add-two-numbers [a b] (+ a b)))
+    (def add-two-numbers (clojure.core/fn [a b] ((+ a b))))
+
+Notice the `((+ a b))` expression being wrapped in two sets of parentheses.
+Expression was created by `~body` in the macro template, which is itself a
+collection because it was declared as a variadic parameter (`& body`). Thus,
+`body` is a list of one element containing another list: `((+ a b))`.
+
+The `@` prefix makes sure that the collection is expanded before being written
+into the code. Here's a working version of `my-defn` with this expansion:
+
+    (defmacro my-defn [name args & body]
+      `(def ~name (fn ~args ~@body)))
+
+This creates the working code as intended:
+
+    > (macroexpand-1 '(my-defn add-two-numbers [a b] (+ a b)))
+    (def add-two-numbers (clojure.core/fn [a b] (+ a b)))
+
+    > (my-defn add-two-numbers [a b] (+ a b))
+    > (add-two-numbers 1 2)
+    3
+
+Notice that macros are processed in a two-step process: First, they are
+_expanded_, second, the generated code is _evaluated_:
+
+    (defmacro two-step-process []
+      (println "This code is run upon macro expansion.")
+      `(fn [] (println "This code is run with the generated code.")))
+
+    > (def generated-code (two-step-process))
+    This code is run upon macro expansion.
+
+    > (generated-code)
+    This code is run with the generated code.
+
+Also notice that macros do not exist at runtime, so their names can't be found
+in a stack trace. Macros also can't be used like a function given to a
+higher-order function such as `filter` or `map`. Only use macros if the code to
+be expressed is at odds with Clojure's evaluation rules. Stick to functions
+otherwise.
