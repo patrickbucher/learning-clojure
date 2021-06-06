@@ -1,9 +1,12 @@
 ---
-title: Notes on Clojure
-author: Patrick Bucher
+title: 'Summary of “Getting Clojure” (Russ Olsen)'
+author: 'Patrick Bucher'
 ---
 
-Notes loosely based on [Getting Clojure](https://pragprog.com/titles/roclojure/getting-clojure/) by Russ Olsen.
+This is a rough summary of [Getting
+Clojure](https://pragprog.com/titles/roclojure/getting-clojure/) by Russ Olsen.
+Some examples have been taken from the original, some have been modified, and
+some have been made up.
 
 # Hello, Clojure
 

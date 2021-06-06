@@ -1,22 +1,22 @@
 .PHONY: all clean
 
-all: notes.pdf notes.epub notes.html notes.odt notes.docx
+all: getting-clojure.pdf getting-clojure.epub getting-clojure.html getting-clojure.odt getting-clojure.docx
 
 OPTS=--toc -s -N
 
-notes.pdf: notes.md
+getting-clojure.pdf: getting-clojure.md
 	pandoc -t pdf $(OPTS) $^ -o $@
 
-notes.epub: notes.md
+getting-clojure.epub: getting-clojure.md
 	pandoc -t epub $(OPTS) $^ -o $@
 
-notes.html: notes.md
+getting-clojure.html: getting-clojure.md
 	pandoc -t html5 $(OPTS) $^ -o $@
 
-notes.odt: notes.md
+getting-clojure.odt: getting-clojure.md
 	pandoc -t odt $(OPTS) $^ -o $@
 
-notes.docx: notes.md
+getting-clojure.docx: getting-clojure.md
 	pandoc -t docx $(OPTS) $^ -o $@
 
 clean:
