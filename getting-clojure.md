@@ -3,10 +3,10 @@ title: 'Summary of “Getting Clojure” (Russ Olsen)'
 author: 'Patrick Bucher'
 ---
 
-This is a rough summary of [Getting
+_This is a rough summary of [Getting
 Clojure](https://pragprog.com/titles/roclojure/getting-clojure/) by Russ Olsen.
 Some examples have been taken from the original, some have been modified, and
-some have been made up.
+some have been made up._
 
 # Hello, Clojure
 
