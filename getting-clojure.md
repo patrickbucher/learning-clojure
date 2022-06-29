@@ -1,5 +1,6 @@
 ---
-title: 'Summary of “Getting Clojure” (Russ Olsen)'
+title: '“Getting Clojure” by Russ Olsen'
+subtitle: 'Personal Summary'
 author: 'Patrick Bucher'
 ---
 

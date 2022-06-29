@@ -5,7 +5,7 @@
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Patrick Bucher" />
-  <title>Summary of “Getting Clojure” (Russ Olsen)</title>
+  <title>“Getting Clojure” by Russ Olsen</title>
   <style>
     html {
       line-height: 1.5;
@@ -22,7 +22,7 @@
       padding-top: 50px;
       padding-bottom: 50px;
       hyphens: auto;
-      word-wrap: break-word;
+      overflow-wrap: break-word;
       text-rendering: optimizeLegibility;
       font-kerning: normal;
     }
@@ -30,6 +30,9 @@
       body {
         font-size: 0.9em;
         padding: 1em;
+      }
+      h1 {
+        font-size: 1.8em;
       }
     }
     @media print {
@@ -50,10 +53,10 @@
       margin: 1em 0;
     }
     a {
-      color: #1a1a1a;
+      color: blue;
     }
     a:visited {
-      color: #1a1a1a;
+      color: blue;
     }
     img {
       max-width: 100%;
@@ -93,6 +96,7 @@
     pre code {
       padding: 0;
       overflow: visible;
+      overflow-wrap: normal;
     }
     .sourceCode {
      background-color: transparent;
@@ -134,6 +138,12 @@
     #TOC li {
       list-style: none;
     }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
     #TOC a:not(:hover) {
       text-decoration: none;
     }
@@ -151,35 +161,62 @@
 </head>
 <body>
 <header id="title-block-header">
-<h1 class="title">Summary of “Getting Clojure” (Russ Olsen)</h1>
+<h1 class="title">“Getting Clojure” by Russ Olsen</h1>
+<p class="subtitle">Personal Summary</p>
 <p class="author">Patrick Bucher</p>
+<p class="date">2022-06-29</p>
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
-<li><a href="#hello-clojure"><span class="toc-section-number">1</span> Hello, Clojure</a></li>
-<li><a href="#vectors-and-lists"><span class="toc-section-number">2</span> Vectors and Lists</a></li>
-<li><a href="#maps-keywords-and-sets"><span class="toc-section-number">3</span> Maps, Keywords, and Sets</a></li>
-<li><a href="#logic"><span class="toc-section-number">4</span> Logic</a></li>
-<li><a href="#more-capable-functions"><span class="toc-section-number">5</span> More Capable Functions</a></li>
-<li><a href="#functional-things"><span class="toc-section-number">6</span> Functional Things</a></li>
-<li><a href="#let"><span class="toc-section-number">7</span> Let</a></li>
-<li><a href="#def-symbols-and-vars"><span class="toc-section-number">8</span> Def, Symbols, and Vars</a></li>
-<li><a href="#namespaces"><span class="toc-section-number">9</span> Namespaces</a></li>
-<li><a href="#sequences"><span class="toc-section-number">10</span> Sequences</a></li>
-<li><a href="#lazy-sequences"><span class="toc-section-number">11</span> Lazy Sequences</a></li>
-<li><a href="#destructuring"><span class="toc-section-number">12</span> Destructuring</a></li>
-<li><a href="#records-and-protocols"><span class="toc-section-number">13</span> Records and Protocols</a></li>
-<li><a href="#tests"><span class="toc-section-number">14</span> Tests</a></li>
-<li><a href="#spec"><span class="toc-section-number">15</span> Spec</a></li>
-<li><a href="#interoperating-with-java"><span class="toc-section-number">16</span> Interoperating with Java</a></li>
-<li><a href="#threads-promises-and-futures"><span class="toc-section-number">17</span> Threads, Promises, and Futures</a></li>
-<li><a href="#state"><span class="toc-section-number">18</span> State</a></li>
-<li><a href="#read-and-eval"><span class="toc-section-number">19</span> Read and Eval</a></li>
-<li><a href="#macros"><span class="toc-section-number">20</span> Macros</a></li>
+<li><a href="#hello-clojure"><span class="toc-section-number">1</span>
+Hello, Clojure</a></li>
+<li><a href="#vectors-and-lists"><span
+class="toc-section-number">2</span> Vectors and Lists</a></li>
+<li><a href="#maps-keywords-and-sets"><span
+class="toc-section-number">3</span> Maps, Keywords, and Sets</a></li>
+<li><a href="#logic"><span class="toc-section-number">4</span>
+Logic</a></li>
+<li><a href="#more-capable-functions"><span
+class="toc-section-number">5</span> More Capable Functions</a></li>
+<li><a href="#functional-things"><span
+class="toc-section-number">6</span> Functional Things</a></li>
+<li><a href="#let"><span class="toc-section-number">7</span>
+Let</a></li>
+<li><a href="#def-symbols-and-vars"><span
+class="toc-section-number">8</span> Def, Symbols, and Vars</a></li>
+<li><a href="#namespaces"><span class="toc-section-number">9</span>
+Namespaces</a></li>
+<li><a href="#sequences"><span class="toc-section-number">10</span>
+Sequences</a></li>
+<li><a href="#lazy-sequences"><span class="toc-section-number">11</span>
+Lazy Sequences</a></li>
+<li><a href="#destructuring"><span class="toc-section-number">12</span>
+Destructuring</a></li>
+<li><a href="#records-and-protocols"><span
+class="toc-section-number">13</span> Records and Protocols</a></li>
+<li><a href="#tests"><span class="toc-section-number">14</span>
+Tests</a></li>
+<li><a href="#spec"><span class="toc-section-number">15</span>
+Spec</a></li>
+<li><a href="#interoperating-with-java"><span
+class="toc-section-number">16</span> Interoperating with Java</a></li>
+<li><a href="#threads-promises-and-futures"><span
+class="toc-section-number">17</span> Threads, Promises, and
+Futures</a></li>
+<li><a href="#state"><span class="toc-section-number">18</span>
+State</a></li>
+<li><a href="#read-and-eval"><span class="toc-section-number">19</span>
+Read and Eval</a></li>
+<li><a href="#macros"><span class="toc-section-number">20</span>
+Macros</a></li>
 </ul>
 </nav>
-<p><em>This is a rough summary of <a href="https://pragprog.com/titles/roclojure/getting-clojure/">Getting Clojure</a> by Russ Olsen. Some examples have been taken from the original, some have been modified, and some have been made up.</em></p>
-<h1 data-number="1" id="hello-clojure"><span class="header-section-number">1</span> Hello, Clojure</h1>
+<p><em>This is a rough summary of <a
+href="https://pragprog.com/titles/roclojure/getting-clojure/">Getting
+Clojure</a> by Russ Olsen. Some examples have been taken from the
+original, some have been modified, and some have been made up.</em></p>
+<h1 data-number="1" id="hello-clojure"><span
+class="header-section-number">1</span> Hello, Clojure</h1>
 <p>Install Clojure and Leiningen on Arch Linux:</p>
 <pre><code># pacman -S clojure leiningen</code></pre>
 <p>Start a REPL:</p>
@@ -192,7 +229,8 @@ nil</code></pre>
 <pre><code>;; Hello World program in Clojure.
 
 (println &quot;Hello, World!&quot;) ; Say hi.</code></pre>
-<p>Comments start with a semicolon and end with the line. Comments that take up a whole line start with two semicolons by convention.</p>
+<p>Comments start with a semicolon and end with the line. Comments that
+take up a whole line start with two semicolons by convention.</p>
 <p>Run the program:</p>
 <pre><code>$ clojure hello.clj
 Hello, World!</code></pre>
@@ -238,13 +276,15 @@ Hello, John</code></pre>
 
 &gt; (average 24 6)
 15</code></pre>
-<p>The last expression of the function body (here: <code>half-the-sum</code>) is returned.</p>
+<p>The last expression of the function body (here:
+<code>half-the-sum</code>) is returned.</p>
 <p>Create and run a proper application using Leiningen:</p>
 <pre><code>$ lein new app hello-world
 $ cd hello-world
 $ lein run
 Hello, World!</code></pre>
-<p>Extend the example (<code>src/hello_world/core.clj</code>) as follows:</p>
+<p>Extend the example (<code>src/hello_world/core.clj</code>) as
+follows:</p>
 <pre><code>(ns hello-world.core
   (:gen-class))
 
@@ -257,7 +297,8 @@ Hello, World!</code></pre>
 <p>And run it again:</p>
 <pre><code>$ lein run
 Hello World greets the user</code></pre>
-<h1 data-number="2" id="vectors-and-lists"><span class="header-section-number">2</span> Vectors and Lists</h1>
+<h1 data-number="2" id="vectors-and-lists"><span
+class="header-section-number">2</span> Vectors and Lists</h1>
 <p>Create a vector of numbers:</p>
 <pre><code>&gt; [1 2 3 4]
 [1 2 3 4]</code></pre>
@@ -267,7 +308,8 @@ Hello World greets the user</code></pre>
 <p>Vectors can be nested:</p>
 <pre><code>&gt; [1 [&quot;foo&quot; &quot;bar&quot;] 2 [&quot;qux&quot; &quot;baz&quot;]]
 [1 [&quot;foo&quot; &quot;bar&quot;] 2 [&quot;qux&quot; &quot;baz&quot;]]</code></pre>
-<p>Vectors can also be created using the <code>vector</code> function:</p>
+<p>Vectors can also be created using the <code>vector</code>
+function:</p>
 <pre><code>&gt; (vector 1 2 3 4)
 [1 2 3 4]
 &gt; (vector (vector &quot;one&quot; &quot;two&quot;) &quot;three&quot; (vector &quot;four&quot; &quot;five&quot;))
@@ -281,35 +323,43 @@ Hello World greets the user</code></pre>
 1
 &gt; (first [])
 nil</code></pre>
-<p><code>rest</code> returns all the elements of a vector but the first as a <em>sequence</em>:</p>
+<p><code>rest</code> returns all the elements of a vector but the first
+as a <em>sequence</em>:</p>
 <pre><code>&gt; (rest [1 2 3 4])
 &gt; (rest [1])
 ()
 &gt; (rest [])
 ()</code></pre>
-<p><code>nth</code> returns the element at position <code>n</code> (zero-based index):</p>
+<p><code>nth</code> returns the element at position <code>n</code>
+(zero-based index):</p>
 <pre><code>&gt; (nth [1 2 3 4] 2)
 3</code></pre>
-<p>The nth element can also be accessed using the vector’s name and an index:</p>
+<p>The nth element can also be accessed using the vector’s name and an
+index:</p>
 <pre><code>&gt; (def numbers [1 2 3 4 5])
 &gt; (numbers 3)
 4</code></pre>
-<p><code>conj</code> adds an element <em>to the end</em> of a vector:</p>
+<p><code>conj</code> adds an element <em>to the end</em> of a
+vector:</p>
 <pre><code>&gt; (def cities [&quot;London&quot;, &quot;New York&quot;, &quot;Berlin&quot;])
 &gt; (conj cities &quot;Moscow&quot;)
 [&quot;London&quot; &quot;New York&quot; &quot;Berlin&quot; &quot;Moscow&quot;]</code></pre>
-<p><code>cons</code> adds an element <em>to the front</em> of a vector:</p>
+<p><code>cons</code> adds an element <em>to the front</em> of a
+vector:</p>
 <pre><code>&gt; (def countries [&quot;USA&quot;, &quot;Germany&quot;, &quot;Turkey&quot;])
 &gt; (cons &quot;Russia&quot; countries)
 (&quot;Russia&quot; &quot;USA&quot; &quot;Germany&quot; &quot;Turkey&quot;)</code></pre>
-<p>Actually, a new vector or sequence, respectively, is created, holding the additional element.</p>
+<p>Actually, a new vector or sequence, respectively, is created, holding
+the additional element.</p>
 <p>A list can be created as follows:</p>
 <pre><code>&gt; &#39;(&quot;New York&quot; &quot;London&quot; &quot;Berlin&quot;)
 (&quot;New York&quot; &quot;London&quot; &quot;Berlin&quot;)</code></pre>
 <p>Or using the <code>list</code> function:</p>
 <pre><code>&gt; (list &quot;New York&quot; &quot;London&quot; &quot;Berlin&quot;)
 (&quot;New York&quot; &quot;London&quot; &quot;Berlin&quot;)</code></pre>
-<p>The functions <code>count</code>, <code>first</code>, <code>rest</code>, and <code>nth</code> can be applied to lists, too:</p>
+<p>The functions <code>count</code>, <code>first</code>,
+<code>rest</code>, and <code>nth</code> can be applied to lists,
+too:</p>
 <pre><code>&gt; (def countries &#39;(&quot;USA&quot; &quot;Russia&quot; &quot;Germany&quot; &quot;France&quot;))
 &gt; (count countries)
 4
@@ -323,39 +373,47 @@ nil</code></pre>
 <pre><code>&gt; (countries 3)
 Execution error (ClassCastException) at user/eval2092 (REPL:1).
 clojure.lang.PersistentList cannot be cast to clojure.lang.IFn</code></pre>
-<p>Vectors are implemented as arrays, lists are implemented as linked lists. This has some implications:</p>
+<p>Vectors are implemented as arrays, lists are implemented as linked
+lists. This has some implications:</p>
 <ul>
 <li>Appending to the front is fast for lists and slow for vectors.</li>
 <li>Appending to the end is fast for vectors and slow for lists.</li>
 </ul>
-<p>The <code>conj</code> function therefore adds elements to the front of lists and to the end of vectors:</p>
+<p>The <code>conj</code> function therefore adds elements to the front
+of lists and to the end of vectors:</p>
 <pre><code>&gt; (conj [1 2 3] &quot;what&quot;)
 [1 2 3 &quot;what&quot;]
 &gt; (conj &#39;(1 2 3) &quot;what&quot;)
 (&quot;what&quot; 1 2 3)</code></pre>
-<h1 data-number="3" id="maps-keywords-and-sets"><span class="header-section-number">3</span> Maps, Keywords, and Sets</h1>
+<h1 data-number="3" id="maps-keywords-and-sets"><span
+class="header-section-number">3</span> Maps, Keywords, and Sets</h1>
 <p>Maps are created using pairs within curly braces:</p>
 <pre><code>&gt; {&quot;title&quot; &quot;War and Peace&quot; &quot;author&quot; &quot;Lev Tolstoy&quot; &quot;year&quot; 1869}
 {&quot;title&quot; &quot;War and Peace&quot;, &quot;author&quot; &quot;Lev Tolstoy&quot;, &quot;year&quot; 1869}</code></pre>
-<p>Commas between key-value pairs can be used for better readability, but are optional:</p>
+<p>Commas between key-value pairs can be used for better readability,
+but are optional:</p>
 <pre><code>&gt; {&quot;title&quot; &quot;War and Peace&quot;, &quot;author&quot; &quot;Lev Tolstoy&quot;, &quot;year&quot; 1869}
 {&quot;title&quot; &quot;War and Peace&quot;, &quot;author&quot; &quot;Lev Tolstoy&quot;, &quot;year&quot; 1869}</code></pre>
-<p>Maps can also be created using the <code>hash-map</code> function:</p>
+<p>Maps can also be created using the <code>hash-map</code>
+function:</p>
 <pre><code>&gt; (hash-map &quot;title&quot; &quot;War and Peace&quot; &quot;author&quot; &quot;Lev Tolstoy&quot; &quot;year&quot; 1869)
 {&quot;author&quot; &quot;Lev Tolstoy&quot;, &quot;title&quot; &quot;War and Peace&quot;, &quot;year&quot; 1869}</code></pre>
-<p>The left part of the pair is the <em>key</em>, the right part the <em>value</em> of the entry.</p>
+<p>The left part of the pair is the <em>key</em>, the right part the
+<em>value</em> of the entry.</p>
 <p><code>get</code> looks up the value of an entry by its key:</p>
 <pre><code>&gt; (def book {&quot;title&quot; &quot;War and Peace&quot; &quot;author&quot; &quot;Lev Tolstoy&quot; &quot;year&quot; 1869})
 &gt; (get book &quot;author&quot;)
 &quot;Lev Tolstoy&quot;</code></pre>
-<p>Like vectors, elements can be accessed without an explicit function call:</p>
+<p>Like vectors, elements can be accessed without an explicit function
+call:</p>
 <pre><code>&gt; (book &quot;title&quot;)
 &quot;War and Peace&quot;
 &gt; (book &quot;year&quot;)
 1869
 &gt; (book &quot;publisher&quot;)
 nil</code></pre>
-<p>Idiomatically, <em>keywords</em> starting with a colon are used as map keys:</p>
+<p>Idiomatically, <em>keywords</em> starting with a colon are used as
+map keys:</p>
 <pre><code>&gt; (def book {:title &quot;War and Peace&quot; :author &quot;Lev Tolstoy&quot; :year 1869})
 &gt; book
 {:title &quot;War and Peace&quot;, :author &quot;Lev Tolstoy&quot;, :year 1869}
@@ -364,14 +422,16 @@ nil</code></pre>
 <p>Keywords can also be used for map lookups:</p>
 <pre><code>&gt; (:title book)
 &quot;War and Peace&quot;</code></pre>
-<p><code>assoc</code> returns a map with an element either overwritten or added:</p>
+<p><code>assoc</code> returns a map with an element either overwritten
+or added:</p>
 <pre><code>&gt; (def book {:title &quot;War and Peace&quot; :author &quot;Lev Tolstoy&quot; :year 1869})
 {:title &quot;War and Peace&quot;, :author &quot;Lev Tolstoy&quot;, :year 1869}
 &gt; (assoc book :pages 2000)
 {:title &quot;War and Peace&quot;, :author &quot;Lev Tolstoy&quot;, :year 1869, :pages 2000}
 &gt; (assoc book :pages 1987)
 {:title &quot;War and Peace&quot;, :author &quot;Lev Tolstoy&quot;, :year 1869, :pages 1987}</code></pre>
-<p>Using <code>assoc</code>, it’s possible to add/modify multiple key-value pairs at once:</p>
+<p>Using <code>assoc</code>, it’s possible to add/modify multiple
+key-value pairs at once:</p>
 <pre><code>&gt; (def employee {:name &quot;Dilbert&quot;})
 &gt; (assoc employee :job &quot;Engineer&quot; :salary 120000)
 {:name &quot;Dilbert&quot;, :job &quot;Engineer&quot;, :salary 120000}</code></pre>
@@ -379,7 +439,8 @@ nil</code></pre>
 <pre><code>&gt; (def employee {:name &quot;Dilbert&quot; :note &quot;smelly&quot;})
 &gt; (dissoc employee :note)
 {:name &quot;Dilbert&quot;}</code></pre>
-<p>Like <code>assoc</code>, multiple keys can be used at once with <code>dissoc</code>:</p>
+<p>Like <code>assoc</code>, multiple keys can be used at once with
+<code>dissoc</code>:</p>
 <pre><code>&gt; (def employee {:name &quot;Dilbert&quot; :note &quot;smelly&quot; :terminate &quot;Jan 2023&quot;})
 &gt; (dissoc employee :note :terminate)
 {:name &quot;Dilbert&quot;}</code></pre>
@@ -394,7 +455,8 @@ nil</code></pre>
 <pre><code>&gt; (def book (sorted-map :title &quot;War and Peace&quot; :author &quot;Lev Tolstoy&quot; :year 1869))
 &gt; (keys book)
 (:author :title :year)</code></pre>
-<p><code>keys</code> returns the map’s values in arbitrary, but matching the key’s order:</p>
+<p><code>keys</code> returns the map’s values in arbitrary, but matching
+the key’s order:</p>
 <pre><code>&gt; (vals book)
 (&quot;War and Peace&quot; &quot;Lev Tolstoy&quot; 1869)
 &gt; (keys book)
@@ -406,13 +468,16 @@ nil</code></pre>
 <pre><code>&gt; #{&quot;Dilbert&quot;, &quot;Alice&quot;, &quot;Wally&quot;, &quot;Dilbert&quot;}
 Syntax error reading source at (REPL:1:42).
 Duplicate key: Dilbert</code></pre>
-<p><code>contains?</code> checks if an element is contained in a set:</p>
+<p><code>contains?</code> checks if an element is contained in a
+set:</p>
 <pre><code>&gt; (def employees #{&quot;Dilbert&quot;, &quot;Alice&quot;, &quot;Wally&quot;, &quot;Ashok&quot;})
 &gt; (contains? employees &quot;Dilbert&quot;)
 true
 &gt; (contains? employees &quot;Pointy Haired Boss&quot;)
 false</code></pre>
-<p>This lookup can be done without calling a function, returning the element if it is contained, or <code>nil</code> if the element is missing:</p>
+<p>This lookup can be done without calling a function, returning the
+element if it is contained, or <code>nil</code> if the element is
+missing:</p>
 <pre><code>&gt; (employees &quot;Dilbert&quot;)
 &quot;Dilbert&quot;
 &gt; (employees &quot;Ratbert&quot;)
@@ -423,7 +488,8 @@ nil</code></pre>
 :scifi
 &gt; (:scifi genres)
 :scifi</code></pre>
-<p>Functions like <code>count</code>, <code>first</code>, and <code>rest</code> handle map entries as two-element vectors:</p>
+<p>Functions like <code>count</code>, <code>first</code>, and
+<code>rest</code> handle map entries as two-element vectors:</p>
 <pre><code>&gt; (def employee {:name &quot;Dilbert&quot; :age 42 :job &quot;Engineer&quot;})
 &gt; (count employee)
 3
@@ -448,12 +514,15 @@ nil</code></pre>
 <p>Be aware taht <code>nil</code> is a valid set entry and map key:</p>
 <pre><code>&gt; (contains? #{:foo :bar nil} nil)
 true</code></pre>
-<h1 data-number="4" id="logic"><span class="header-section-number">4</span> Logic</h1>
+<h1 data-number="4" id="logic"><span
+class="header-section-number">4</span> Logic</h1>
 <p>Conditional code can be executed using <code>if</code>:</p>
 <pre><code>(if (= guess secret-number)
   (println &quot;You guessed the secret number.&quot;)
   (println &quot;Sorry, wrong number guessed...&quot;))</code></pre>
-<p>If the boolean expression (first argument) holds true, the second argument is evaluated; otherwise, the (optional) third argument is evaluated.</p>
+<p>If the boolean expression (first argument) holds true, the second
+argument is evaluated; otherwise, the (optional) third argument is
+evaluated.</p>
 <p>Being an expression, <code>if</code> returns a value:</p>
 <pre><code>(defn yield-rate [balance]
   (if (&gt;= balance 0) 0.125 12.5))
@@ -462,8 +531,11 @@ true</code></pre>
 0.125
 &gt; (yield-rate -150)
 12.5</code></pre>
-<p><code>nil</code> will be returned if the condition evaluates to <code>false</code> and if there’s no <code>else</code> branch.</p>
-<p>Comparison operators like <code>=</code>, <code>not=</code>, and <code>&gt;=</code> are actually functions, which can take two or more arguments:</p>
+<p><code>nil</code> will be returned if the condition evaluates to
+<code>false</code> and if there’s no <code>else</code> branch.</p>
+<p>Comparison operators like <code>=</code>, <code>not=</code>, and
+<code>&gt;=</code> are actually functions, which can take two or more
+arguments:</p>
 <pre><code>&gt; (= 2 2 2 2 3)
 false
 &gt; (= 2 2 2 2 2 2)
@@ -478,7 +550,8 @@ true
 true
 &gt; (&gt;= 9 6 4 5 1)
 false</code></pre>
-<p>Predicate functions return whether or not an expression is of some specific type:</p>
+<p>Predicate functions return whether or not an expression is of some
+specific type:</p>
 <pre><code>&gt; (number? 1987)
 true
 &gt; (string? &quot;Dilbert&quot;)
@@ -489,15 +562,19 @@ true
 true
 &gt; (vector? [1 2 3])
 true</code></pre>
-<p>Multiple conditions can be combined using <code>and</code>, <code>or</code>, and <code>not</code>:</p>
+<p>Multiple conditions can be combined using <code>and</code>,
+<code>or</code>, and <code>not</code>:</p>
 <pre><code>&gt; (or (and (&gt; 5 3) (&lt; 1 6)) (not (= 3 1)))
 true</code></pre>
-<p>Both <code>or</code> and <code>and</code> are <em>short-circuit</em> operations (nothing is printed here):</p>
+<p>Both <code>or</code> and <code>and</code> are <em>short-circuit</em>
+operations (nothing is printed here):</p>
 <pre><code>&gt; (or (= 1 1) (println &quot;strange&quot;))
 true
 &gt; (and (not= 1 1) (println &quot;strange&quot;))
 false</code></pre>
-<p>Every value besides <code>false</code> and <code>nil</code> is treated as <em>truthy</em> (i.e. will be evaluated to <code>true</code>), even empty collections and the number 0:</p>
+<p>Every value besides <code>false</code> and <code>nil</code> is
+treated as <em>truthy</em> (i.e. will be evaluated to
+<code>true</code>), even empty collections and the number 0:</p>
 <pre><code>&gt; (if [] (println &quot;[] is truthy&quot;))
 [] is truthy
 nil
@@ -505,7 +582,8 @@ nil
 &gt; (if 0 (println &quot;0 is truthy&quot;))
 0 is truthy
 nil</code></pre>
-<p>Multiple expressions can be grouped together using <code>do</code>:</p>
+<p>Multiple expressions can be grouped together using
+<code>do</code>:</p>
 <pre><code>(if (= guess secret-number)
   (do
     (println &quot;You guessed the secret number.&quot;)
@@ -516,13 +594,17 @@ nil</code></pre>
     (println &quot;Shame on you.&quot;)
     {:points 0}))</code></pre>
 <p>The <code>do</code> expression evaluates to its last argument.</p>
-<p>If no <code>else</code> branch is required, <code>when</code> can be used instead of <code>if</code>, which allows for multiple expressions without using <code>do</code>:</p>
+<p>If no <code>else</code> branch is required, <code>when</code> can be
+used instead of <code>if</code>, which allows for multiple expressions
+without using <code>do</code>:</p>
 <pre><code>(when (= guess secret-number)
   (println &quot;You guessed the secret number.&quot;)
   (println &quot;A winner is you.&quot;)
   {:points 100})</code></pre>
-<p>If the condition doesn’t hold <code>true</code>, <code>nil</code> is returned (like <code>if</code>).</p>
-<p>Instead of nesting multiple <code>if</code>s, <code>cond</code> can be used for handling multiple conditions:</p>
+<p>If the condition doesn’t hold <code>true</code>, <code>nil</code> is
+returned (like <code>if</code>).</p>
+<p>Instead of nesting multiple <code>if</code>s, <code>cond</code> can
+be used for handling multiple conditions:</p>
 <pre><code>(defn check [guess secret-number]
   (cond
     (= guess secret-number) (println &quot;correct&quot;)
@@ -540,15 +622,19 @@ nil
 &gt; (check 3 4)
 too low
 nil</code></pre>
-<p>Idiomatically, a catch-all <code>:else</code> clause is added to make sure that every condition is handled:</p>
+<p>Idiomatically, a catch-all <code>:else</code> clause is added to make
+sure that every condition is handled:</p>
 <pre><code>(defn check [guess secret-number]
   (cond
     (= guess secret-number) (println &quot;correct&quot;)
     (&lt; guess secret-number) (println &quot;too low&quot;)
     (&gt; guess secret-number) (println &quot;too high&quot;)
     :else (println &quot;You broke the universe&quot;)))</code></pre>
-<p>Since <code>:else</code> is truthy, its branch will be evaluated unless any other branch was evaluated before. (Any truthy value could be used instead of <code>:else</code>.)</p>
-<p>For multiple equality comparisons against <em>constants</em>, <code>case</code> can be used instead of <code>cond</code>:</p>
+<p>Since <code>:else</code> is truthy, its branch will be evaluated
+unless any other branch was evaluated before. (Any truthy value could be
+used instead of <code>:else</code>.)</p>
+<p>For multiple equality comparisons against <em>constants</em>,
+<code>case</code> can be used instead of <code>cond</code>:</p>
 <pre><code>(defn color-hex-code [color]
   (case color
     :red &quot;#ff0000&quot;
@@ -560,7 +646,8 @@ nil</code></pre>
 &quot;#ff0000&quot;
 &gt; (color-hex-code :black)
 &quot;unknown&quot;</code></pre>
-<p>Exceptions can be handled using <code>try</code>/<code>catch</code>:</p>
+<p>Exceptions can be handled using
+<code>try</code>/<code>catch</code>:</p>
 <pre><code>(defn safe-divide [dividend divisor]
   (try
     (/ dividend divisor)
@@ -573,7 +660,8 @@ nil</code></pre>
 &gt; (safe-divide 9 0)
 One does not simply divide by zero.
 nil.</code></pre>
-<p>Exceptions can be thrown using <code>throw</code> and <code>ex-info</code>:</p>
+<p>Exceptions can be thrown using <code>throw</code> and
+<code>ex-info</code>:</p>
 <pre><code>(defn publish [book]
   (when (&lt; (:pages book) 50)
     (throw
@@ -582,9 +670,12 @@ nil.</code></pre>
 &gt; (publish {:title &quot;Hello&quot; :pages 30})
 Execution error (ExceptionInfo) at user/publish (REPL:4).
 A book needs fifty pages or more!</code></pre>
-<p><code>ex-info</code> expects a string message and a map argument, and can be caught as <code>clojure.lang.ExceptionInfo</code>.</p>
-<h1 data-number="5" id="more-capable-functions"><span class="header-section-number">5</span> More Capable Functions</h1>
-<p><em>Multi-arity</em> functions accept different sets of parameters:</p>
+<p><code>ex-info</code> expects a string message and a map argument, and
+can be caught as <code>clojure.lang.ExceptionInfo</code>.</p>
+<h1 data-number="5" id="more-capable-functions"><span
+class="header-section-number">5</span> More Capable Functions</h1>
+<p><em>Multi-arity</em> functions accept different sets of
+parameters:</p>
 <pre><code>(defn greet
   ([to-whom] (println &quot;Hello&quot; to-whom))
   ([message to-whom] (println message to-whom)))
@@ -593,11 +684,14 @@ A book needs fifty pages or more!</code></pre>
 Hello John
 &gt; (greet &quot;Hi&quot; &quot;John&quot;)
 Hi John</code></pre>
-<p>In order to reduce the amount of duplicated code, it’s common that lower arity functions call the function with the highest arity by filling in the missing parameters with default values:</p>
+<p>In order to reduce the amount of duplicated code, it’s common that
+lower arity functions call the function with the highest arity by
+filling in the missing parameters with default values:</p>
 <pre><code>(defn greet
   ([to-whom] (greet &quot;Hello&quot; to-whom))
   ([message to-whom] (println message to-whom)))</code></pre>
-<p><em>Variadic</em> functions accept a variable number of arguments:</p>
+<p><em>Variadic</em> functions accept a variable number of
+arguments:</p>
 <pre><code>(defn output-all [&amp; args]
   (println &quot;args&quot; args))
 
@@ -611,11 +705,17 @@ args (one 2 three 4.0)</code></pre>
 
 &gt; (output-all &quot;one&quot; 2 &quot;three&quot; 4.0)
 x one y 2 args (three 4.0)</code></pre>
-<p>Multi-arity and variadic functions are good at dealing with a <em>different number</em> of arguments. <em>Multimethods</em> are useful to deal with <em>different characteristics</em> of arguments. They consist of:</p>
+<p>Multi-arity and variadic functions are good at dealing with a
+<em>different number</em> of arguments. <em>Multimethods</em> are useful
+to deal with <em>different characteristics</em> of arguments. They
+consist of:</p>
 <ol type="1">
-<li>A dispatch function (<code>defn</code>) that assigns a keyword to an argument.</li>
-<li>A multimethod (<code>defmulti</code>) that groups the implementations and refers to the dispatch function.</li>
-<li>Multiple methods (<code>defmethod</code>), of which each handles one type of argument.</li>
+<li>A dispatch function (<code>defn</code>) that assigns a keyword to an
+argument.</li>
+<li>A multimethod (<code>defmulti</code>) that groups the
+implementations and refers to the dispatch function.</li>
+<li>Multiple methods (<code>defmethod</code>), of which each handles one
+type of argument.</li>
 </ol>
 <p>Consider employees being stored in different formats:</p>
 <pre><code>;; implicit fields: first name, job
@@ -637,9 +737,11 @@ x one y 2 args (three 4.0)</code></pre>
          (contains? employee :position)) :min-employee
     (and (contains? employee :first-name)
          (contains? employee :job)) :max-employee))</code></pre>
-<p>The multimethod defines a method name and connects it to the dispatcher:</p>
+<p>The multimethod defines a method name and connects it to the
+dispatcher:</p>
 <pre><code>(defmulti normalize-employee dispatch-employee-format)</code></pre>
-<p>The implementations all have the same name, but handle a different keyword, as mapped by the dispatcher function:</p>
+<p>The implementations all have the same name, but handle a different
+keyword, as mapped by the dispatcher function:</p>
 <pre><code>(defmethod normalize-employee :vector-employee [employee]
   {:first-name (nth employee 0) :role (nth employee 1)})
 
@@ -648,19 +750,24 @@ x one y 2 args (three 4.0)</code></pre>
 
 (defmethod normalize-employee :max-employee [employee]
   {:first-name (:first-name employee) :role (:job employee)})</code></pre>
-<p>The different kind of employee data structures are converted to a common format:</p>
+<p>The different kind of employee data structures are converted to a
+common format:</p>
 <pre><code>&gt; (normalize-employee dogbert)
 {:first-name &quot;Dogbert&quot;, :role &quot;Head of Abuse&quot;}
 &gt; (normalize-employee alice)
 {:first-name &quot;Alice&quot;, :role &quot;Engineer&quot;}
 &gt; (normalize-employee dilbert)
 {:first-name &quot;Dilbert&quot;, :role &quot;Engineer&quot;}</code></pre>
-<p>If the dispatch method cannot match the argument submitted, an exception will be thrown:</p>
+<p>If the dispatch method cannot match the argument submitted, an
+exception will be thrown:</p>
 <pre><code>&gt; (normalize-employee {:first-name &quot;Topper&quot; :position &quot;Head of Annoyance&quot;})
 Execution error (IllegalArgumentException) at user/eval2108 (REPL:1).
 No method in multimethod &#39;normalize-employee&#39; for dispatch value: null</code></pre>
-<p>This condition can be handled properly by defining a <code>:default</code> branch in the dispatcher function.</p>
-<p>Implementations for multimethods can be defined in different files, which allows for extensibility. This allows for polymorphism not just based on type, but also based on values.</p>
+<p>This condition can be handled properly by defining a
+<code>:default</code> branch in the dispatcher function.</p>
+<p>Implementations for multimethods can be defined in different files,
+which allows for extensibility. This allows for polymorphism not just
+based on type, but also based on values.</p>
 <p>Some functions are best implemented recursively:</p>
 <pre><code>(def employees [{:name &quot;Dilbert&quot; :salary 120000}
                 {:name &quot;Wally&quot; :salary 130000}
@@ -679,7 +786,10 @@ No method in multimethod &#39;normalize-employee&#39; for dispatch value: null</
 
 &gt; (sum-payroll employees)
 794000</code></pre>
-<p>The <code>sum-payroll</code> function could run out of stack space if the <code>employee</code> vector gets too big. Therefore, Clojure supports <em>tail call optimization</em>, by simply replacing the function call with <code>recur</code>:</p>
+<p>The <code>sum-payroll</code> function could run out of stack space if
+the <code>employee</code> vector gets too big. Therefore, Clojure
+supports <em>tail call optimization</em>, by simply replacing the
+function call with <code>recur</code>:</p>
 <pre><code>(defn sum-payroll
   ([employees] (sum-payroll employees 0))
   ([employees total]
@@ -688,7 +798,8 @@ No method in multimethod &#39;normalize-employee&#39; for dispatch value: null</
       (recur
         (rest employees)
         (+ total (:salary (first employees)))))))</code></pre>
-<p>The multi-arity function can be simplified to a single-arity function using a <code>loop</code> expression:</p>
+<p>The multi-arity function can be simplified to a single-arity function
+using a <code>loop</code> expression:</p>
 <pre><code>(defn sum-payroll [employees]
   (loop [employees employees total 0]
     (if (empty? employees)
@@ -696,9 +807,18 @@ No method in multimethod &#39;normalize-employee&#39; for dispatch value: null</
       (recur
         (rest employees)
         (+ total (:salary (first employees)))))))</code></pre>
-<p>This construct defines and invokes a pseudo-function, where the <code>employees</code> parameter is initialized with the <code>employees</code> argument of the <code>sum-payroll</code> function; and <code>total</code> is initialized to <code>0</code>. This values will be re-initialized by <code>recur</code> (<code>employees</code> to <code>(rest employees)</code> and <code>total</code> to itself plus the current employees salary).</p>
-<p>In practice, higher-ordered functions such as <code>map</code> are preferred over <code>loop</code>/<code>recur</code> constructs.</p>
-<p>Since comments are dropped upon compilation, <em>docstrings</em> provide a way of documenting code that will be preserved. They are accessible via the <code>doc</code> macro:</p>
+<p>This construct defines and invokes a pseudo-function, where the
+<code>employees</code> parameter is initialized with the
+<code>employees</code> argument of the <code>sum-payroll</code>
+function; and <code>total</code> is initialized to <code>0</code>. This
+values will be re-initialized by <code>recur</code>
+(<code>employees</code> to <code>(rest employees)</code> and
+<code>total</code> to itself plus the current employees salary).</p>
+<p>In practice, higher-ordered functions such as <code>map</code> are
+preferred over <code>loop</code>/<code>recur</code> constructs.</p>
+<p>Since comments are dropped upon compilation, <em>docstrings</em>
+provide a way of documenting code that will be preserved. They are
+accessible via the <code>doc</code> macro:</p>
 <pre><code>(defn average
   &quot;Computes the average of a and b.&quot;
   [a b]
@@ -720,13 +840,18 @@ nil</code></pre>
 user/dilbert
   The smelly IT guy...
 nil</code></pre>
-<p>A map containing <code>:pre</code> and <code>:post</code> entries can be used to enforce pre- and post-conditions:</p>
+<p>A map containing <code>:pre</code> and <code>:post</code> entries can
+be used to enforce pre- and post-conditions:</p>
 <pre><code>(defn give-raise [employee amount]
   {:pre  [(&lt;= amount 10000) (not= (:name employee) &quot;Ashok&quot;)]
    :post [(&lt;= (:salary %) 180000)]}
   (assoc employee :salary (+ (:salary employee) amount)))</code></pre>
-<p>The <code>:pre</code> condition makes sure that a raise must not exceed 100000, and that an employee named Ashok will never get a raise.</p>
-<p>The <code>:post</code> condition makes sure that after a raise, no employee will have a salary of more than 180000. The return value is referred by <code>%</code>.</p>
+<p>The <code>:pre</code> condition makes sure that a raise must not
+exceed 100000, and that an employee named Ashok will never get a
+raise.</p>
+<p>The <code>:post</code> condition makes sure that after a raise, no
+employee will have a salary of more than 180000. The return value is
+referred by <code>%</code>.</p>
 <pre><code>&gt; (give-raise {:name &quot;Dilbert&quot; :salary 120000} 5000)
 {:name &quot;Dilbert&quot;, :salary 125000}
 
@@ -741,7 +866,8 @@ Assert failed: (not= (:name employee) &quot;Ashok&quot;)
 &gt; (give-raise {:name &quot;Ted&quot; :salary 175000} 8000)
 Execution error (AssertionError) at user/give-raise (REPL:1).
 Assert failed: (&lt;= (:salary %) 180000)</code></pre>
-<h1 data-number="6" id="functional-things"><span class="header-section-number">6</span> Functional Things</h1>
+<h1 data-number="6" id="functional-things"><span
+class="header-section-number">6</span> Functional Things</h1>
 <p>Functions are values, which can be passed to other functions:</p>
 <pre><code>(def dilbert {:name &quot;Dilbert&quot; :job &quot;Engineer&quot; :salary 120000})
 (def ashok {:name &quot;Ashok&quot; :job &quot;Intern&quot; :salary 45000})
@@ -765,7 +891,8 @@ false</code></pre>
 <pre><code>(both? dilbert
   (fn [e] (&gt; (:salary e) 100000))
   (fn [e] (= (:name e) &quot;Dilbert&quot;)))</code></pre>
-<p>This can be used to created parametrized functions using a <em>lexical closure</em>:</p>
+<p>This can be used to created parametrized functions using a
+<em>lexical closure</em>:</p>
 <pre><code>(defn cheaper-func [max-salary]
   (fn [employee]
     (&lt; (:salary employee) max-salary)))
@@ -778,16 +905,20 @@ true
 
 &gt; (cheap-hire? dilbert)
 false</code></pre>
-<p>The <code>apply</code> function applies a function for each argument:</p>
+<p>The <code>apply</code> function applies a function for each
+argument:</p>
 <pre><code>&gt; (apply + [1 2 3])
 6</code></pre>
-<p><code>partial</code> creates a new function by <em>partially</em> filling in the arguments for an existing function. Here, the plus function is partially applied with a single number:</p>
+<p><code>partial</code> creates a new function by <em>partially</em>
+filling in the arguments for an existing function. Here, the plus
+function is partially applied with a single number:</p>
 <pre><code>&gt; (def increment (partial + 1))
 &gt; (increment 1)
 2
 &gt; (increment 10)
 11</code></pre>
-<p>And here, the <code>give-raise</code> function is partially applied to define the <code>amount</code> parameter:</p>
+<p>And here, the <code>give-raise</code> function is partially applied
+to define the <code>amount</code> parameter:</p>
 <pre><code>(def dilbert {:name &quot;Dilbert&quot; :salary 120000 :job &quot;Engineer&quot;})
 
 (defn give-raise [amount employee]
@@ -797,7 +928,8 @@ false</code></pre>
 
 &gt; (small-raise dilbert)
 {:name &quot;Dilbert&quot;, :salary 121000, :job &quot;Engineer&quot;}</code></pre>
-<p><code>complement</code> produces a new function by wrapping a function with a <code>not</code> call:</p>
+<p><code>complement</code> produces a new function by wrapping a
+function with a <code>not</code> call:</p>
 <pre><code>(defn is-cheap? [employee]
   (&lt;= (:salary employee) 100000))
 
@@ -807,7 +939,8 @@ false</code></pre>
 false
 &gt; (is-expensive? dilbert)
 true</code></pre>
-<p><code>every-pred</code> combines multiple predicate function with <code>and</code>:</p>
+<p><code>every-pred</code> combines multiple predicate function with
+<code>and</code>:</p>
 <pre><code>(defn cheap? [employee]
   (&lt;= (:salary employee) 100000))
 
@@ -824,25 +957,34 @@ true
 
 &gt; (fire? {:name &quot;Ted&quot; :salary 180000 :job &quot;Marketing&quot;})
 false</code></pre>
-<p>Function literals or <em>lambdas</em> can be defined using <code>#</code>:</p>
+<p>Function literals or <em>lambdas</em> can be defined using
+<code>#</code>:</p>
 <pre><code>&gt; (apply #(+ %1 %2 %3) [1 2 3])
 6</code></pre>
-<p>Since there is no argument list, the arguments are referred to using <code>%1</code>, <code>%2</code>, etc. The highest-numbered argument defines the number of arguments:</p>
+<p>Since there is no argument list, the arguments are referred to using
+<code>%1</code>, <code>%2</code>, etc. The highest-numbered argument
+defines the number of arguments:</p>
 <pre><code>&gt; (apply #(+ %5 %6) [1 2 3 4 5 6])
 11</code></pre>
-<p>The arguments one to four (i.e. <code>[1 2 3 4]</code>) are ignored.</p>
-<p>If only a single argument is needed, it can be referred by <code>%</code> instead of <code>%1</code>:</p>
+<p>The arguments one to four (i.e. <code>[1 2 3 4]</code>) are
+ignored.</p>
+<p>If only a single argument is needed, it can be referred by
+<code>%</code> instead of <code>%1</code>:</p>
 <pre><code>&gt; (apply #(* 2 %) [123])
 246</code></pre>
-<p>Use lambdas for very short and simple functions. Use <code>fn</code> if named arguments are useful. Use <code>defn</code> for lengthy functions with a proper name.</p>
-<p><code>defn</code> can be defined in terms of <code>def</code> and <code>fn</code>:</p>
+<p>Use lambdas for very short and simple functions. Use <code>fn</code>
+if named arguments are useful. Use <code>defn</code> for lengthy
+functions with a proper name.</p>
+<p><code>defn</code> can be defined in terms of <code>def</code> and
+<code>fn</code>:</p>
 <pre><code>(defn hello [to-whom]
   (println &quot;Hello&quot; to-whom))</code></pre>
 <p>Has the same effect as:</p>
 <pre><code>(def hello
   (fn [to-whom]
     (println &quot;Hello&quot; to-whom)))</code></pre>
-<p><code>update</code> works on a map by applying a function to a map’s entry:</p>
+<p><code>update</code> works on a map by applying a function to a map’s
+entry:</p>
 <pre><code>(def dilbert {:name &quot;Dilbert&quot; :salary 120000 :job &quot;Engineer&quot;})
 
 (defn promote [employee raise-func]
@@ -850,7 +992,8 @@ false</code></pre>
 
 &gt; (promote dilbert #(+ % 1000))
 {:name &quot;Dilbert&quot;, :salary 121000, :job &quot;Engineer&quot;}</code></pre>
-<p><code>update-in</code> accepts an additional path to locate the field in a nested map to be updated:</p>
+<p><code>update-in</code> accepts an additional path to locate the field
+in a nested map to be updated:</p>
 <pre><code>(def dogbertix {:name &quot;Dogbertix&quot; :ceo {:name &quot;Dogbert&quot; :salary 250000}})
 
 (defn give-bonus [company]
@@ -858,8 +1001,11 @@ false</code></pre>
 
 &gt; (give-bonus dogbertix)
 {:name &quot;Dogbertix&quot;, :ceo {:name &quot;Dogbert&quot;, :salary 500000}}</code></pre>
-<h1 data-number="7" id="let"><span class="header-section-number">7</span> Let</h1>
-<p><code>compute-bonus</code> needs to calculate the same value twice; once for the <code>if</code> condition, and once for the return value of the function:</p>
+<h1 data-number="7" id="let"><span
+class="header-section-number">7</span> Let</h1>
+<p><code>compute-bonus</code> needs to calculate the same value twice;
+once for the <code>if</code> condition, and once for the return value of
+the function:</p>
 <pre><code>(defn compute-bonus [employee bonus-rate max-bonus]
   (if (&lt;= (* (:salary employee) bonus-rate) max-bonus)
     (* (:salary employee) bonus-rate)
@@ -878,13 +1024,16 @@ false</code></pre>
     (if (&lt;= bonus max-bonus)
       bonus
       max-bonus)))</code></pre>
-<p>The expression on the right-hand side is assigned to the symbol on the left-hand side of the vector. Multiple local bindings can be created at once:</p>
+<p>The expression on the right-hand side is assigned to the symbol on
+the left-hand side of the vector. Multiple local bindings can be created
+at once:</p>
 <pre><code>&gt; (let [a 1 b 2 c 3] (println (+ a b c)))
 6</code></pre>
 <p>Later bindings have access to earlier bindings to their left:</p>
 <pre><code>&gt; (let [a 1 b (* 2 a) c (* 2 b)] (println a b c))
 1 2 4</code></pre>
-<p>The function <code>compute-bonus</code> calculates the employee’s bonus by looking up their bonus rate in a map:</p>
+<p>The function <code>compute-bonus</code> calculates the employee’s
+bonus by looking up their bonus rate in a map:</p>
 <pre><code>(def employee-bonus-rates
   {&quot;Dilbert&quot; 0.05 &quot;Dogbert&quot; 0.25 &quot;Pointy-Haired Boss&quot; 1.0})
 
@@ -900,7 +1049,10 @@ false</code></pre>
 
 &gt; (compute-bonus 200000 &quot;Dogbert&quot; employee-bonus-rates 10000)
 50000.0</code></pre>
-<p>The map of <code>employee-bonus-rates</code> has to be carried away wherever a bonus has to be calculated. A better approach is to return individual functions by employee that have their bonus rate parametrized:</p>
+<p>The map of <code>employee-bonus-rates</code> has to be carried away
+wherever a bonus has to be calculated. A better approach is to return
+individual functions by employee that have their bonus rate
+parametrized:</p>
 <pre><code>(defn mk-compute-bonus-func [employee-name bonus-rates min-bonus]
   (let [bonus-rate (bonus-rates employee-name)]
     (fn [salary]
@@ -920,8 +1072,10 @@ false</code></pre>
 
 &gt; (calc-dogbert-bonus 200000)
 50000.0</code></pre>
-<p><code>let</code> is used to bind local variables that are referred to by another function (lexical closure).</p>
-<p>The following function outputs book entries with their authors, if available:</p>
+<p><code>let</code> is used to bind local variables that are referred to
+by another function (lexical closure).</p>
+<p>The following function outputs book entries with their authors, if
+available:</p>
 <pre><code>(def books [{:title &quot;War and Peace&quot; :author &quot;Lev Tolstoy&quot;}
             {:title &quot;Beowulf&quot;}
             {:title &quot;The Name of the Rose&quot; :author &quot;Umberto Eco&quot;}
@@ -935,21 +1089,29 @@ false</code></pre>
 
 &gt; (map output books)
 (&quot;War and Peace by Lev Tolstoy&quot; &quot;Beowulf&quot; &quot;The Name of the Rose by Umberto Eco&quot; &quot;Till Eulenspiegel&quot;)</code></pre>
-<p><code>if</code> and <code>let</code> can be combined to <code>if-let</code>, making the function shorter:</p>
+<p><code>if</code> and <code>let</code> can be combined to
+<code>if-let</code>, making the function shorter:</p>
 <pre><code>(defn output [book]
   (if-let [author (:author book)]
     (str (:title book) &quot; by &quot; author)
     (:title book)))</code></pre>
-<p>First, the binding with <code>let</code> is created; second, the bound value is evaluated using <code>if</code> (yielding <code>true</code> for any truthy value).</p>
-<p><code>when-let</code> combines <code>when</code> with <code>let</code> in the same way:</p>
+<p>First, the binding with <code>let</code> is created; second, the
+bound value is evaluated using <code>if</code> (yielding
+<code>true</code> for any truthy value).</p>
+<p><code>when-let</code> combines <code>when</code> with
+<code>let</code> in the same way:</p>
 <pre><code>(defn writtey-by [book]
   (when-let [author (:author book)]
     (str (:title book) &quot; was written by &quot; author)))
 
 &gt; (map writtey-by books)
 (&quot;War and Peace was written by Lev Tolstoy&quot; nil &quot;The Name of the Rose was written by Umberto Eco&quot; nil)</code></pre>
-<h1 data-number="8" id="def-symbols-and-vars"><span class="header-section-number">8</span> Def, Symbols, and Vars</h1>
-<p>Like keywords, symbols are values. Whereas keywords evaluate to themselves, symbols created with <code>def</code> are bound to other values. The symbol itself can be accessed programmatically using the single quote:</p>
+<h1 data-number="8" id="def-symbols-and-vars"><span
+class="header-section-number">8</span> Def, Symbols, and Vars</h1>
+<p>Like keywords, symbols are values. Whereas keywords evaluate to
+themselves, symbols created with <code>def</code> are bound to other
+values. The symbol itself can be accessed programmatically using the
+single quote:</p>
 <pre><code>&gt; (def first-name &quot;Dilbert&quot;)
 &gt; first-name
 &quot;Dilbert&quot;
@@ -961,7 +1123,8 @@ first-name
 false
 &gt; (= &#39;first-name &#39;first-name)
 true</code></pre>
-<p>A symbol and a value are bound together using a <em>var</em>, which is accessible through the pound character and the symbol:</p>
+<p>A symbol and a value are bound together using a <em>var</em>, which
+is accessible through the pound character and the symbol:</p>
 <pre><code>&gt; (def first-name &quot;Dilbert&quot;)
 #&#39;user/first-name
 &gt; (def the-name #&#39;first-name)</code></pre>
@@ -970,8 +1133,11 @@ true</code></pre>
 first-name
 &gt; (.get the-name)
 &quot;Dilbert&quot;</code></pre>
-<p>Vars are <em>mutable</em>, so that bindings can be re-defined during development, say, in a REPL session.</p>
-<p><em>Dynamic bindigs</em> can be changed using <code>binding</code> and are, by convention, surrounded by asterisks (<code>*</code>) or “earmuffs”:</p>
+<p>Vars are <em>mutable</em>, so that bindings can be re-defined during
+development, say, in a REPL session.</p>
+<p><em>Dynamic bindigs</em> can be changed using <code>binding</code>
+and are, by convention, surrounded by asterisks (<code>*</code>) or
+“earmuffs”:</p>
 <pre><code>&gt; (def ^:dynamic *debug-enabled* false)
 &gt; *debug-enabled*
 false
@@ -979,8 +1145,11 @@ false
 &gt; (binding [*debug-enabled* true]
     (println *debug-enabled*))
 true</code></pre>
-<p>Vars are <em>not</em> supposed to be used like variables in other programming languages. Use <code>^:dynamic</code> vars and <code>binding</code> sparingly.</p>
-<p>The REPL provides some dynamic vars <code>*[n]</code> where <code>[n]</code> denotes the n-last result:</p>
+<p>Vars are <em>not</em> supposed to be used like variables in other
+programming languages. Use <code>^:dynamic</code> vars and
+<code>binding</code> sparingly.</p>
+<p>The REPL provides some dynamic vars <code>*[n]</code> where
+<code>[n]</code> denotes the n-last result:</p>
 <pre><code>&gt; (+ 2 1)
 3
 &gt; (+ 5 4)
@@ -1002,17 +1171,23 @@ Divide by zero
 #error {
  :cause &quot;Divide by zero&quot;
  ...</code></pre>
-<h1 data-number="9" id="namespaces"><span class="header-section-number">9</span> Namespaces</h1>
-<p>Vars, which represent the binding between a symbol and a value, live in <em>namespaces</em>. There is always one <em>current</em> namespace, affected by calls of <code>def</code>.</p>
+<h1 data-number="9" id="namespaces"><span
+class="header-section-number">9</span> Namespaces</h1>
+<p>Vars, which represent the binding between a symbol and a value, live
+in <em>namespaces</em>. There is always one <em>current</em> namespace,
+affected by calls of <code>def</code>.</p>
 <p>The REPL creates and uses a namespace called <code>user</code>:</p>
 <pre><code>&gt; (def employee &quot;Dilbert&quot;)
 #&#39;user/employee</code></pre>
-<p>The <code>employee</code> symbol is bound to the value <code>"Dilbert"</code> within the <code>user</code> namespace.</p>
-<p>A new namespace can be created and made the current namespace using <code>ns</code>:</p>
+<p>The <code>employee</code> symbol is bound to the value
+<code>"Dilbert"</code> within the <code>user</code> namespace.</p>
+<p>A new namespace can be created and made the current namespace using
+<code>ns</code>:</p>
 <pre><code>&gt; (ns dilbertix)
 &gt; (def employees [:dilbert :alice :wally])
 #&#39;dilbertix/employees</code></pre>
-<p>Calling <code>ns</code> with an existing namespace makes that namespace the current, without changing it:</p>
+<p>Calling <code>ns</code> with an existing namespace makes that
+namespace the current, without changing it:</p>
 <pre><code>&gt; (ns user)
 &gt; (def today &quot;Sunday&quot;)
 #&#39;user/today</code></pre>
@@ -1020,15 +1195,19 @@ Divide by zero
 <pre><code>&gt; (ns dilbertix)
 &gt; employees
 [:dilbert :alice :wally]</code></pre>
-<p>Symbols from other namespaces can be referred to using a <em>fully qualified symbol</em>:</p>
+<p>Symbols from other namespaces can be referred to using a <em>fully
+qualified symbol</em>:</p>
 <pre><code>&gt; (ns user)
 &gt; dilbertix/employees</code></pre>
-<p>Namespaces defined in other files need to be loaded before they can be used. The function <code>clojure.data/diff</code> is unavailable by default:</p>
+<p>Namespaces defined in other files need to be loaded before they can
+be used. The function <code>clojure.data/diff</code> is unavailable by
+default:</p>
 <pre><code>&gt; (def engineers [:alice :dilbert :wally])
 &gt; (def high-performers [:alice :dilbert :topper])
 &gt; (clojure.data/diff engineers high-performers)
 Execution error (ClassNotFoundException) at java.net.URLClassLoader/findClass (URLClassLoader.java:382).</code></pre>
-<p>The <code>clojure.data</code> namespace can be made available using <code>require</code>:</p>
+<p>The <code>clojure.data</code> namespace can be made available using
+<code>require</code>:</p>
 <pre><code>&gt; (require &#39;clojure.data)
 &gt; (clojure.data/diff engineers high-performers)
 [[nil nil :wally] [nil nil :topper] [:alice :dilbert]]</code></pre>
@@ -1042,15 +1221,23 @@ Execution error (ClassNotFoundException) at java.net.URLClassLoader/findClass (U
   &quot;I don&#39;t do a whole lot ... yet.&quot;
   [&amp; args]
   (println &quot;Hello, World!&quot;))</code></pre>
-<p>The namespace <code>dilbertix.core</code> and the file’s location <code>dilbertix/core.clj</code> match together: A namespace <code>foo.bar</code> is to be found in a file <code>foo/bar.clj</code>.</p>
-<p>Dashes need to be converted to underscores: The namespace <code>foo-bar.qux</code> is to be found in the file <code>foo_bar/qux.clj</code>.</p>
-<p>Thus, a new namespace <code>dilbertix.employees</code> is to be defined within the project folder in the file <code>src/dilbertix/employees.clj</code>:</p>
+<p>The namespace <code>dilbertix.core</code> and the file’s location
+<code>dilbertix/core.clj</code> match together: A namespace
+<code>foo.bar</code> is to be found in a file
+<code>foo/bar.clj</code>.</p>
+<p>Dashes need to be converted to underscores: The namespace
+<code>foo-bar.qux</code> is to be found in the file
+<code>foo_bar/qux.clj</code>.</p>
+<p>Thus, a new namespace <code>dilbertix.employees</code> is to be
+defined within the project folder in the file
+<code>src/dilbertix/employees.clj</code>:</p>
 <pre><code>(ns dilbertix.employees)
 
 (def job-satisfaction 0.0021)
 
 (def employees [:dilbert :alice :wally])</code></pre>
-<p>The namespace definition can be supplied with <code>:require</code> expressions:</p>
+<p>The namespace definition can be supplied with <code>:require</code>
+expressions:</p>
 <pre><code>(ns dilbertix.core
   (:require dilbertix.employees)
   (:gen-class))
@@ -1058,7 +1245,8 @@ Execution error (ClassNotFoundException) at java.net.URLClassLoader/findClass (U
 (defn -main
   [&amp; args]
   (println &quot;Our Employees:&quot; dilbertix.employees/employees))</code></pre>
-<p>Notice the difference between the stand-alone <code>require</code>:</p>
+<p>Notice the difference between the stand-alone
+<code>require</code>:</p>
 <pre><code>(require &#39;dilbertix.employees) ; symbol, quoted</code></pre>
 <p>And the expression within the <code>ns</code> definition:</p>
 <pre><code>(:require dilbertix.employees) ; keyword, unquoted</code></pre>
@@ -1071,11 +1259,16 @@ Execution error (ClassNotFoundException) at java.net.URLClassLoader/findClass (U
 <pre><code>(println employees/job-satisfaction)</code></pre>
 <p>Instead of:</p>
 <pre><code>(println dilbertix.employees/job-satisfaction)</code></pre>
-<p>Aliases don’t mask ordinary bindings, so an <code>employees</code> var would still be visible.</p>
-<p>Using <code>:refer</code>, vars from anothe rnamespace are pulled into the current namespace:</p>
+<p>Aliases don’t mask ordinary bindings, so an <code>employees</code>
+var would still be visible.</p>
+<p>Using <code>:refer</code>, vars from anothe rnamespace are pulled
+into the current namespace:</p>
 <pre><code>(require &#39;[dilbertix.employees :refer [employees job-satisfaction])</code></pre>
-<p>Which would mask an existing <code>employees</code> binding in the current namespace. Therefore, <code>:refer</code> should be used sparingly.</p>
-<p>The current namespace is available through the symbol <code>*ns*</code>:</p>
+<p>Which would mask an existing <code>employees</code> binding in the
+current namespace. Therefore, <code>:refer</code> should be used
+sparingly.</p>
+<p>The current namespace is available through the symbol
+<code>*ns*</code>:</p>
 <pre><code>&gt; (println *ns*)
 #object[clojure.lang.Namespace 0x38158523 user]</code></pre>
 <p>Existing namespaces can be looked up by their name:</p>
@@ -1085,23 +1278,37 @@ Execution error (ClassNotFoundException) at java.net.URLClassLoader/findClass (U
 <pre><code>&gt; (ns-map *ns*)
 {primitives-classnames #&#39;clojure.core/primitives-classnames, +&#39; #&#39;clojure.core/+&#39; ...
 ;; omitted</code></pre>
-<p>The namespace is part of the symbol and can be extracted using the <code>namespace</code> function:</p>
+<p>The namespace is part of the symbol and can be extracted using the
+<code>namespace</code> function:</p>
 <pre><code>&gt; (def hello &quot;world&quot;)
 &gt; (namespace &#39;user/hello)
 &quot;user&quot;</code></pre>
-<p>The namespace <code>clojure.core</code> provides functions such as <code>println</code> or <code>first</code> and is made ready automatically:</p>
+<p>The namespace <code>clojure.core</code> provides functions such as
+<code>println</code> or <code>first</code> and is made ready
+automatically:</p>
 <pre><code>(require &#39;[clojure.core :refer :all])</code></pre>
-<p>There is <em>no</em> hierarchy of namespaces. The dots in <code>clojure.core.data</code> are just part of the name.</p>
-<p>Using <code>require</code>, a namespace only gets loaded once, which is sensible for code within files. In a REPL session, reloading modified code is common, and the <code>:reload</code> keyword can be used:</p>
+<p>There is <em>no</em> hierarchy of namespaces. The dots in
+<code>clojure.core.data</code> are just part of the name.</p>
+<p>Using <code>require</code>, a namespace only gets loaded once, which
+is sensible for code within files. In a REPL session, reloading modified
+code is common, and the <code>:reload</code> keyword can be used:</p>
 <pre><code>(require :reload &#39;[dilbertix.employees :as employees])</code></pre>
-<p>Symbols no longer needed can be removed using <code>ns-unmap</code>:</p>
+<p>Symbols no longer needed can be removed using
+<code>ns-unmap</code>:</p>
 <pre><code>(ns-unmap &#39;dilbertix.employees)</code></pre>
-<p><code>defonce</code> makes sure a symbol is only bound to a value <em>once</em>, even if the definition is required using <code>:reload</code>:</p>
+<p><code>defonce</code> makes sure a symbol is only bound to a value
+<em>once</em>, even if the definition is required using
+<code>:reload</code>:</p>
 <pre><code>(defonce answer-to-everything (summarize-all-books))</code></pre>
-<p>If the symbol is supposed to be rebound nonetheless, it can be unmapped:</p>
+<p>If the symbol is supposed to be rebound nonetheless, it can be
+unmapped:</p>
 <pre><code>(ns-unmap *ns* &#39;answer-to-everything)</code></pre>
-<h1 data-number="10" id="sequences"><span class="header-section-number">10</span> Sequences</h1>
-<p>The different collection types (maps, vectors, lists, sets) share a common wrapper interface called a <em>sequence</em>. That’s why the <code>count</code> function (and many others) work on different kinds of collections:</p>
+<h1 data-number="10" id="sequences"><span
+class="header-section-number">10</span> Sequences</h1>
+<p>The different collection types (maps, vectors, lists, sets) share a
+common wrapper interface called a <em>sequence</em>. That’s why the
+<code>count</code> function (and many others) work on different kinds of
+collections:</p>
 <pre><code>&gt; count [1 2 3]) ; vector: number of items
 3
 &gt; (count {:name &quot;John&quot; :age 29}) ; map: number of key-value pairs
@@ -1112,7 +1319,8 @@ Execution error (ClassNotFoundException) at java.net.URLClassLoader/findClass (U
 
 &gt; (seq [&quot;Alice&quot;, &quot;Dilbert&quot;, &quot;Wally&quot;])
 (&quot;Alice&quot; &quot;Dilbert&quot; &quot;Wally&quot;) ; looks like a list, is a sequence</code></pre>
-<p><code>seq</code> returns <code>nil</code> when invoked on an empty collection:</p>
+<p><code>seq</code> returns <code>nil</code> when invoked on an empty
+collection:</p>
 <pre><code>&gt; (seq &#39;()) ; empty list
 nil
 &gt; (seq [])  ; empty vector
@@ -1121,17 +1329,22 @@ nil
 nil
 &gt; (seq #{}) ; empty set
 nil</code></pre>
-<p>Like <code>rest</code>, <code>next</code> returns all but the first elements of a sequence:</p>
+<p>Like <code>rest</code>, <code>next</code> returns all but the first
+elements of a sequence:</p>
 <pre><code>&gt; (rest [1 2 3])
 (2 3)
 &gt; (next [1 2 3])
 (2 3)</code></pre>
-<p><em>Unlike</em> <code>rest</code>, <code>next</code> returns <code>nil</code> the remainder is an empty sequence:</p>
+<p><em>Unlike</em> <code>rest</code>, <code>next</code> returns
+<code>nil</code> the remainder is an empty sequence:</p>
 <pre><code>&gt; (rest [1])
 ()
 &gt; (next [1])
 nil</code></pre>
-<p>Always rely on <code>rest</code> and <code>next</code> returning an empty collection or <code>nil</code>, respectively; <em>never</em> compare the result of <code>first</code> against <code>nil</code> for this purpuse:</p>
+<p>Always rely on <code>rest</code> and <code>next</code> returning an
+empty collection or <code>nil</code>, respectively; <em>never</em>
+compare the result of <code>first</code> against <code>nil</code> for
+this purpuse:</p>
 <pre><code>;; bad idea!
 (defn is-empty [collection]
   (= (first (seq collection)) nil))
@@ -1153,25 +1366,33 @@ false
 true
 &gt; (is-empty [nil 1 2]) ; correct
 false</code></pre>
-<p>New elements can be added to the front of a sequence using <code>cons</code>:</p>
+<p>New elements can be added to the front of a sequence using
+<code>cons</code>:</p>
 <pre><code>&gt; (cons 0 (seq [1 2 3]))
 (0 1 2 3)
 &gt; (cons [:job &quot;Engineer&quot;] (seq {:name &quot;Dilbert&quot; :age 42}))
 ([:job &quot;Engineer&quot;] [:name &quot;Dilbert&quot;] [:age 42])</code></pre>
-<p><code>rest</code>, <code>next</code>, <code>cons</code> (but <em>not</em> <code>conj</code>), <code>sort</code>, <code>reverse</code> all return sequences.</p>
-<p>A <em>seqable</em> is something that <code>seq</code> can turn into a sequence.</p>
-<p><code>partition</code> chops a sequence (or <em>seqable</em>) into a sequence of smaller junks:</p>
+<p><code>rest</code>, <code>next</code>, <code>cons</code> (but
+<em>not</em> <code>conj</code>), <code>sort</code>, <code>reverse</code>
+all return sequences.</p>
+<p>A <em>seqable</em> is something that <code>seq</code> can turn into a
+sequence.</p>
+<p><code>partition</code> chops a sequence (or <em>seqable</em>) into a
+sequence of smaller junks:</p>
 <pre><code>&gt; (partition 2 [1 2 3 4 5])
 ((1 2) (3 4))</code></pre>
 <p><code>interleave</code> zips two sequences together:</p>
 <pre><code>&gt; (interleave [1 3 5 7 9] [2 4 6 8])
 (1 2 3 4 5 6 7 8)</code></pre>
-<p><code>interpose</code> adds a separator value in between the elements:</p>
+<p><code>interpose</code> adds a separator value in between the
+elements:</p>
 <pre><code>&gt; (interpose &quot;and&quot; [&quot;Dilbert&quot; &quot;Wally&quot; &quot;Alice&quot;])
 (&quot;Dilbert&quot; &quot;and&quot; &quot;Wally&quot; &quot;and&quot; &quot;Alice&quot;)
 &gt; (interpose &#39;+ [1 2 3])
 (1 + 2 + 3)</code></pre>
-<p><code>filter</code> accepts a predicate function and a sequence, and returns a new sequence holding the elements for which the predicate holds true:</p>
+<p><code>filter</code> accepts a predicate function and a sequence, and
+returns a new sequence holding the elements for which the predicate
+holds true:</p>
 <pre><code>&gt; (defn negative? [x] (&lt; x 0))
 &gt; (filter negative? [5 -5 10 -10])
 (-5 -10)
@@ -1182,7 +1403,9 @@ false</code></pre>
 &gt; (filter useful? [{:name &quot;Pointy Haired Boss&quot; :job &quot;Manager&quot;}
                    {:name &quot;Dilbert&quot; :job &quot;Engineer&quot;}])
 ({:name &quot;Dilbert&quot;, :job &quot;Engineer&quot;})</code></pre>
-<p>Like <code>filter</code>, <code>some</code> applies a predicate to the elements of a sequence. Unlike <code>filter</code>, it returns the first truthy value returned by the predicate:</p>
+<p>Like <code>filter</code>, <code>some</code> applies a predicate to
+the elements of a sequence. Unlike <code>filter</code>, it returns the
+first truthy value returned by the predicate:</p>
 <pre><code>&gt; (some neg? [1 2 3])
 nil
 &gt; (some neg? [1 2 -3])
@@ -1196,7 +1419,8 @@ true
 &gt; (some useful-name [{:name &quot;Pointy Haired Boss&quot; :job &quot;Manager&quot;}
                      {:name &quot;Dilbert&quot; :job &quot;Engineer&quot;}])
 &quot;Dilbert&quot;</code></pre>
-<p><code>map</code> transforms the elements of a sequence using a function:</p>
+<p><code>map</code> transforms the elements of a sequence using a
+function:</p>
 <pre><code>(defn raise-salary [employee]
   (assoc employee :salary (* 1.2 (:salary employee))))
 
@@ -1207,7 +1431,9 @@ true
 &gt; (map :name [{:name &quot;Dilbert&quot; :salary 120000}
               {:name &quot;Ashok&quot; :salary 10000}])
 (&quot;Dilbert&quot; &quot;Ashok&quot;)</code></pre>
-<p><code>comp</code> (for “compose”) produces a function by applying the argument functions from right to left (first, the salary is raised; second, the <code>:name</code> is extracted):</p>
+<p><code>comp</code> (for “compose”) produces a function by applying the
+argument functions from right to left (first, the salary is raised;
+second, the <code>:name</code> is extracted):</p>
 <pre><code>&gt; (map (comp :name raise-salary)
     [{:name &quot;Dilbert&quot; :salary 120000}
      {:name &quot;Ashok&quot; :salary 10000}])
@@ -1217,7 +1443,9 @@ true
                   {:name &quot;Ashok&quot; :salary 10000}])
 &gt; (for [e employees] (:name e))
 (&quot;Dilbert&quot; &quot;Ashok&quot;)</code></pre>
-<p><code>reduce</code> combines the elements of a sequence into a single value. It works with a function that requires <em>two</em> values: an accumulator and the current element:</p>
+<p><code>reduce</code> combines the elements of a sequence into a single
+value. It works with a function that requires <em>two</em> values: an
+accumulator and the current element:</p>
 <pre><code>&gt; (reduce (fn [acc x] (+ acc x)) [1 2 3 4])
 10
 &gt; (reduce (fn [acc x] (* acc x)) [1 2 3 4])
@@ -1225,13 +1453,15 @@ true
 <p>The starting value of the accumulator can be defined, too:</p>
 <pre><code>&gt; (reduce (fn [acc x] (+ acc x)) 100 [1 2 3 4])
 110</code></pre>
-<p>If the start value is left out, the first element will be used for it.</p>
+<p>If the start value is left out, the first element will be used for
+it.</p>
 <p>Since arithmetic operators are functions, this can be simplified:</p>
 <pre><code>&gt; (reduce + [1 2 3 4])
 10
 &gt; (reduce * [1 2 3 4])
 24</code></pre>
-<p>Those higher-order functions can be used to compose elegant solutions:</p>
+<p>Those higher-order functions can be used to compose elegant
+solutions:</p>
 <pre><code>(def employees [{:name &quot;Dilbert&quot; :salary 120000}
                 {:name &quot;Wally&quot; :salary 130000}
                 {:name &quot;Alice&quot; :salary 11000}
@@ -1253,7 +1483,9 @@ true
 
 &gt; (top-earners 1 employees)
 &quot;Dogbert&quot;</code></pre>
-<p>The definition of <code>top-earners</code> needs to be read from the inside out. The pointy arrow function <code>-&gt;&gt;</code> allows for an easier to read syntax without any runtime performance overhead:</p>
+<p>The definition of <code>top-earners</code> needs to be read from the
+inside out. The pointy arrow function <code>-&gt;&gt;</code> allows for
+an easier to read syntax without any runtime performance overhead:</p>
 <pre><code>(defn top-earners [n employees]
   (-&gt;&gt;
     employees
@@ -1263,9 +1495,14 @@ true
     (map :name)
     (interpose &quot; &gt;= &quot;)
     (apply str)))</code></pre>
-<p>The <code>-&gt;&gt;</code> function uses the result of a function as the <em>last</em> argument for the next function all; <code>-&gt;</code> as the <em>first</em> argument for the subsequent function call.</p>
-<p>Since Clojure provides so many ways of processing sequences, turning something into a sequence can be a big step to solving that problem.</p>
-<p><code>line-seq</code> turns the lines of a text file into a (lazy) sequence. Given this CSV employee data base (<code>employees.txt</code>):</p>
+<p>The <code>-&gt;&gt;</code> function uses the result of a function as
+the <em>last</em> argument for the next function all; <code>-&gt;</code>
+as the <em>first</em> argument for the subsequent function call.</p>
+<p>Since Clojure provides so many ways of processing sequences, turning
+something into a sequence can be a big step to solving that problem.</p>
+<p><code>line-seq</code> turns the lines of a text file into a (lazy)
+sequence. Given this CSV employee data base
+(<code>employees.txt</code>):</p>
 <pre><code>Pointy Haired Boss;Manager;58;250000
 Dilbert;Engineer;42;120000
 Alice;Engineer;39;110000
@@ -1298,18 +1535,27 @@ Ted;Project Manager;45;280000</code></pre>
  (:name &quot;Dogbert&quot; :job &quot;Consultant&quot; :age &quot;7&quot; :salary &quot;390000&quot;)
  (:name &quot;Topper&quot; :job &quot;Salesman&quot; :age &quot;35&quot; :salary &quot;850000&quot;)
  (:name &quot;Ted&quot; :job &quot;Project Manager&quot; :age &quot;45&quot; :salary &quot;280000&quot;))</code></pre>
-<p>Which then can be processed using the <code>top-earners</code> function from before:</p>
+<p>Which then can be processed using the <code>top-earners</code>
+function from before:</p>
 <pre><code>&gt; (top-earners 3 (read-employee-db &quot;employees.txt&quot;))
 &quot;Topper &gt;= Dogbert &gt;= Ted&quot;</code></pre>
-<p>Using regular expressions, strings can be turned into sequences (e.g. of words):</p>
+<p>Using regular expressions, strings can be turned into sequences
+(e.g. of words):</p>
 <pre><code>&gt; (re-seq #&quot;\w+&quot; &quot;this is some sentence to be split&quot;) ; split by whitespace
 (&quot;this&quot; &quot;is&quot; &quot;some&quot; &quot;sentence&quot; &quot;to&quot; &quot;be&quot; &quot;split&quot;)</code></pre>
-<p>Even though sequences are extremely useful, data structures like maps and vectors loose <em>some</em> of their power when wrapped as a sequence.</p>
-<h1 data-number="11" id="lazy-sequences"><span class="header-section-number">11</span> Lazy Sequences</h1>
-<p>Unlike sequences, <em>lazy sequences</em> only make up their values as they are actually needed.</p>
-<p><code>repeat</code> creates a lazy sequence that contains the given element unlimited times:</p>
+<p>Even though sequences are extremely useful, data structures like maps
+and vectors loose <em>some</em> of their power when wrapped as a
+sequence.</p>
+<h1 data-number="11" id="lazy-sequences"><span
+class="header-section-number">11</span> Lazy Sequences</h1>
+<p>Unlike sequences, <em>lazy sequences</em> only make up their values
+as they are actually needed.</p>
+<p><code>repeat</code> creates a lazy sequence that contains the given
+element unlimited times:</p>
 <pre><code>&gt; (def words (repeat &quot;duck&quot;))</code></pre>
-<p>There are, of course, not unlimited instances of the string <code>"duck"</code> put into memory, which would be impossible to do. The elements of the lazy sequence are only created when used:</p>
+<p>There are, of course, not unlimited instances of the string
+<code>"duck"</code> put into memory, which would be impossible to do.
+The elements of the lazy sequence are only created when used:</p>
 <pre><code>&gt; (nth words 3)
 &quot;duck&quot;
 &gt; (nth words 123456)
@@ -1317,28 +1563,35 @@ Ted;Project Manager;45;280000</code></pre>
 
 &gt; (take 3 words)
 (&quot;duck&quot; &quot;duck&quot; &quot;duck&quot;)</code></pre>
-<p><code>cycle</code> creates a lazy sequence by repeating a given sequence endlessly:</p>
+<p><code>cycle</code> creates a lazy sequence by repeating a given
+sequence endlessly:</p>
 <pre><code>&gt; (take 7 (cycle [1 2 3]))
 (1 2 3 1 2 3 1)</code></pre>
-<p><code>iterate</code> creates a lazy sequence based on a function. The first argument is a function to be called for each subsequent iteration; the secund argument is a starting value:</p>
+<p><code>iterate</code> creates a lazy sequence based on a function. The
+first argument is a function to be called for each subsequent iteration;
+the secund argument is a starting value:</p>
 <pre><code>&gt; (def counter (iterate inc 1))
 &gt; (take 3 counter)
 (1 2 3)
 &gt; (take 12 counter)
 (1 2 3 4 5 6 7 8 9 10 11 12)</code></pre>
-<p>Note that the lazy sequence is <em>not consumed</em> like an iterator in other programming languages.</p>
-<p>This <code>counter</code> sequence can be used to enumerate items of a sequence:</p>
+<p>Note that the lazy sequence is <em>not consumed</em> like an iterator
+in other programming languages.</p>
+<p>This <code>counter</code> sequence can be used to enumerate items of
+a sequence:</p>
 <pre><code>&gt; (interleave [&quot;Alive&quot; &quot;Dilbert&quot; &quot;Wally&quot;] counter)
 (&quot;Alive&quot; 1 &quot;Dilbert&quot; 2 &quot;Wally&quot; 3)</code></pre>
 <p>Or:</p>
 <pre><code>&gt; (zipmap counter [&quot;Alive&quot; &quot;Dilbert&quot; &quot;Wally&quot;])
 {1 &quot;Alive&quot;, 2 &quot;Dilbert&quot;, 3 &quot;Wally&quot;}</code></pre>
-<p><code>map</code> is lazy, so it can be applied to unbound lazy sequences:</p>
+<p><code>map</code> is lazy, so it can be applied to unbound lazy
+sequences:</p>
 <pre><code>&gt; (defn twice [x] (* 2 x))
 &gt; (def doubled (map twice counter))
 &gt; (take 7 doubled)
 (2 4 6 8 10 12 14)</code></pre>
-<p>Combined with <code>cycle</code>, <code>map</code> can be used to combine existing elements in all possible ways (permutations):</p>
+<p>Combined with <code>cycle</code>, <code>map</code> can be used to
+combine existing elements in all possible ways (permutations):</p>
 <pre><code>(def names [&quot;Alice&quot; &quot;Dilbert&quot; &quot;Wally&quot; &quot;Ashok&quot; &quot;Dogbert&quot;])
 (def adjectives [&quot;great&quot; &quot;lazy&quot; &quot;nerdy&quot; &quot;evil&quot;])
 (def professions [&quot;engineer&quot; &quot;manager&quot; &quot;consultant&quot;])
@@ -1356,20 +1609,24 @@ Ted;Project Manager;45;280000</code></pre>
 (&quot;Alice the great engineer&quot; &quot;Dilbert the lazy manager&quot; &quot;Wally the nerdy consultant&quot;
  &quot;Ashok the evil engineer&quot; &quot;Dogbert the great manager&quot; &quot;Alice the lazy consultant&quot;
  &quot;Dilbert the nerdy engineer&quot; &quot;Wally the evil manager&quot;)</code></pre>
-<p><code>lazy-seq</code> creates a lazy sequence from an existing sequence:</p>
+<p><code>lazy-seq</code> creates a lazy sequence from an existing
+sequence:</p>
 <pre><code>&gt; (def numbers (lazy-seq [1 2 3]))
 (take 2 numbers)
 (1 2)</code></pre>
 <p>Never output lazy sequences as if they were finite:</p>
 <pre><code>&gt; (def counter (iterate inc 1))
 &gt; counter ; bad idea</code></pre>
-<p>Or at least be sure to set <code>*print-length*</code> before doing so:</p>
+<p>Or at least be sure to set <code>*print-length*</code> before doing
+so:</p>
 <pre><code>&gt; (set! *print-length* 10)
 &gt; counter
 (1 2 3 4 5 6 7 8 9 10 ...)</code></pre>
-<p><code>doall</code> realizes a lazy sequence, which should only be done for <em>finite</em> lazy sequences:</p>
+<p><code>doall</code> realizes a lazy sequence, which should only be
+done for <em>finite</em> lazy sequences:</p>
 <pre><code>&gt; (doall counter) ; bad idea, again...</code></pre>
-<p><code>doseq</code> is similar to <code>for</code> and useful if the iteratio step is more interesting than the result:</p>
+<p><code>doseq</code> is similar to <code>for</code> and useful if the
+iteratio step is more interesting than the result:</p>
 <pre><code>&gt; (def numbers (take 5 counter))
 &gt; (doseq [n numbers]
     (println &quot;Current iteration&quot; n))
@@ -1380,25 +1637,36 @@ Current iteration 4
 Current iteration 5</code></pre>
 <p>Infinite sequences should not be sorted or reduced.</p>
 <p>Many functions are lazy, such as <code>take</code>.</p>
-<p>Notice that working with lazy sequences opens a timely gap between when the instruction to do something is given and when it is actyally done. This can cause troubles when working with side-effects (e.g. files read/written with <code>slurp</code>/<code>spit</code> whose content changes in the meantime).</p>
-<h1 data-number="12" id="destructuring"><span class="header-section-number">12</span> Destructuring</h1>
-<p><em>Destructuring</em> is a tool for unpacking data structures with little syntax:</p>
+<p>Notice that working with lazy sequences opens a timely gap between
+when the instruction to do something is given and when it is actyally
+done. This can cause troubles when working with side-effects (e.g. files
+read/written with <code>slurp</code>/<code>spit</code> whose content
+changes in the meantime).</p>
+<h1 data-number="12" id="destructuring"><span
+class="header-section-number">12</span> Destructuring</h1>
+<p><em>Destructuring</em> is a tool for unpacking data structures with
+little syntax:</p>
 <pre><code>&gt; (def employees [&quot;Dilbert&quot; &quot;Wally&quot;])
 &gt; (let [[nerd lazybone] employees]
     (println nerd &quot;is a nerd&quot;)
     (println lazybone &quot;is a lazybone&quot;))
 Dilbert is a nerd
 Wally is a lazybone</code></pre>
-<p>The left side vector of <code>let</code> describes the data to be extracted. The right side expression is the data structure to be unpacked.</p>
-<p>The unpacking need not be exhaustive. Values can be simply dropped on the right side:</p>
+<p>The left side vector of <code>let</code> describes the data to be
+extracted. The right side expression is the data structure to be
+unpacked.</p>
+<p>The unpacking need not be exhaustive. Values can be simply dropped on
+the right side:</p>
 <pre><code>&gt; (let [[a b c] [&quot;foo&quot; &quot;bar&quot; &quot;baz&quot; &quot;qux&quot;]] ; &quot;qux&quot; ignored
     (println a b c))
 foo bar baz</code></pre>
-<p>And the dummy symbol <code>_</code> can be used to drop values from the left side:</p>
+<p>And the dummy symbol <code>_</code> can be used to drop values from
+the left side:</p>
 <pre><code>&gt; (let [[_ a _ b] [&quot;foo&quot; &quot;bar&quot; &quot;baz&quot; &quot;qux&quot;]] ; &quot;foo&quot; and &quot;qux&quot; ignored
     (println a b))
 bar qux</code></pre>
-<p>Nested structures can be destructured using a nested pattern on the left side:</p>
+<p>Nested structures can be destructured using a nested pattern on the
+left side:</p>
 <pre><code>&gt; (def teams [[&quot;Dilbert&quot; &quot;Alice&quot; &quot;Wally&quot;] [&quot;Dogbert&quot; &quot;Ratbert&quot; &quot;Catbert&quot;]])
 &gt; (let [[[dilbert _ wally] [dogbert _ catbert]] teams]
     (println dilbert wally dogbert catbert))</code></pre>
@@ -1414,12 +1682,14 @@ b a r
 &gt; (let [[a _ b _ c] (iterate inc 1)]
     (println a b c))
 1 3 5</code></pre>
-<p>Destructuring can not only be used with <code>let</code>, but also when calling functions:</p>
+<p>Destructuring can not only be used with <code>let</code>, but also
+when calling functions:</p>
 <pre><code>&gt; (defn fire [[scapegoat-one scapegoat-two]]
     (println scapegoat-one &quot;and&quot; scapegoat-two &quot;are fired!&quot;))
 &gt; (fire [&quot;Dilbert&quot; &quot;Alice&quot; &quot;Wally&quot; &quot;Dogbert&quot;])
 Dilbert and Alice are fired!</code></pre>
-<p>When destructuring maps, the variable to be bound stands on the left, and the keyword for the value to be extracted stands on the right:</p>
+<p>When destructuring maps, the variable to be bound stands on the left,
+and the keyword for the value to be extracted stands on the right:</p>
 <pre><code>&gt; (def employees {:engineer &quot;Dilbert&quot; :consultant &quot;Dogbert&quot; :slacker &quot;Wally&quot;})
 &gt; (let [{scapegoat :engineer} employees]
     (println scapegoat))
@@ -1431,7 +1701,8 @@ Dilbert</code></pre>
 &gt; (let [{[{looser-job :role} {leech :name}] :employees} company]
     (println looser-job &quot;is the worst job and&quot; leech &quot;is a leech&quot;))
 Engineer is the worst job and Dogbert is a leech</code></pre>
-<p>If all of a map’s values are to be bound, listing all the keys is cumbersome:</p>
+<p>If all of a map’s values are to be bound, listing all the keys is
+cumbersome:</p>
 <pre><code>&gt; (def employees [{:name &quot;Dilbert&quot; :role &quot;Engineer&quot; :age 42}
                   {:name &quot;Dogbert&quot; :role &quot;Consultant&quot; :age 7}])
 &gt; (defn describe [{name :name role :role age :age}]
@@ -1442,7 +1713,8 @@ Dogbert is a 7 year old Consultant</code></pre>
 <p>The <code>:keys</code> keyword allows for a shorter mapping:</p>
 <pre><code>&gt; (defn describe [{:keys [name role age]}]
     (println name &quot;is a&quot; age &quot;year old&quot; role))</code></pre>
-<p>If the passed value should not only be destructured, but also retained in its entirety, the <code>:as</code> keyword can be used.</p>
+<p>If the passed value should not only be destructured, but also
+retained in its entirety, the <code>:as</code> keyword can be used.</p>
 <pre><code>&gt; (defn add-greeting [{:keys [name role age] :as employee}]
     (assoc employee
            :greeting
@@ -1452,7 +1724,8 @@ Dogbert is a 7 year old Consultant</code></pre>
   :greeting &quot;I&#39;m a 42 year old Engineer called Dilbert&quot;}
  {:name &quot;Dogbert&quot;, :role &quot;Consultant&quot;, :age 7,
   :greeting &quot;I&#39;m a 7 year old Consultant called Dogbert&quot;})</code></pre>
-<p>Default values can be provided using the <code>:or</code> keyword:</p>
+<p>Default values can be provided using the <code>:or</code>
+keyword:</p>
 <pre><code>&gt; (defn email [{:keys [user host domain]
                 :or {user &quot;root&quot;, host &quot;localhost&quot;, domain &quot;local&quot;} :as parts}]
     (str user &quot;@&quot; host &quot;.&quot; domain))
@@ -1460,12 +1733,21 @@ Dogbert is a 7 year old Consultant</code></pre>
 &quot;john@localhost.local&quot;
 &gt; (email {:host &quot;dilbertix&quot; :domain &quot;com&quot;})
 &quot;root@dilbertix.com&quot;</code></pre>
-<p>Destructuring can’t be used directly with <code>def</code>, only within <code>let</code>.</p>
-<h1 data-number="13" id="records-and-protocols"><span class="header-section-number">13</span> Records and Protocols</h1>
-<p>A common tradeoff in programming is between <em>generic</em> and <em>specialized</em> solutions. Maps are <em>generic</em> and very flexible. They can deal with arbitrary keys, which comes with a runtime penalty when dealing with huge amounts of data.</p>
-<p><em>Records</em> are specialized data structures dealing only a set of predefined keys:</p>
+<p>Destructuring can’t be used directly with <code>def</code>, only
+within <code>let</code>.</p>
+<h1 data-number="13" id="records-and-protocols"><span
+class="header-section-number">13</span> Records and Protocols</h1>
+<p>A common tradeoff in programming is between <em>generic</em> and
+<em>specialized</em> solutions. Maps are <em>generic</em> and very
+flexible. They can deal with arbitrary keys, which comes with a runtime
+penalty when dealing with huge amounts of data.</p>
+<p><em>Records</em> are specialized data structures dealing only a set
+of predefined keys:</p>
 <pre><code>&gt; (defrecord Employee [name age job salary])</code></pre>
-<p><code>defrecord</code> creates three <code>var</code>s: one for the record type, and two factory functions <code>-&gt;Employee</code> and <code>map-&gt;Employee</code> to create instances of the record type:</p>
+<p><code>defrecord</code> creates three <code>var</code>s: one for the
+record type, and two factory functions <code>-&gt;Employee</code> and
+<code>map-&gt;Employee</code> to create instances of the record
+type:</p>
 <pre><code>&gt; (def dilbert (-&gt;Employee &quot;Dilbert&quot; 42 &quot;Engineer&quot; 120000))
 
 &gt; (def alice (map-&gt;Employee
@@ -1486,12 +1768,16 @@ Dogbert is a 7 year old Consultant</code></pre>
 &gt; (def alice-promoted (assoc alice :salary 120000 :job &quot;Head of Engineering&quot;))
 &gt; alice-promoted
 #user.Employee{:name &quot;Alice&quot;, :age 37, :job &quot;Head of Engineering&quot;, :salary 120000}</code></pre>
-<p>It’s also possible to associate <em>extra fields</em> with a record; however, those don’t get the speed optimization of the record’s defined fields:</p>
+<p>It’s also possible to associate <em>extra fields</em> with a record;
+however, those don’t get the speed optimization of the record’s defined
+fields:</p>
 <pre><code>&gt; (def dilbert-secret (assoc dilbert :note &quot;Smelly and ugly guy&quot;))
 &gt; dilbert-secret
 #user.Employee{:name &quot;Dilbert&quot;, :age 42, :job &quot;Engineer&quot;,
                :salary 120000, :note &quot;Smelly and ugly guy&quot;}</code></pre>
-<p>While the speed advantage of records is only noticable for large amounts of data, the documentation provided by records is always helpful:</p>
+<p>While the speed advantage of records is only noticable for large
+amounts of data, the documentation provided by records is always
+helpful:</p>
 <pre><code>&gt; (defrecord Poet [name century works])
 &gt; (defrecord FictionalCharacter [name show traits])
 
@@ -1499,13 +1785,15 @@ Dogbert is a 7 year old Consultant</code></pre>
     (-&gt;Poet &quot;Homer&quot; &quot;8th/7th B.C.&quot; [&quot;Iliad&quot; &quot;Odyssey&quot;]))
 &gt; (def homer-2
     (-&gt;FictionalCharacter &quot;Homer&quot; &quot;The Simpsons&quot; [&quot;lazy&quot; &quot;stupid&quot; &quot;impulsive&quot;]))</code></pre>
-<p><code>class</code> returns the underlying type of a record instance:</p>
+<p><code>class</code> returns the underlying type of a record
+instance:</p>
 <pre><code>&gt; (class homer-1)
 user.Poet
 
 &gt; (class homer-2)
 user.FictionalCharacter</code></pre>
-<p><code>instance?</code> (like Java’s <code>instanceof</code>) checks if an instance if of a specific record type:</p>
+<p><code>instance?</code> (like Java’s <code>instanceof</code>) checks
+if an instance if of a specific record type:</p>
 <pre><code>&gt; (instance? FictionalCharacter homer-1)
 false
 
@@ -1522,11 +1810,16 @@ Homer the author of [Iliad Odyssey] who lived 8th/7th B.C.
 
 &gt; (output homer-2)
 Homer the [lazy stupid impulsive] character from The Simpsons</code></pre>
-<p>However, <em>protocols</em> are a better alternative for this purpose. A protocol (here: <code>Person</code>) defines a set of functions (here: <code>describe</code>, <code>greet</code>) that can be performed on different kinds of records implementing that protocol:</p>
+<p>However, <em>protocols</em> are a better alternative for this
+purpose. A protocol (here: <code>Person</code>) defines a set of
+functions (here: <code>describe</code>, <code>greet</code>) that can be
+performed on different kinds of records implementing that protocol:</p>
 <pre><code>(defprotocol Person
   (describe [this])
   (greet [this msg]))</code></pre>
-<p>The functions of the protocol need to be implemented by the records. The protocol name (here: <code>Person</code>) is followed by the <em>method definitions</em>:</p>
+<p>The functions of the protocol need to be implemented by the records.
+The protocol name (here: <code>Person</code>) is followed by the
+<em>method definitions</em>:</p>
 <pre><code>(defrecord Poet [name century works]
   Person
   (describe [this]
@@ -1551,7 +1844,8 @@ Homer the [lazy stupid impulsive] character from The Simpsons</code></pre>
       msg &quot; &quot; (:name this)
       &quot;, you &quot; (clojure.string/join &quot;, &quot; (:traits this))
       &quot; character from &quot; (:show this))))</code></pre>
-<p>The first argument (conventionally called <code>this</code>) refers to the instance the function is called on:</p>
+<p>The first argument (conventionally called <code>this</code>) refers
+to the instance the function is called on:</p>
 <pre><code>&gt; (def homer-1
     (-&gt;Poet &quot;Homer&quot; &quot;8th/7th B.C.&quot; [&quot;Iliad&quot; &quot;Odyssey&quot;]))
 &gt; (describe homer-1)
@@ -1565,7 +1859,8 @@ Homer the [lazy stupid impulsive] character from The Simpsons</code></pre>
 &quot;Homer, the lazy, stupid, impulsive character from The Simpsons&quot;
 &gt; (greet homer-2 &quot;Hi&quot;)
 &quot;Hi Homer, you lazy, stupid, impulsive character from The Simpsons&quot;</code></pre>
-<p>New protocols can be created and implemented for existing types using <code>extend-protocol</code>:</p>
+<p>New protocols can be created and implemented for existing types using
+<code>extend-protocol</code>:</p>
 <pre><code>(defprotocol Greetable
   (say-hi [this]))
 
@@ -1589,7 +1884,8 @@ Homer the [lazy stupid impulsive] character from The Simpsons</code></pre>
 
 &gt; (say-hi homer-2)
 &quot;Hi, I&#39;m Homer from The Simpsons.&quot;</code></pre>
-<p>It is also possible to implement protocols for existing data types:</p>
+<p>It is also possible to implement protocols for existing data
+types:</p>
 <pre><code>(extend-protocol Greetable
   String
   (say-hi [string]
@@ -1603,13 +1899,25 @@ Homer the [lazy stupid impulsive] character from The Simpsons</code></pre>
 
 &gt; (say-hi false)
 &quot;Hi, I&#39;m the Boolean &#39;false&#39;.&quot;</code></pre>
-<p>Records and their instances resemble classes and objects, but they don’t have hierarchies and are immutable. Protocols are similar to abstract classes or interfaces, but more flexible: They can be implemented without touching the definition of the type the methods are implemented for; and, again, they don’t come in hierarchies. Also, most object-oriented programming languages require the programmer to use classes, objects, and interfaces. Records and protocols, however, are optional: Better start without them, and only use them if they bring some tangible benefit.</p>
-<p>Protocols and multimethods have a lot in common, but also some differences:</p>
+<p>Records and their instances resemble classes and objects, but they
+don’t have hierarchies and are immutable. Protocols are similar to
+abstract classes or interfaces, but more flexible: They can be
+implemented without touching the definition of the type the methods are
+implemented for; and, again, they don’t come in hierarchies. Also, most
+object-oriented programming languages require the programmer to use
+classes, objects, and interfaces. Records and protocols, however, are
+optional: Better start without them, and only use them if they bring
+some tangible benefit.</p>
+<p>Protocols and multimethods have a lot in common, but also some
+differences:</p>
 <ul>
-<li>Multimethods define single, stand-alone operations. Protocols group related operations together.</li>
-<li>Multimethods support an arbitrary dispatch mechanism. Protocols dispatch based on a type.</li>
+<li>Multimethods define single, stand-alone operations. Protocols group
+related operations together.</li>
+<li>Multimethods support an arbitrary dispatch mechanism. Protocols
+dispatch based on a type.</li>
 </ul>
-<p>Simple one-off implementations of a protocol as a single instance (say, for test doubles) can be created using <code>reify</code>:</p>
+<p>Simple one-off implementations of a protocol as a single instance
+(say, for test doubles) can be created using <code>reify</code>:</p>
 <pre><code>(def dirty-harry
   (reify Person
     (describe [_] &quot;Lieutenant Harry Callahan, San Francisco Police Department&quot;)
@@ -1620,16 +1928,23 @@ Homer the [lazy stupid impulsive] character from The Simpsons</code></pre>
 
 &gt; (greet dirty-harry &quot;Hi, there&quot;)
 &quot;Hi there, punk. Feeling lucky today?&quot;</code></pre>
-<p>Since <code>this</code> wasn’t used in any of the method bodies, it was replaced by <code>_</code>.</p>
+<p>Since <code>this</code> wasn’t used in any of the method bodies, it
+was replaced by <code>_</code>.</p>
 <p>The methods defined for a protocol could pollute the namespace:</p>
 <pre><code>&gt; (defprotocol Items (count [this]))
 Warning: protocol #&#39;user/Items is overwriting function count</code></pre>
 <p>When in doubt, put protocols in their own namespace.</p>
-<p><code>deftype</code> is a more generic version of <code>defrecord</code> and requires the programmer to provide all of the behaviour of a new type. This is more work than defining a new record, but allows for more flexibility.</p>
-<h1 data-number="14" id="tests"><span class="header-section-number">14</span> Tests</h1>
-<p>For the following example, a new project <code>company</code> is created:</p>
+<p><code>deftype</code> is a more generic version of
+<code>defrecord</code> and requires the programmer to provide all of the
+behaviour of a new type. This is more work than defining a new record,
+but allows for more flexibility.</p>
+<h1 data-number="14" id="tests"><span
+class="header-section-number">14</span> Tests</h1>
+<p>For the following example, a new project <code>company</code> is
+created:</p>
 <pre><code>$ lein new company</code></pre>
-<p>A fixed set of employees is defined in <code>src/company/employees.clj</code>:</p>
+<p>A fixed set of employees is defined in
+<code>src/company/employees.clj</code>:</p>
 <pre><code>(ns company.employees)
 
 (def employees [{:name &quot;Dilbert&quot; :age 42 :job &quot;Engineer&quot; :salary 120000}
@@ -1639,7 +1954,8 @@ Warning: protocol #&#39;user/Items is overwriting function count</code></pre>
                 {:name &quot;Ashok&quot; :age 22 :job &quot;Intern&quot; :salary 18000}
                 {:name &quot;Dogbert&quot; :age 7 :job &quot;Consultant&quot; :salary 470000}
                 {:name &quot;Catbert&quot; :age 9 :job &quot;Head of HR&quot; :salary 190000}])</code></pre>
-<p>Some functions to operate on a set of employees are provided in <code>src/company/core.clj</code>:</p>
+<p>Some functions to operate on a set of employees are provided in
+<code>src/company/core.clj</code>:</p>
 <pre><code>(ns company.core)
 
 (defn find-by-name
@@ -1651,12 +1967,18 @@ Warning: protocol #&#39;user/Items is overwriting function count</code></pre>
   &quot;Sum up the salaries of all given employees&quot;
   [employees]
   (reduce #(+ %1 %2) (map #(:salary %1) employees)))</code></pre>
-<p>Unit tests can be created using the <code>clojure.test</code> library. In <code>src/company/core_test.clj</code>, test cases for the functions in <code>company.core</code> are defined. The test functions from <code>clojure.core</code>, the functions to be tested from <code>company.core</code>, and the static set of employees in <code>company.employees</code> are required:</p>
+<p>Unit tests can be created using the <code>clojure.test</code>
+library. In <code>src/company/core_test.clj</code>, test cases for the
+functions in <code>company.core</code> are defined. The test functions
+from <code>clojure.core</code>, the functions to be tested from
+<code>company.core</code>, and the static set of employees in
+<code>company.employees</code> are required:</p>
 <pre><code>(ns company.core-test
   (:require [clojure.test :refer :all])
   (:require [company.core :as cc])
   (:require [company.employees :as ce]))</code></pre>
-<p>A simple test is defined using <code>deftest</code> and the <code>is</code> assertion function:</p>
+<p>A simple test is defined using <code>deftest</code> and the
+<code>is</code> assertion function:</p>
 <pre><code>(deftest test-finding-employee-by-name
   (is (not (nil? (cc/find-by-name ce/employees &quot;Dilbert&quot;)))))</code></pre>
 <p>The test can be executed with Leiningen:</p>
@@ -1665,10 +1987,13 @@ lein test company.core-test
 
 Ran 1 tests containing 1 assertions.
 0 failures, 0 errors.</code></pre>
-<p>To test another function, another <code>deftest</code> is created:</p>
+<p>To test another function, another <code>deftest</code> is
+created:</p>
 <pre><code>(deftest test-sum-up-employee-salaries
   (is (= 1293000 (cc/sum-salaries ce/employees))))</code></pre>
-<p>Multiple test cases can be grouped together and described using <code>testing</code> as so-called <em>subtests</em> or <em>contexts</em>:</p>
+<p>Multiple test cases can be grouped together and described using
+<code>testing</code> as so-called <em>subtests</em> or
+<em>contexts</em>:</p>
 <pre><code>(deftest test-finding-employee-by-name
   (testing &quot;Finding employees&quot;
     (is (not (nil? (cc/find-by-name ce/employees &quot;Dilbert&quot;))))
@@ -1676,21 +2001,32 @@ Ran 1 tests containing 1 assertions.
   (testing &quot;Not finding employees&quot;
     (is (nil? (cc/find-by-name ce/employees &quot;Sharkbert&quot;)))
     (is (nil? (cc/find-by-name ce/employees &quot;Competent Boss&quot;)))))</code></pre>
-<p>In order to test a property of the code, one needs to work with examples that <em>exercise that property</em>. Instead of making up examples manually, the <a href="https://github.com/clojure/test.check"><code>test.check</code></a> library can be used for <em>Property-Based Testing</em>. First, <code>test.check</code> needs to be added as a dependency (<code>project.clj</code>):</p>
+<p>In order to test a property of the code, one needs to work with
+examples that <em>exercise that property</em>. Instead of making up
+examples manually, the <a
+href="https://github.com/clojure/test.check"><code>test.check</code></a>
+library can be used for <em>Property-Based Testing</em>. First,
+<code>test.check</code> needs to be added as a dependency
+(<code>project.clj</code>):</p>
 <pre><code>:dependencies [[org.clojure/clojure &quot;1.10.1&quot;]
                [org.clojure/test.check &quot;1.1.0&quot;]]</code></pre>
 <p>Random data can then be created using <em>generators</em>:</p>
 <pre><code>&gt; (require &#39;[clojure.test.check.generators :as gen])
 &gt; (gen/sample gen/string-alphanumeric)
 (&quot;&quot; &quot;M&quot; &quot;Lw&quot; &quot;cs9&quot; &quot;CtQU&quot; &quot;yOg95&quot; &quot;YE&quot; &quot;3XTEL&quot; &quot;001qEF3w&quot; &quot;ZTwzwZ&quot;)</code></pre>
-<p><code>gen/string-alphanumeric</code> generates an endless stream of alphanumeric strings (including empty ones), <code>gen/sample</code> takes a sample of that stream. In order to test the functions for the employee data base, the constrained generators for the following map keywords are needed:</p>
+<p><code>gen/string-alphanumeric</code> generates an endless stream of
+alphanumeric strings (including empty ones), <code>gen/sample</code>
+takes a sample of that stream. In order to test the functions for the
+employee data base, the constrained generators for the following map
+keywords are needed:</p>
 <ul>
 <li><code>:name</code>: alphanumeric, non-empty</li>
 <li><code>:age</code>: numeric, positive, non-zero</li>
 <li><code>:job</code>: alphanumeric, non-empty</li>
 <li><code>:salary</code>: numeric, positive, non-zero</li>
 </ul>
-<p>The constraints can be modeled using <code>such-that</code> predicates:</p>
+<p>The constraints can be modeled using <code>such-that</code>
+predicates:</p>
 <pre><code>(def text-gen
   (gen/such-that not-empty gen/string-alphanumeric))
 
@@ -1713,7 +2049,8 @@ Ran 1 tests containing 1 assertions.
 ({:name &quot;wlf&quot;, :age 3, :job &quot;8&quot;, :salary 1}
  {:name &quot;5&quot;, :age 1, :job &quot;ZR&quot;, :salary 1}
  {:name &quot;Hd&quot;, :age 2, :job &quot;L3&quot;, :salary 3}) ; output shortened</code></pre>
-<p>An endless supply of non-empty employee databases (vectors) can be generated:</p>
+<p>An endless supply of non-empty employee databases (vectors) can be
+generated:</p>
 <pre><code>(def payroll-gen
   (gen/not-empty (gen/vector employee-gen)))
 
@@ -1722,7 +2059,12 @@ Ran 1 tests containing 1 assertions.
  [{:name &quot;VR&quot;, :age 2, :job &quot;ME&quot;, :salary 2}
   {:name &quot;vj&quot;, :age 3, :job &quot;8&quot;, :salary 1}]
  [{:name &quot;BYsO&quot;, :age 2, :job &quot;p7&quot;, :salary 2}]) ; output shortened</code></pre>
-<p>In order to conduct tests, a random example has to be plucked from the test data. Here, <code>gen/let</code> is used to create a map containing a payroll together with one single employee taken from that payroll (from the <code>inventory</code> built by <code>inventory-gen</code>, assign a random, single element to <code>book</code>):</p>
+<p>In order to conduct tests, a random example has to be plucked from
+the test data. Here, <code>gen/let</code> is used to create a map
+containing a payroll together with one single employee taken from that
+payroll (from the <code>inventory</code> built by
+<code>inventory-gen</code>, assign a random, single element to
+<code>book</code>):</p>
 <pre><code>(def payroll-and-employee-gen
   (gen/let [payroll payroll-gen
             employee (gen/elements payroll)]
@@ -1736,30 +2078,44 @@ Ran 1 tests containing 1 assertions.
             {:name &quot;n&quot;, :age 2, :job &quot;893&quot;, :salary 1}
             {:name &quot;2g&quot;, :age 3, :job &quot;cLx&quot;, :salary 2}],
   :employee {:name &quot;2g&quot;, :age 3, :job &quot;cLx&quot;, :salary 2}}) ; output shortened</code></pre>
-<p>Once the functions to generate the test data are ready, the property needs to be expressed with property test functions, provided by the <code>test.check</code> library:</p>
+<p>Once the functions to generate the test data are ready, the property
+needs to be expressed with property test functions, provided by the
+<code>test.check</code> library:</p>
 <pre><code>&gt; (require &#39;[clojure.test.check.properties :as prop])</code></pre>
-<p>A <em>theorem</em>—e.g. the increment of a number is bigger than that number—can be expressed using <code>prop/for-all</code>:</p>
+<p>A <em>theorem</em>—e.g. the increment of a number is bigger than that
+number—can be expressed using <code>prop/for-all</code>:</p>
 <pre><code>(prop/for-all [i gen/pos-int]
   (&lt; i (inc i)))</code></pre>
-<p>Computers can’t prove theorems, but only execute tests, for which <code>test.check</code> provides functions:</p>
+<p>Computers can’t prove theorems, but only execute tests, for which
+<code>test.check</code> provides functions:</p>
 <pre><code>&gt; (require &#39;[clojure.test.check :as tc])</code></pre>
-<p>To perform a test, a limit (e.g. 50) of examples to be considered needs to be supplied using <code>tc/quick-check</code>, which wraps the theorem from above:</p>
+<p>To perform a test, a limit (e.g. 50) of examples to be considered
+needs to be supplied using <code>tc/quick-check</code>, which wraps the
+theorem from above:</p>
 <pre><code>(tc/quick-check 50    
   (prop/for-all [i gen/pos-int]
     (&lt; i (inc i))))</code></pre>
 <p>This function produces an output describing the tests conducted:</p>
 <pre><code>{:result true, :pass? true, :num-tests 50, :time-elapsed-ms 4,
  :seed 1622715897727}</code></pre>
-<p>(The <code>seed</code> value could be used to reproduce the random data that was generated.)</p>
-<p>Finally, these tools can be combined to write property test functions:</p>
+<p>(The <code>seed</code> value could be used to reproduce the random
+data that was generated.)</p>
+<p>Finally, these tools can be combined to write property test
+functions:</p>
 <pre><code>(def tc/quick-check 50
   (prop/for-all [p-and-e payroll-and-employee-gen]
     (= (cc/find-by-name (:payroll p-and-e) (-&gt; p-and-e :employee :name))
        (:employee i-and-e))))</code></pre>
-<p>For each payroll/employee sample, the function to be tested <code>cc/find-by-name</code> is called with the whole payroll and the randomly picked employee’s name. The result is than compared to random employee extracted by the generator before.</p>
-<p>In order to integrate this property-based test into the native test runner, <code>defspec</code> from <code>test.check</code> can be used:</p>
+<p>For each payroll/employee sample, the function to be tested
+<code>cc/find-by-name</code> is called with the whole payroll and the
+randomly picked employee’s name. The result is than compared to random
+employee extracted by the generator before.</p>
+<p>In order to integrate this property-based test into the native test
+runner, <code>defspec</code> from <code>test.check</code> can be
+used:</p>
 <pre><code>&gt; (require &#39;[clojure.test.check.clojure-test :as ctest])</code></pre>
-<p>The test can then be defined using <code>ctest/decspec</code> as follows:</p>
+<p>The test can then be defined using <code>ctest/decspec</code> as
+follows:</p>
 <pre><code>(ctest/defspec find-by-name-finds-employee 50
   (prop/for-all [p-and-e payroll-and-employee-gen]
     (= (cc/find-by-name (:payroll p-and-e) (-&gt; p-and-e :employee :name))
@@ -1775,7 +2131,8 @@ lein test company.core-test
 
 Ran 3 tests containing 6 assertions.
 0 failures, 0 errors.</code></pre>
-<p>Here’s the whole property-based test for the employee database (<code>test/company/core_property_test.clj</code>):</p>
+<p>Here’s the whole property-based test for the employee database
+(<code>test/company/core_property_test.clj</code>):</p>
 <pre><code>(ns company.core-property-test
   (:require [clojure.test :refer :all])
   (:require [company.core :as cc])
@@ -1808,10 +2165,22 @@ Ran 3 tests containing 6 assertions.
   (prop/for-all [p-and-e payroll-and-employee-gen]
     (= (cc/find-by-name (:payroll p-and-e) (-&gt; p-and-e :employee :name))
        (:employee p-and-e))))</code></pre>
-<p>While unit tests are easier to implement and understand, they often cover only a few hand-picked examples, leaving much of the input space untested. Property-based testing is harder to implement and understand, but covers a much wider space of possible inputs. However, one might jump to the wrong conclusion that <em>all</em> possibilities are covered, where generators probably miss some basic but crucial cases (e.g. picking 0 as a random number for testing division by zero).</p>
-<p>Therefore, it’s a good idea to start with some unit tests covering the basic cases (say, all combinations of a devision with positive and negative numbers, and zero). Property-based tests can then be introduced to cover more of the input space.</p>
-<p>Notice that property-based tests are non-deterministic. Re-starting a failed test pipeline might yield a test run without errors, but the underlying error remains.</p>
-<p>Even having only one single trivial test case is way better than having no test cases at all:</p>
+<p>While unit tests are easier to implement and understand, they often
+cover only a few hand-picked examples, leaving much of the input space
+untested. Property-based testing is harder to implement and understand,
+but covers a much wider space of possible inputs. However, one might
+jump to the wrong conclusion that <em>all</em> possibilities are
+covered, where generators probably miss some basic but crucial cases
+(e.g. picking 0 as a random number for testing division by zero).</p>
+<p>Therefore, it’s a good idea to start with some unit tests covering
+the basic cases (say, all combinations of a devision with positive and
+negative numbers, and zero). Property-based tests can then be introduced
+to cover more of the input space.</p>
+<p>Notice that property-based tests are non-deterministic. Re-starting a
+failed test pipeline might yield a test run without errors, but the
+underlying error remains.</p>
+<p>Even having only one single trivial test case is way better than
+having no test cases at all:</p>
 <pre><code>(require &#39;[clojure.test :refer :all])
 (require &#39;[company.core :as cc])
 (require &#39;[company.employees :as ce])
@@ -1820,21 +2189,38 @@ Ran 3 tests containing 6 assertions.
   (is (= 1293000 (cc/sum-salaries ce/employees))))</code></pre>
 <p>This test case reveals a lot about the code base being tested:</p>
 <ul>
-<li>There is a namespace called <code>company.core</code>, providing more or less useful functions.</li>
-<li>There is a namespace called <code>company.employees</code>, providing an actual database of employee records.</li>
-<li>There is a function <code>sum-salaries</code> that calculates the total salaries of an employee database, returning a positive integer.</li>
+<li>There is a namespace called <code>company.core</code>, providing
+more or less useful functions.</li>
+<li>There is a namespace called <code>company.employees</code>,
+providing an actual database of employee records.</li>
+<li>There is a function <code>sum-salaries</code> that calculates the
+total salaries of an employee database, returning a positive
+integer.</li>
 </ul>
-<p>Simple unit tests can be made more powerful by using parameters with <code>are</code>:</p>
+<p>Simple unit tests can be made more powerful by using parameters with
+<code>are</code>:</p>
 <pre><code>(deftest test-finding-employee-by-name-parametrized
   (testing &quot;Finding employees by their name, checking their roles&quot;
     (are [actual expected] (= (:job actual) expected)
          (cc/find-by-name ce/employees &quot;Dilbert&quot;) &quot;Engineer&quot;
          (cc/find-by-name ce/employees &quot;Ashok&quot;) &quot;Intern&quot;
          (cc/find-by-name ce/employees &quot;Dogbert&quot;) &quot;Consultant&quot;)))</code></pre>
-<p>Here, three examples are provided, each consisting of two expressions: The left (the actual function call) being mapped to <code>actual</code>, the right (the expected result) being mapped to <code>expected</code>. The test consists of comparing a property of <code>actual</code> (the job of the employee) to the <code>expected</code> value. This helps keeping the test definition separate from the test examples, which makes it less effortful to add more test cases.</p>
-<h1 data-number="15" id="spec"><span class="header-section-number">15</span> Spec</h1>
-<p>Clojure programmers are often more concerned with the <em>shape</em> of data rather than its <em>type</em>. The question is rather “is this a vector of maps each providing a <code>:name</code> key?” than “is this a <code>NamedItemsVector</code>?”.</p>
-<p>The shape of data can be verified by providing functions such as this:</p>
+<p>Here, three examples are provided, each consisting of two
+expressions: The left (the actual function call) being mapped to
+<code>actual</code>, the right (the expected result) being mapped to
+<code>expected</code>. The test consists of comparing a property of
+<code>actual</code> (the job of the employee) to the
+<code>expected</code> value. This helps keeping the test definition
+separate from the test examples, which makes it less effortful to add
+more test cases.</p>
+<h1 data-number="15" id="spec"><span
+class="header-section-number">15</span> Spec</h1>
+<p>Clojure programmers are often more concerned with the <em>shape</em>
+of data rather than its <em>type</em>. The question is rather “is this a
+vector of maps each providing a <code>:name</code> key?” than “is this a
+<code>NamedItemsVector</code>?”.</p>
+<p>The shape of data can be verified by providing functions such as
+this:</p>
 <pre><code>(defn employee? [x]
   (and
     (map? x)
@@ -1847,15 +2233,24 @@ Ran 3 tests containing 6 assertions.
 true
 &gt; (employee? {:name &quot;Clint Eastwood&quot; :age 82 :role &quot;Dirty Harry&quot;})
 false</code></pre>
-<p>This manual approach doesn’t scale well. Consider matching the shape of strings: Writing a state machine manually for every pattern neither scales well. Instead, <em>regular expressions</em> are used to describe those patterns. The <a href="https://clojure.org/about/spec"><code>clojure.spec</code></a> library provides facilities to define and check the shape of data; it works like regular expressions for data structures:</p>
+<p>This manual approach doesn’t scale well. Consider matching the shape
+of strings: Writing a state machine manually for every pattern neither
+scales well. Instead, <em>regular expressions</em> are used to describe
+those patterns. The <a
+href="https://clojure.org/about/spec"><code>clojure.spec</code></a>
+library provides facilities to define and check the shape of data; it
+works like regular expressions for data structures:</p>
 <pre><code>&gt; (require &#39;[clojure.spec.alpha :as s])</code></pre>
-<p><code>clojure.spec</code> is about to be finished, and therefore is used under the namespace <code>.alpha</code> for the time being.</p>
-<p>The <code>s/valid?</code> function expects a predicate function and a value and returns whether or not the value passes the validation:</p>
+<p><code>clojure.spec</code> is about to be finished, and therefore is
+used under the namespace <code>.alpha</code> for the time being.</p>
+<p>The <code>s/valid?</code> function expects a predicate function and a
+value and returns whether or not the value passes the validation:</p>
 <pre><code>&gt; (s/valid? number? 44)
 true
 &gt; (s/valid? string? 44)
 false</code></pre>
-<p>Multiple predicates can be combined using <code>clojure.spec/and</code>:</p>
+<p>Multiple predicates can be combined using
+<code>clojure.spec/and</code>:</p>
 <pre><code>(def n-leq-100
   (s/and number? #(&lt;= % 100)))
 
@@ -1864,8 +2259,11 @@ true
 
 &gt; (s/valid? n-leq-100 101)
 false</code></pre>
-<p>A predicate function <code>n-leq-100</code> is called a <em>spec</em>. The whole library and concept is called <code>clojure.spec</code>.</p>
-<p>Predicates can also be combined using <code>clojure.spec/or</code>, which requires additional keywords describing the checks:</p>
+<p>A predicate function <code>n-leq-100</code> is called a
+<em>spec</em>. The whole library and concept is called
+<code>clojure.spec</code>.</p>
+<p>Predicates can also be combined using <code>clojure.spec/or</code>,
+which requires additional keywords describing the checks:</p>
 <pre><code>(def far-from-zero?
   (s/or :positive #(&gt; % +10)
         :negative #(&lt; % -10)))
@@ -1878,7 +2276,9 @@ true
 false
 &gt; (s/valid? far-from-zero? -15)
 true</code></pre>
-<p>The keywords <code>:positive</code> and <code>:negative</code> are useful for providing feedback in case the value fails to match the spec (more of which later).</p>
+<p>The keywords <code>:positive</code> and <code>:negative</code> are
+useful for providing feedback in case the value fails to match the spec
+(more of which later).</p>
 <p>Multiple predicates can be combined to build new predicates:</p>
 <pre><code>(def n-pos? #(&gt;= % 0))
 (def n-leq-100? #(&lt;= % 100))
@@ -1893,21 +2293,25 @@ true</code></pre>
 false
 &gt; (s/valid? n-pos-even-leq-100 98)
 true</code></pre>
-<p><code>spec/coll-of</code> can be used to check if something is a collection of something:</p>
+<p><code>spec/coll-of</code> can be used to check if something is a
+collection of something:</p>
 <pre><code>(def coll-of-strings? (s/coll-of string?))
 
 &gt; (s/valid? coll-of-strings? [&quot;John&quot; &quot;Doe&quot;])
 true
 &gt; (s/valid? coll-of-strings? [&quot;one&quot; &quot;two&quot; &quot;three&quot; 4 &quot;five&quot;])
 false</code></pre>
-<p><code>spec/cat</code> can be used to create <em>this</em> should follow <em>that</em> specs (descriptive keywords are needed):</p>
+<p><code>spec/cat</code> can be used to create <em>this</em> should
+follow <em>that</em> specs (descriptive keywords are needed):</p>
 <pre><code>(def s-n-s-n? (s/cat :s1 string? :n1 number? :s2 string? :n2 number?))
 
 &gt; (s/valid? s-n-s-n? [&quot;Dilbert&quot; 42 &quot;Ashok&quot; 21])
 true
 &gt; (s/valid? s-n-s-n? [&quot;Dilbert&quot; &quot;Alice&quot; &quot;Dogbert&quot; &quot;Wally&quot;])
 false</code></pre>
-<p>Specs for maps can be written using the <code>keys</code> function (using the <code>employees</code> database from the last chapter <code>src/company/employees.clj</code>):</p>
+<p>Specs for maps can be written using the <code>keys</code> function
+(using the <code>employees</code> database from the last chapter
+<code>src/company/employees.clj</code>):</p>
 <pre><code>(ns company.employees
   (:require [clojure.spec.alpha :as s]))
 
@@ -1923,8 +2327,14 @@ false</code></pre>
 true
 &gt; (s/valid? ce/employee-s? {:name &quot;Ashok&quot; :age 27 :job &quot;Intern&quot;})
 false</code></pre>
-<p>Here, namespace-qualified keys (<code>:company.employees/name</code>) have been used. However, the <code>-un</code> part of <code>:req-un</code> means <em>unqualified</em>, so the keys of a map value don’t have to be qualified in order to match.</p>
-<p>In order to use specs in different locations, they can be stored in a <em>global registry</em> (“global” means JVM-wide) using <code>clojure.spec/def</code>. This registers an employee record as <code>:company.employees/employee</code>:</p>
+<p>Here, namespace-qualified keys (<code>:company.employees/name</code>)
+have been used. However, the <code>-un</code> part of
+<code>:req-un</code> means <em>unqualified</em>, so the keys of a map
+value don’t have to be qualified in order to match.</p>
+<p>In order to use specs in different locations, they can be stored in a
+<em>global registry</em> (“global” means JVM-wide) using
+<code>clojure.spec/def</code>. This registers an employee record as
+<code>:company.employees/employee</code>:</p>
 <pre><code>(s/def :company.employees/employee
   (s/keys :req-un [:company.employees/name
                    :company.employees/age
@@ -1934,13 +2344,20 @@ false</code></pre>
 <pre><code>&gt; (s/valid? :company.employees/employee
     {:name &quot;Dilbert&quot; :age 42 :job &quot;Engineer&quot; :salary 120000})
 true</code></pre>
-<p>Keywords must be fully qualified in the spec definition because of the global registry, otherwise they could collide with other keywords. However, from within the namespace <code>company.employees</code>, the shortcut <code>::name</code> can be used instead of <code>:company.employees.name</code>. Thus, the above spec can be simplified:</p>
+<p>Keywords must be fully qualified in the spec definition because of
+the global registry, otherwise they could collide with other keywords.
+However, from within the namespace <code>company.employees</code>, the
+shortcut <code>::name</code> can be used instead of
+<code>:company.employees.name</code>. Thus, the above spec can be
+simplified:</p>
 <pre><code>(s/def :company.employees/employee
   (s/keys :req-un [::name
                    ::age
                    ::job
                    ::salary]))</code></pre>
-<p><code>clojure.spec</code> tries to look up the fully qualified keys in the registry. If a spec is found, the value associated with that key is validated against it. (Otherwise, no validation takes place.)</p>
+<p><code>clojure.spec</code> tries to look up the fully qualified keys
+in the registry. If a spec is found, the value associated with that key
+is validated against it. (Otherwise, no validation takes place.)</p>
 <p>Let’s create additional specs for the map keywords:</p>
 <pre><code>(s/def ::name string?)
 
@@ -1964,18 +2381,26 @@ true
 &gt; (s/valid? :company.employees/employee
     {:name &quot;Ashok&quot; :age 27 :job &quot;Intern&quot; :salary &quot;nothing&quot;})
 false</code></pre>
-<p>When using heavily nested specs, it’s often unclear <em>why</em> a particular value failed to match a spec. In this case, <code>clojure.spec/explain</code> can be used (just like <code>valid</code>):</p>
+<p>When using heavily nested specs, it’s often unclear <em>why</em> a
+particular value failed to match a spec. In this case,
+<code>clojure.spec/explain</code> can be used (just like
+<code>valid</code>):</p>
 <pre><code>&gt; (s/explain :company.employees/employee
     {:name &quot;Ashok&quot; :age 27 :job &quot;Intern&quot; :salary &quot;nothing&quot;})
 &quot;nothing&quot; - failed: int? in: [:salary] at: [:salary] spec: :company.employees/salary</code></pre>
-<p><code>explain</code> always returns <code>nil</code> and prints its result. The related function <code>clojure.spec/conform</code>, on the other side, returns the (positively) matching value, or <code>:clojure.spec.alpha/invalid</code> in case of a mismatch:</p>
+<p><code>explain</code> always returns <code>nil</code> and prints its
+result. The related function <code>clojure.spec/conform</code>, on the
+other side, returns the (positively) matching value, or
+<code>:clojure.spec.alpha/invalid</code> in case of a mismatch:</p>
 <pre><code>&gt; (s/conform :company.employees/employee
     {:name &quot;Dilbert&quot; :age 42 :job &quot;Engineer&quot; :salary 120000})
 {:name &quot;Dilbert&quot;, :age 42, :job &quot;Engineer&quot;, :salary 120000}
 &gt; (s/conform :company.employees/employee
     {:name &quot;Ashok&quot; :age 27 :job &quot;Intern&quot; :salary &quot;nothing&quot;})
 :clojure.spec.alpha/invalid</code></pre>
-<p>Specs can also be used to validate the arguments of a function. One way is to use <code>:pre</code> and <code>:post</code> conditions with functions (<code>src/company/core.clj</code>):</p>
+<p>Specs can also be used to validate the arguments of a function. One
+way is to use <code>:pre</code> and <code>:post</code> conditions with
+functions (<code>src/company/core.clj</code>):</p>
 <pre><code>(ns company.core
   (:require [company.employees])
   (:require [clojure.spec.alpha :as s]))
@@ -1986,10 +2411,13 @@ false</code></pre>
   {:pre [(s/valid? :company.employees/employees employees)
          (s/valid? :company.employees/name by-name)]}
   (first (filter #(= (:name %1) by-name) employees)))</code></pre>
-<p>A more convenient way is to define those conditions separately from the function using <code>clojure.spec/fdef</code>:</p>
+<p>A more convenient way is to define those conditions separately from
+the function using <code>clojure.spec/fdef</code>:</p>
 <pre><code>(s/fdef find-by-name
         :args (:by-name :company.employees/name))</code></pre>
-<p>Those checks come with a significant performance penalty and are therefore deactivated by default. They can be activated by explicitly instrumenting a function:</p>
+<p>Those checks come with a significant performance penalty and are
+therefore deactivated by default. They can be activated by explicitly
+instrumenting a function:</p>
 <pre><code>&gt; (require &#39;[company.employees])
 &gt; (require &#39;[clojure.spec.alpha :as s])
 &gt; (require &#39;[clojure.spec.test.alpha :as st])
@@ -2002,7 +2430,9 @@ false</code></pre>
 Execution error - invalid arguments to company.core/find-by-name at ...
 :dilbert - failed: string? at: [:by-name] spec: :company.employees/name</code></pre>
 <p>This should only be used during development and testing.</p>
-<p>Creating specs provides much information that can be used for generating test data. Consider the function <code>introduce</code> (<code>src/company/employees.clj</code>) and its spec:</p>
+<p>Creating specs provides much information that can be used for
+generating test data. Consider the function <code>introduce</code>
+(<code>src/company/employees.clj</code>) and its spec:</p>
 <pre><code>(defn introduce [employee]
   (str &quot;Hello, my name is &quot;
        (:name employee)
@@ -2015,7 +2445,8 @@ Execution error - invalid arguments to company.core/find-by-name at ...
 &gt; (st/instrument &#39;company.core/introduce)
 &gt; (introduce (find-by-name company.employees/employees &quot;Dilbert&quot;))
 &quot;Hello, my name is Dilbert, I&#39;m 42 years old.&quot;</code></pre>
-<p>Using the <code>:ret</code> keyword, the return value of the function can be checked if it contains the static portion of the text:</p>
+<p>Using the <code>:ret</code> keyword, the return value of the function
+can be checked if it contains the static portion of the text:</p>
 <pre><code>(s/fdef introduce
         :args (s/cat :employee :company.employees/employee)
         :ret (s/and string?
@@ -2030,7 +2461,12 @@ Execution error - invalid arguments to company.core/find-by-name at ...
  :clojure.spec.test.check/ret {:result true, :pass? true, :num-tests 1000,
                                :time-elapsed-ms 431, :seed 1622747931886},
  :sym company.core/introduce})</code></pre>
-<p>The <code>:fn</code> keyword can be used to provide a function for performing additional checks. The <code>employee-exists</code> function gets both the arguments (<code>args</code>) and the return value (<code>ret</code>) of the instrumented function as arguments. The employee’s name is extracted, and it is checked, if that name is contained in the return value:</p>
+<p>The <code>:fn</code> keyword can be used to provide a function for
+performing additional checks. The <code>employee-exists</code> function
+gets both the arguments (<code>args</code>) and the return value
+(<code>ret</code>) of the instrumented function as arguments. The
+employee’s name is extracted, and it is checked, if that name is
+contained in the return value:</p>
 <pre><code>(defn employee-exists [{:keys [args ret]}]
   (let [employee (-&gt; args :employee :name)]
     (not (neg? (.indexOf ret employee)))))
@@ -2042,35 +2478,52 @@ Execution error - invalid arguments to company.core/find-by-name at ...
                     (partial re-find #&quot;I&#39;m &quot;)
                     (partial re-find #&quot; years old.&quot;))
         :fn employee-exists)</code></pre>
-<p>When dealing with keyword specs, double-check that there are no typos. Misnamed keywords won’t be validated by a spec.</p>
-<h1 data-number="16" id="interoperating-with-java"><span class="header-section-number">16</span> Interoperating with Java</h1>
-<p>Since Clojure is based on the Java Virtual Machine, Java code can be used directly from Clojure using its interoperation facilities (<em>interop</em>). The Clojure REPL is also a great tool to explore Java APIs.</p>
-<p>Java offers the class <code>java.io.File</code>, which abstracts the concept of a file. The <a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html">JavaDoc</a> shows that there is a constructor expecting a <code>pathname</code>. A file can, thus, created as follows (note the additional dot after <code>java.io.File</code>).</p>
+<p>When dealing with keyword specs, double-check that there are no
+typos. Misnamed keywords won’t be validated by a spec.</p>
+<h1 data-number="16" id="interoperating-with-java"><span
+class="header-section-number">16</span> Interoperating with Java</h1>
+<p>Since Clojure is based on the Java Virtual Machine, Java code can be
+used directly from Clojure using its interoperation facilities
+(<em>interop</em>). The Clojure REPL is also a great tool to explore
+Java APIs.</p>
+<p>Java offers the class <code>java.io.File</code>, which abstracts the
+concept of a file. The <a
+href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html">JavaDoc</a>
+shows that there is a constructor expecting a <code>pathname</code>. A
+file can, thus, created as follows (note the additional dot after
+<code>java.io.File</code>).</p>
 <pre><code>&gt; (def employees-file (java.io.File. &quot;employees.txt&quot;))</code></pre>
-<p>Methods of the created <code>File</code> instance can be called with a dot in front of the method name:</p>
+<p>Methods of the created <code>File</code> instance can be called with
+a dot in front of the method name:</p>
 <pre><code>&gt; (.exists employees-file)
 false
 &gt; (.getAbsolutePath employees-file)
 &quot;/home/patrick/employees.txt&quot;</code></pre>
-<p>Some classes, such as <code>java.awt.Rectangle</code>, offer public fields, which can be accessed by prepending a dot and a minus:</p>
+<p>Some classes, such as <code>java.awt.Rectangle</code>, offer public
+fields, which can be accessed by prepending a dot and a minus:</p>
 <pre><code>&gt; (def rect (java.awt.Rectangle. 0 0 15 25))
 &gt; (.-width rect)
 15
 &gt; (.-height rect)
 25</code></pre>
-<p>When refering to a class repeatedly, typing out the fully qualified class name becomes tedious. Therefore, classes can be imported. Use <code>import</code> from the REPL:</p>
+<p>When refering to a class repeatedly, typing out the fully qualified
+class name becomes tedious. Therefore, classes can be imported. Use
+<code>import</code> from the REPL:</p>
 <pre><code>&gt; (import java.io.File)</code></pre>
-<p>Or <code>:import</code> of <code>ns</code> within a <code>.clj</code> source file:</p>
+<p>Or <code>:import</code> of <code>ns</code> within a <code>.clj</code>
+source file:</p>
 <pre><code>(:ns company.core
   (:import java.io.File))</code></pre>
 <p>Once imported, <code>File</code> can be used as follows:</p>
 <pre><code>(def backup (File. &quot;backup.txt&quot;))</code></pre>
-<p>To import multiple classes from the same package, just put them into a list separated by space (which must be quoted in the REPL):</p>
+<p>To import multiple classes from the same package, just put them into
+a list separated by space (which must be quoted in the REPL):</p>
 <pre><code>&gt; (import &#39;(java.io File InputStream))</code></pre>
 <p>And without quotation from a <code>.clj</code> source file:</p>
 <pre><code>(:ns company.core
   (:import (java.io File InputStream))</code></pre>
-<p>Classes from the package <code>java.lang</code> are automatically imported.</p>
+<p>Classes from the package <code>java.lang</code> are automatically
+imported.</p>
 <p>Static fields and methods can be accessed using a forward slash:</p>
 <pre><code>&gt; (def dump (File. (str &quot;data&quot; File/separator &quot;dump.txt&quot;)))
 &gt; (.getAbsolutePath dump)
@@ -2079,13 +2532,16 @@ false
 &gt; (def temp (File/createTempFile &quot;employees&quot; &quot;.txt&quot;))
 &gt; (.getAbsolutePath temp)
 &quot;/tmp/employees6472489788961466629.txt&quot;</code></pre>
-<p>Java libraries can be used just like Clojure libraries. Let’s import the Gson library for reading and writing JSON to the <code>company</code> project (<code>project.clj</code>):</p>
+<p>Java libraries can be used just like Clojure libraries. Let’s import
+the Gson library for reading and writing JSON to the
+<code>company</code> project (<code>project.clj</code>):</p>
 <pre><code>:dependencies [[org.clojure/clojure &quot;1.10.1&quot;]
                [org.clojure/test.check &quot;1.1.0&quot;]
                [com.google.code.gson/gson &quot;2.8.0&quot;]] ; new import</code></pre>
 <p>The library can be used—and explored—from the REPL:</p>
 <pre><code>$ lein repl</code></pre>
-<p>First, the <code>Gson</code> class needs to be imported (here, tab completion comes in handy to figure out the package structure):</p>
+<p>First, the <code>Gson</code> class needs to be imported (here, tab
+completion comes in handy to figure out the package structure):</p>
 <pre><code>&gt; (import com.google.gson.Gson)</code></pre>
 <p>Second, a <code>Gson</code> object needs to be initialized:</p>
 <pre><code>&gt; (def gson-obj  (Gson.))</code></pre>
@@ -2103,22 +2559,27 @@ false
 &quot;[{\&quot;:name\&quot;:\&quot;Dilbert\&quot;,\&quot;:age\&quot;:42,\&quot;:job\&quot;:\&quot;Engineer\&quot;,\&quot;:salary\&quot;:120000},
   {\&quot;:name\&quot;:\&quot;Alice\&quot;,\&quot;:age\&quot;:37,\&quot;:job\&quot;:\&quot;Engineer\&quot;,\&quot;:salary\&quot;:115000},
   {\&quot;:name\&quot;:\&quot;Wally\&quot;,\&quot;:age\&quot;:47,\&quot;:job\&quot;:\&quot;Engineer\&quot;,\&quot;:salary\&quot;:130000}]&quot;</code></pre>
-<p>Even though interoperability between Clojure and Java works almost seamlessly, a few differences have to be considered.</p>
-<p>First, a Java method is not a function, and, thus, cannot be bound like a Clojure functon to a symbol:</p>
+<p>Even though interoperability between Clojure and Java works almost
+seamlessly, a few differences have to be considered.</p>
+<p>First, a Java method is not a function, and, thus, cannot be bound
+like a Clojure functon to a symbol:</p>
 <pre><code>&gt; (.count [1 2 3])
 3
 &gt; (def count-method .count)
 Syntax error compiling at (/tmp/form-init2910488673606898294.clj:1:1).
 Unable to resolve symbol: .count in this context</code></pre>
-<p>However, it is possible to turn a method into a function using <code>memfn</code>:</p>
+<p>However, it is possible to turn a method into a function using
+<code>memfn</code>:</p>
 <pre><code>&gt; (def count-method (memfn count))
 &gt; (count-method [1 2 3])
 3</code></pre>
-<p>This is helpful when dealing with higher-order functions, such as <code>map</code>:</p>
+<p>This is helpful when dealing with higher-order functions, such as
+<code>map</code>:</p>
 <pre><code>&gt; (def files [(File. &quot;source.txt&quot;) (File. &quot;target.txt&quot;)]) 
 &gt; (map (memfn exists) files)
 (false false)</code></pre>
-<p>Second, many Java objects are mutable, which might be surprising after dealing with Clojure’s immutable collections:</p>
+<p>Second, many Java objects are mutable, which might be surprising
+after dealing with Clojure’s immutable collections:</p>
 <pre><code>&gt; (import java.util.Vector)
 &gt; (def employees (java.util.Vector.))
 &gt; (.addElement employees &quot;Dilbert&quot;)
@@ -2126,15 +2587,26 @@ Unable to resolve symbol: .count in this context</code></pre>
 &gt; (.addElement employees &quot;Wally&quot;)
 &gt; employees
 [&quot;Dilbert&quot; &quot;Alice&quot; &quot;Wally&quot;]</code></pre>
-<p>Rather than returning a vector with the element added, <code>nil</code> is returned, and the element added as a side effect. Use Clojure’s collections instead, unless mutability is needed.</p>
-<h1 data-number="17" id="threads-promises-and-futures"><span class="header-section-number">17</span> Threads, Promises, and Futures</h1>
-<p>Threads are a very powerful, but also dangerous tool, especially when used in the context of mutable values. At runtime, a Clojure program is a Java program, and every Java program runs a single main thread. Additional threads can be started by using Java’s <code>Thread</code> class:</p>
+<p>Rather than returning a vector with the element added,
+<code>nil</code> is returned, and the element added as a side effect.
+Use Clojure’s collections instead, unless mutability is needed.</p>
+<h1 data-number="17" id="threads-promises-and-futures"><span
+class="header-section-number">17</span> Threads, Promises, and
+Futures</h1>
+<p>Threads are a very powerful, but also dangerous tool, especially when
+used in the context of mutable values. At runtime, a Clojure program is
+a Java program, and every Java program runs a single main thread.
+Additional threads can be started by using Java’s <code>Thread</code>
+class:</p>
 <pre><code>&gt; (defn say-hello [] (println &quot;Hello!&quot;))
 &gt; (def thread (Thread. say-hello))
 &gt; (.start thread)
 Hello!</code></pre>
-<p>A Clojure function <code>say-hello</code> is defined, and a thread is created based on that function (which is a <code>Runnable</code>). Once the thread is started, the function is executed.</p>
-<p>The effect of multiple threads running can be shown by putting one thread to sleep for a while:</p>
+<p>A Clojure function <code>say-hello</code> is defined, and a thread is
+created based on that function (which is a <code>Runnable</code>). Once
+the thread is started, the function is executed.</p>
+<p>The effect of multiple threads running can be shown by putting one
+thread to sleep for a while:</p>
 <pre><code>&gt; (defn say-hello []
     (println &quot;Hello, once!&quot;)
     (Thread/sleep 1000)
@@ -2144,18 +2616,22 @@ Hello!</code></pre>
 Hello, once!
 ;; waiting for a second, the REPL is not blocking...
 Hello, again!</code></pre>
-<p>When multiple threads are running, program execution gets non-deterministic, unless control mechanisms are put in place. Let’s consider these two functions working on a shared variable:</p>
+<p>When multiple threads are running, program execution gets
+non-deterministic, unless control mechanisms are put in place. Let’s
+consider these two functions working on a shared variable:</p>
 <pre><code>(def employee-of-the-month &quot;Dilbert&quot;)
 (defn make-alice-eom []
   (def employee-of-the-month &quot;Alice&quot;))
 (defn make-wally-eom []
   (def employee-of-the-month &quot;Wally&quot;))</code></pre>
-<p>The behaviour is completely deterministic when the functions are executed one after another:</p>
+<p>The behaviour is completely deterministic when the functions are
+executed one after another:</p>
 <pre><code>&gt; (make-alice-eom)
 &gt; (make-wally-eom)
 employee-of-the-month
 &quot;Wally&quot;</code></pre>
-<p>However, when the functions are executed in separate threads, the result depends on mere chance:</p>
+<p>However, when the functions are executed in separate threads, the
+result depends on mere chance:</p>
 <pre><code>(defn race-condition []
     (let [thread-alice (Thread. make-alice-eom)
           thread-wally (Thread. make-wally-eom)]
@@ -2165,26 +2641,40 @@ employee-of-the-month
 &gt; (race-condition)
 &gt; employee-of-the-month
 &quot;Wally&quot;</code></pre>
-<p>Even though the thread started later will usually finish later in this example, no such guarantee can be given. Not modifying shared variables and using immutable data structures helps to avoid such race conditions. Notice that dynamic vars live in thread local storage, and, thus, can be used safely from different threads.</p>
-<p>Some threads do their work in the background, but we need to make sure that they can finish their work before the main thread finishes using <code>join</code>:</p>
+<p>Even though the thread started later will usually finish later in
+this example, no such guarantee can be given. Not modifying shared
+variables and using immutable data structures helps to avoid such race
+conditions. Notice that dynamic vars live in thread local storage, and,
+thus, can be used safely from different threads.</p>
+<p>Some threads do their work in the background, but we need to make
+sure that they can finish their work before the main thread finishes
+using <code>join</code>:</p>
 <pre><code>(defn delete-cache []
   (.delete (java.io.File. &quot;/tmp/cache.txt&quot;)))
 
 &gt; (def delete-thread (Thread. delete-cache))
 &gt; (.start delete-thread)
 &gt; (.join delete-thread)</code></pre>
-<p><code>join</code> waits until the thread is finished and then returns <code>nil</code>.</p>
-<p>It is often useful to get back a result from a computation performed in a thread. A <em>promise</em> is some kind of a value trap that will deliver a value when demanded. A promise is created using the <code>promise</code> function:</p>
+<p><code>join</code> waits until the thread is finished and then returns
+<code>nil</code>.</p>
+<p>It is often useful to get back a result from a computation performed
+in a thread. A <em>promise</em> is some kind of a value trap that will
+deliver a value when demanded. A promise is created using the
+<code>promise</code> function:</p>
 <pre><code>&gt; (def the-result (promise))</code></pre>
 <p>A value is delivered using the <code>deliver</code> function:</p>
 <pre><code>&gt; (deliver the-result &quot;Dilbert&quot;)</code></pre>
-<p>The value then can be grabbed using <code>deref</code> or using <code>@</code>:</p>
+<p>The value then can be grabbed using <code>deref</code> or using
+<code>@</code>:</p>
 <pre><code>&gt; (println &quot;The result is:&quot; (deref the-result))
 The result is: Dilbert
 &gt; (println &quot;The result is:&quot; @the-result)
 The result is: Dilbert</code></pre>
-<p>Once set, the value of a promise can’t be changed again; the value trap was shut!</p>
-<p>Promises are useful in the context of multiple threads. Consider this employee database, to which two functions shall be applied concurrently:</p>
+<p>Once set, the value of a promise can’t be changed again; the value
+trap was shut!</p>
+<p>Promises are useful in the context of multiple threads. Consider this
+employee database, to which two functions shall be applied
+concurrently:</p>
 <pre><code>(def employees [{:name &quot;Dilbert&quot; :age 42 :salary 120000}
                 {:name &quot;Ashok&quot;   :age 27 :salary  18000}
                 {:name &quot;Topper&quot;  :age 37 :salary 250000}])
@@ -2194,7 +2684,9 @@ The result is: Dilbert</code></pre>
 
 (defn average-salary [employees]
   (float (/ (reduce + (map :salary employees)) (count employees))))</code></pre>
-<p>The two calculations can be executed in separate threads and deliver their results using a promise. The parallel processing (given multiple CPUs) might come in handy as the database grows:</p>
+<p>The two calculations can be executed in separate threads and deliver
+their results using a promise. The parallel processing (given multiple
+CPUs) might come in handy as the database grows:</p>
 <pre><code>(defn perform-calculations [employees]
   (let [age-prom (promise)
         pay-prom (promise)]
@@ -2206,8 +2698,10 @@ The result is: Dilbert</code></pre>
 &gt; (perform-calculations employees)
 Average age: 35.333332
 Average salary: 129333.336</code></pre>
-<p>No <code>join</code> is needed, since the threads are done after delivering their values.</p>
-<p>This whole process can be simplified by using a <em>future</em>, which is a promise that brings its own thread along:</p>
+<p>No <code>join</code> is needed, since the threads are done after
+delivering their values.</p>
+<p>This whole process can be simplified by using a <em>future</em>,
+which is a promise that brings its own thread along:</p>
 <pre><code>(defn perform-calculations [employees]
   (let [age-future (future (average-age employees))
         pay-future (future (average-salary employees))]
@@ -2217,14 +2711,28 @@ Average salary: 129333.336</code></pre>
 &gt; (perform-calculations employees)
 Average age: 35.333332
 Average salary: 129333.336</code></pre>
-<p>A function call wrapped using <code>future</code> will be executed in its own thread and deliver its return value to be grabbed using <code>deref</code> or <code>@</code>.</p>
-<p>In general, prefer futures over promises, because they don’t require dealign with threads directly. For more fine-grained control, consider using Java’s thread-pool facilities (<code>java.util.concurrent.Executors</code>).</p>
-<p>In practice, it is often a sensible approach to provide a timeout (here: 500 milliseconds) and a fallback value (here: the keyword <code>:timeout</code> with a promise):</p>
+<p>A function call wrapped using <code>future</code> will be executed in
+its own thread and deliver its return value to be grabbed using
+<code>deref</code> or <code>@</code>.</p>
+<p>In general, prefer futures over promises, because they don’t require
+dealign with threads directly. For more fine-grained control, consider
+using Java’s thread-pool facilities
+(<code>java.util.concurrent.Executors</code>).</p>
+<p>In practice, it is often a sensible approach to provide a timeout
+(here: 500 milliseconds) and a fallback value (here: the keyword
+<code>:timeout</code> with a promise):</p>
 <pre><code>(deref calc-prom 500 :timeout)</code></pre>
-<p><code>pmap</code> is a function that, from the outside, works like <code>map</code>, but, on the inside, uses multiple threads to process the elements in parallel (hence the name; <em>parallel</em> map). Parallel processing comes with some performance overhead and should only be used if it brings a net performance win.</p>
-<h1 data-number="18" id="state"><span class="header-section-number">18</span> State</h1>
-<p>The less mutable state a program has, the easier it is to understand. However, modeling things that do change over time requires state.</p>
-<p>Consider this employee database with a <code>hire</code> to add new employees to it:</p>
+<p><code>pmap</code> is a function that, from the outside, works like
+<code>map</code>, but, on the inside, uses multiple threads to process
+the elements in parallel (hence the name; <em>parallel</em> map).
+Parallel processing comes with some performance overhead and should only
+be used if it brings a net performance win.</p>
+<h1 data-number="18" id="state"><span
+class="header-section-number">18</span> State</h1>
+<p>The less mutable state a program has, the easier it is to understand.
+However, modeling things that do change over time requires state.</p>
+<p>Consider this employee database with a <code>hire</code> to add new
+employees to it:</p>
 <pre><code>(def employees [{:name &quot;Dilbert&quot; :job &quot;Engineer&quot; :salary 120000}
                 {:name &quot;Alice&quot; :job &quot;Engineer&quot; :salary 110000}
                 {:name &quot;Dogbert&quot; :job &quot;Consultant&quot; :salary 250000}])
@@ -2242,8 +2750,11 @@ Average salary: 129333.336</code></pre>
 [{:name &quot;Dilbert&quot;, :job &quot;Engineer&quot;, :salary 120000}
  {:name &quot;Alice&quot;, :job &quot;Engineer&quot;, :salary 110000}
  {:name &quot;Dogbert&quot;, :job &quot;Consultant&quot;, :salary 250000}]</code></pre>
-<p>The function produces a new list with the additional employee, but the original list of employees remains the same.</p>
-<p>The state of the <code>employees</code> vector <em>could</em> be changed using <code>def</code> (notice the exclamation mark in <code>hire!</code> to denote the side-effect):</p>
+<p>The function produces a new list with the additional employee, but
+the original list of employees remains the same.</p>
+<p>The state of the <code>employees</code> vector <em>could</em> be
+changed using <code>def</code> (notice the exclamation mark in
+<code>hire!</code> to denote the side-effect):</p>
 <pre><code>(defn hire! [employee]
   (def employees (conj employees employee)))
 
@@ -2253,8 +2764,10 @@ Average salary: 129333.336</code></pre>
  {:name &quot;Alice&quot;, :job &quot;Engineer&quot;, :salary 110000}
  {:name &quot;Dogbert&quot;, :job &quot;Consultant&quot;, :salary 250000}
  {:name &quot;Wally&quot;, :job &quot;Engineer&quot;, :salary 130000}]</code></pre>
-<p>The <code>employees</code> vector was updated, however, <em>not in a thread-safe manner</em> (see previous chapter).</p>
-<p>Thread-safe state change can be achieved by using <em>atoms</em>, which wraps the value to be changed:</p>
+<p>The <code>employees</code> vector was updated, however, <em>not in a
+thread-safe manner</em> (see previous chapter).</p>
+<p>Thread-safe state change can be achieved by using <em>atoms</em>,
+which wraps the value to be changed:</p>
 <pre><code>(def employees 
   (atom [{:name &quot;Dilbert&quot; :job &quot;Engineer&quot; :salary 120000}
          {:name &quot;Alice&quot; :job &quot;Engineer&quot; :salary 110000}
@@ -2262,10 +2775,17 @@ Average salary: 129333.336</code></pre>
 
 (defn hire! [employee]
   (swap! employees #(conj % employee)))</code></pre>
-<p>The <code>atom</code> function wraps the <code>employees</code> vector, which then can be updated in a thread-safe manner using the <code>swap!</code>, which takes two arguments: first, the atom to be updated (<code>employees</code>), second, a function to be applied to produce the new value to be stored in the atom. Note that <code>employees</code> is no longer a vector, but a vector wrapped in an atom.</p>
+<p>The <code>atom</code> function wraps the <code>employees</code>
+vector, which then can be updated in a thread-safe manner using the
+<code>swap!</code>, which takes two arguments: first, the atom to be
+updated (<code>employees</code>), second, a function to be applied to
+produce the new value to be stored in the atom. Note that
+<code>employees</code> is no longer a vector, but a vector wrapped in an
+atom.</p>
 <p>The employees database can now be updated thread-safely in place:</p>
 <pre><code>&gt; (hire! {:name &quot;Wally&quot; :job &quot;Engineer&quot; :salary 130000})</code></pre>
-<p>To access the value wrapped in the atom, use <code>deref</code> or <code>@</code> (as with promises and futures):</p>
+<p>To access the value wrapped in the atom, use <code>deref</code> or
+<code>@</code> (as with promises and futures):</p>
 <pre><code>&gt; (deref employees)
 [{:name &quot;Dilbert&quot;, :job &quot;Engineer&quot;, :salary 120000}
  {:name &quot;Alice&quot;, :job &quot;Engineer&quot;, :salary 110000}
@@ -2282,31 +2802,42 @@ Average salary: 129333.336</code></pre>
 
 (defn increase-counter! [amount]
   (swap! counter + amount))</code></pre>
-<p>The <code>swap!</code> function applies the <code>+</code> function to the <code>counter</code> atom. The <code>amount</code> value is handed over to the <code>+</code> function by <code>swap!</code>:</p>
+<p>The <code>swap!</code> function applies the <code>+</code> function
+to the <code>counter</code> atom. The <code>amount</code> value is
+handed over to the <code>+</code> function by <code>swap!</code>:</p>
 <pre><code>&gt; (increase-counter! 1)
 &gt; @counter
 1
 &gt; (increase-counter! 5)
 &gt; @counter
 6</code></pre>
-<p>When an atom is updated using <code>swap!</code>, it performs the following steps to guarantee thread safety:</p>
+<p>When an atom is updated using <code>swap!</code>, it performs the
+following steps to guarantee thread safety:</p>
 <ol type="1">
 <li>The current value of the atom is read.</li>
 <li>The update function is called to produce the new value.</li>
-<li>The current value of the atom is read <em>again</em>, and compared to the value read previously.
+<li>The current value of the atom is read <em>again</em>, and compared
+to the value read previously.
 <ul>
-<li>If the value <em>did not change</em> in the meantime, the value is updated.</li>
-<li>If the value <em>did change</em> in the meantime, the whole process is repeated from the first step.</li>
+<li>If the value <em>did not change</em> in the meantime, the value is
+updated.</li>
+<li>If the value <em>did change</em> in the meantime, the whole process
+is repeated from the first step.</li>
 </ul></li>
 </ol>
-<p>Note that the update function can be called multiple times for a single update! Therefore it’s important, that the update function has no side effects!</p>
-<p>Sometimes, there are multiple values that need to be synchronized. Consider this empty employee database, for which also the total number of employees, and the total salary needs to be kept track of:</p>
+<p>Note that the update function can be called multiple times for a
+single update! Therefore it’s important, that the update function has no
+side effects!</p>
+<p>Sometimes, there are multiple values that need to be synchronized.
+Consider this empty employee database, for which also the total number
+of employees, and the total salary needs to be kept track of:</p>
 <pre><code>(def employees (atom []))
 
 (def total-payroll (atom 0))
 
 (def total-staff (atom 0))</code></pre>
-<p>The <code>hire!</code> function tries to keep track of those three atoms:</p>
+<p>The <code>hire!</code> function tries to keep track of those three
+atoms:</p>
 <pre><code>(defn hire! [employee]
   (swap! employees #(conj % employee))
   (swap! total-payroll #(+ (:salary employee)))
@@ -2322,27 +2853,35 @@ Average salary: 129333.336</code></pre>
 370000
 &gt; @total-staff
 2</code></pre>
-<p>This seems to work fine, but the atoms are out of sync <em>between</em> the calls to <code>swap!</code>:</p>
+<p>This seems to work fine, but the atoms are out of sync
+<em>between</em> the calls to <code>swap!</code>:</p>
 <pre><code>(defn hire! [employee]
   (swap! employees #(conj % employee))
   ; out of sync
   (swap! total-payroll #(+ (:salary employee)))
   ; out of sync
   (swap! total-staff inc))</code></pre>
-<p>The three values must be updated either <em>all together</em> or <em>not at all</em>, like an <em>atomic</em> database transaction.</p>
-<p>Such groups of atoms can be managed as <em>refs</em>, which are a lot like atoms, but use different functions. First, <code>ref</code> is used instead of <code>atom</code> for the wrapping:</p>
+<p>The three values must be updated either <em>all together</em> or
+<em>not at all</em>, like an <em>atomic</em> database transaction.</p>
+<p>Such groups of atoms can be managed as <em>refs</em>, which are a lot
+like atoms, but use different functions. First, <code>ref</code> is used
+instead of <code>atom</code> for the wrapping:</p>
 <pre><code>(def employees (ref []))
 
 (def total-payroll (ref 0))
 
 (def total-staff (ref 0))</code></pre>
-<p>Second, <code>alter</code> is used instread of <code>swap!</code>. And, third, all the updates belonging to the same transaction are grouped together using <code>dosync</code>:</p>
+<p>Second, <code>alter</code> is used instread of <code>swap!</code>.
+And, third, all the updates belonging to the same transaction are
+grouped together using <code>dosync</code>:</p>
 <pre><code>(defn hire! [employee]
   (dosync
     (alter employees #(conj % employee))
     (alter total-payroll #(+ % (:salary employee)))
     (alter total-staff inc)))</code></pre>
-<p>Now all the values are kept perfectly in sync. When read, all the three values being altered within the same call to <code>dosync</code> will either yield all the old or all the new values:</p>
+<p>Now all the values are kept perfectly in sync. When read, all the
+three values being altered within the same call to <code>dosync</code>
+will either yield all the old or all the new values:</p>
 <pre><code>&gt; (hire! {:name &quot;Catbert&quot; :salary 180000})
 &gt; (hire! {:name &quot;Alice&quot; :salary 120000})
 &gt; @employees
@@ -2352,8 +2891,14 @@ Average salary: 129333.336</code></pre>
 300000
 &gt; @total-staff
 2</code></pre>
-<p>If the old value of a <code>ref</code> is not of interest, use <code>ref-set</code> instead of <code>alter</code>, providing just the new value.</p>
-<p>Sometimes, modifications to values should be accompanied by some side effects, say, writing changes to a file when new items are added. Consider the function <code>notify-new-hire</code> together with the old version of <code>hire!</code> working on a single atom. Every time a new employee is hired, <code>notify-new-hire</code> is called:</p>
+<p>If the old value of a <code>ref</code> is not of interest, use
+<code>ref-set</code> instead of <code>alter</code>, providing just the
+new value.</p>
+<p>Sometimes, modifications to values should be accompanied by some side
+effects, say, writing changes to a file when new items are added.
+Consider the function <code>notify-new-hire</code> together with the old
+version of <code>hire!</code> working on a single atom. Every time a new
+employee is hired, <code>notify-new-hire</code> is called:</p>
 <pre><code>(def employees (atom []))
 
 (defn notify-new-hire [employee]
@@ -2365,8 +2910,13 @@ Average salary: 129333.336</code></pre>
 
 &gt; (hire! {:name &quot;Alice&quot; :salary 120000})
 Watch out for Alice</code></pre>
-<p>This works fine—until an update has to be retried because the values have been modified in between. In this case, <code>notify-new-hire</code> would be executed multiple times, which is not wanted.</p>
-<p>An <em>agent</em> is an atom that can be combined with side-effects. Instead of calling <code>swap!</code>, the function <code>send</code> is used to both update the agent, and to produce the side effect:</p>
+<p>This works fine—until an update has to be retried because the values
+have been modified in between. In this case,
+<code>notify-new-hire</code> would be executed multiple times, which is
+not wanted.</p>
+<p>An <em>agent</em> is an atom that can be combined with side-effects.
+Instead of calling <code>swap!</code>, the function <code>send</code> is
+used to both update the agent, and to produce the side effect:</p>
 <pre><code>(def employees (agent []))
 
 (defn notify-new-hire [employee]
@@ -2377,7 +2927,14 @@ Watch out for Alice</code></pre>
         (fn [old-employees]
           (notify-new-hire employee)
           (conj old-employees employee))))</code></pre>
-<p>Notice that an anonymous function (<code>fn</code>) has been used instead of a lambda expression. Every agent has its own queue of functions. When <code>hire!</code> gets called, the call to the anonymous function gets queued up. <code>send</code> worls asynchronously, i.e. it returns immediately after the function was put into the queue. The agent pops an outstanding function call from the queue and executes it. The side effect (calling <code>notify-new-hire</code>) and the update are then performed:</p>
+<p>Notice that an anonymous function (<code>fn</code>) has been used
+instead of a lambda expression. Every agent has its own queue of
+functions. When <code>hire!</code> gets called, the call to the
+anonymous function gets queued up. <code>send</code> worls
+asynchronously, i.e. it returns immediately after the function was put
+into the queue. The agent pops an outstanding function call from the
+queue and executes it. The side effect (calling
+<code>notify-new-hire</code>) and the update are then performed:</p>
 <pre><code>&gt; (hire! {:name &quot;Ratbert&quot; :salary 0})
 Watch out for Ratbert
 &gt; (hire! {:name &quot;Alice&quot; :salary 115000})
@@ -2385,7 +2942,9 @@ Watch out for Alice
 &gt; @employees
 [{:name &quot;Ratbert&quot;, :salary 0}
  {:name &quot;Alice&quot;, :salary 115000}]</code></pre>
-<p>Since agents perform their updates in their own thread, exceptions caused by a failed update are not reported immediately. Consider this agent for tracking donations:</p>
+<p>Since agents perform their updates in their own thread, exceptions
+caused by a failed update are not reported immediately. Consider this
+agent for tracking donations:</p>
 <pre><code>(def donations (agent 0))
 
 (defn praise-donor [amount donor]
@@ -2401,31 +2960,46 @@ Watch out for Alice
 Praise John for donating 100 coins!
 &gt; @donations
 0</code></pre>
-<p>If the arguments <code>amount</code> (integer) and <code>donor</code> (string) are swapped, the operation cannot be completed:</p>
+<p>If the arguments <code>amount</code> (integer) and <code>donor</code>
+(string) are swapped, the operation cannot be completed:</p>
 <pre><code>&gt; (donate! &quot;Jane&quot; 200)
 Praise 200 for donating Jane coins!
 &gt; @donations
 100</code></pre>
-<p>The message from the side effect looks suspicious, and the <code>donations</code> haven’t been increased. But the error can go unnoticed until the next update is done:</p>
+<p>The message from the side effect looks suspicious, and the
+<code>donations</code> haven’t been increased. But the error can go
+unnoticed until the next update is done:</p>
 <pre><code>&gt; (donate! 300 &quot;Jim&quot;)
 Execution error (ClassCastException) at user/donate!$fn (REPL:5).
 java.lang.String cannot be cast to java.lang.Number</code></pre>
-<p>In this case, the agent has to be re-started using <code>agent-restart</code>. The error condition can be detected using <code>agent-error</code>:</p>
+<p>In this case, the agent has to be re-started using
+<code>agent-restart</code>. The error condition can be detected using
+<code>agent-error</code>:</p>
 <pre><code>(if (agent-error donations)
   (restart-agent donations 0 :clear-actions true))</code></pre>
-<p>However, the value managed by the agent is reset to 0 in the process.</p>
-<p>Make sure to call <code>shutdown-agents</code> at the end of the <code>-main</code> function of your program, so that the agent’s threads get properly terminated:</p>
+<p>However, the value managed by the agent is reset to 0 in the
+process.</p>
+<p>Make sure to call <code>shutdown-agents</code> at the end of the
+<code>-main</code> function of your program, so that the agent’s threads
+get properly terminated:</p>
 <pre><code>(defn -main []
   ;; working with agents
   (shutdown-agents))</code></pre>
-<p>Use the following guidelines to pick the proper mechanism for your state changes:</p>
+<p>Use the following guidelines to pick the proper mechanism for your
+state changes:</p>
 <ol type="1">
-<li>If a value remains <em>mostly stable</em>, put it into a <code>var</code>.</li>
-<li>If a number of values need to be updated together without side effects, use <code>ref</code>s.</li>
-<li>If the update of values is to be accompanied by side effects, or if the update function takes a lot of time, use an <code>agent</code>.</li>
-<li>If you have a single value that changes without additional side effects, us an <code>atom</code>.</li>
+<li>If a value remains <em>mostly stable</em>, put it into a
+<code>var</code>.</li>
+<li>If a number of values need to be updated together without side
+effects, use <code>ref</code>s.</li>
+<li>If the update of values is to be accompanied by side effects, or if
+the update function takes a lot of time, use an <code>agent</code>.</li>
+<li>If you have a single value that changes without additional side
+effects, us an <code>atom</code>.</li>
 </ol>
-<p>Instead of using <code>ref</code>s, the values to be updated could also be grouped into a single data structure, which is then wrapped in an <code>atom</code>:</p>
+<p>Instead of using <code>ref</code>s, the values to be updated could
+also be grouped into a single data structure, which is then wrapped in
+an <code>atom</code>:</p>
 <pre><code>(def payroll (atom {:total-staff 0
                     :total-payroll 0
                     :employees []}))
@@ -2445,7 +3019,10 @@ java.lang.String cannot be cast to java.lang.Number</code></pre>
  :total-payroll 365000,
  :employees [{:name &quot;Alice&quot;, :salary 115000}
              {:name &quot;Dogbert&quot;, :salary 250000}]}</code></pre>
-<p>There are various functions in Clojure making use of atoms, e.g. <code>memoize</code>, which wraps a function with a cache that maps the arguments to the computed return values. Consider this Fibonacci function:</p>
+<p>There are various functions in Clojure making use of atoms,
+e.g. <code>memoize</code>, which wraps a function with a cache that maps
+the arguments to the computed return values. Consider this Fibonacci
+function:</p>
 <pre><code>(defn fib [n]
   (println &quot;Computing Fibonacci number for&quot; n)
   (cond
@@ -2475,8 +3052,10 @@ Computing Fibonacci number for 2
 Computing Fibonacci number for 1
 Computing Fibonacci number for 0
 5</code></pre>
-<p>The function is called with the same argument multiple times, which slows down the computation for bigger <code>n</code>.</p>
-<p><code>memoize</code> wraps the function so that it caches its return values by argument:</p>
+<p>The function is called with the same argument multiple times, which
+slows down the computation for bigger <code>n</code>.</p>
+<p><code>memoize</code> wraps the function so that it caches its return
+values by argument:</p>
 <pre><code>&gt; (def fib (memoize fib))
 &gt; (fib 1)
 Computing Fibonacci number for 1
@@ -2499,26 +3078,36 @@ Computing Fibonacci number for 7
 Computing Fibonacci number for 6
 Computing Fibonacci number for 5
 89</code></pre>
-<p>The function returned by <code>memoize</code> has its own atom, which serves as a cache for the results having been computed.</p>
-<h1 data-number="19" id="read-and-eval"><span class="header-section-number">19</span> Read and Eval</h1>
-<p>Clojure’s syntax might look strange on the first sight, but is crucial for how the language works. There are two critical functions in Clojure—<code>read</code> and <code>eval</code>—that relate to Clojure’s syntax.</p>
+<p>The function returned by <code>memoize</code> has its own atom, which
+serves as a cache for the results having been computed.</p>
+<h1 data-number="19" id="read-and-eval"><span
+class="header-section-number">19</span> Read and Eval</h1>
+<p>Clojure’s syntax might look strange on the first sight, but is
+crucial for how the language works. There are two critical functions in
+Clojure—<code>read</code> and <code>eval</code>—that relate to Clojure’s
+syntax.</p>
 <p>Clojure code looks a lot like data literals:</p>
 <pre><code>&#39;(dilbert pointy-haired-boss [alice]
    (wally ratbert
      (dogbert &quot;some characters from dilbert...&quot;)))</code></pre>
-<p>Just replace the Dilbert character names by some other symbols, and almost have Clojure code:</p>
+<p>Just replace the Dilbert character names by some other symbols, and
+almost have Clojure code:</p>
 <pre><code>&#39;(defn say-hello [friendly]
    (if friendly
      (println &quot;Hello, my dear!&quot;)))</code></pre>
-<p>Just remove the quote, and you have an executable Clojure function.</p>
+<p>Just remove the quote, and you have an executable Clojure
+function.</p>
 <pre><code>(defn say-hello [friendly]
   (if friendly
     (println &quot;Hello, my dear!&quot;)))
 
 &gt; (say-hello true)
 Hello, my dear!</code></pre>
-<p>Clojure code <em>is</em> just Clojure data, and Clojure function calls <em>are</em> lists. Clojure is <em>homoiconic</em>, which means, code and data are the same thing.</p>
-<p>The <code>read</code> function reads data, by default from the REPL (<code>stdin</code>), until <code>[Return]</code> is entered:</p>
+<p>Clojure code <em>is</em> just Clojure data, and Clojure function
+calls <em>are</em> lists. Clojure is <em>homoiconic</em>, which means,
+code and data are the same thing.</p>
+<p>The <code>read</code> function reads data, by default from the REPL
+(<code>stdin</code>), until <code>[Return]</code> is entered:</p>
 <pre><code>&gt; (read)
 1
 1
@@ -2529,23 +3118,31 @@ Hello, my dear!</code></pre>
 (defn say-hi []
   (println &quot;Hi!&quot;))
 (defn say-hi [] (println &quot;Hi!&quot;))</code></pre>
-<p>The <code>read</code> function just returns returns the expression it read.</p>
-<p><code>read-string</code> reads a string and turns it into a Clojure value (notice the escaped double quotes around the text <code>Hi</code>):</p>
+<p>The <code>read</code> function just returns returns the expression it
+read.</p>
+<p><code>read-string</code> reads a string and turns it into a Clojure
+value (notice the escaped double quotes around the text
+<code>Hi</code>):</p>
 <pre><code>&gt; (read-string &quot;(defn say-hi [] (println \&quot;Hi!\&quot;))&quot;
 (defn say-hi [] (println &quot;Hi!&quot;))</code></pre>
-<p>Once data has been read (from whatever source), it can be evaluated as Clojure code using the <code>eval</code> function:</p>
+<p>Once data has been read (from whatever source), it can be evaluated
+as Clojure code using the <code>eval</code> function:</p>
 <pre><code>&gt; (def some-function-call &#39;(+ 2 3))
 &gt; (eval some-function-call)
 5</code></pre>
-<p>The code in the quoted list <code>(+ 2 3)</code> is compiled and run as Clojure code.</p>
-<p>Some data types, like numbers, strings, and keywords, just evaluate to themselves:</p>
+<p>The code in the quoted list <code>(+ 2 3)</code> is compiled and run
+as Clojure code.</p>
+<p>Some data types, like numbers, strings, and keywords, just evaluate
+to themselves:</p>
 <pre><code>&gt; (eval 42)
 42
 &gt; (eval &quot;Dilbert&quot;)
 &quot;Dilbert&quot;
 &gt; (eval :salary)
 :salary</code></pre>
-<p>A Clojure function consists of different data structures—lists, vectors—which can all be made up as data, and then be combined to a list, which makes up an actual function that can be evaluated:</p>
+<p>A Clojure function consists of different data structures—lists,
+vectors—which can all be made up as data, and then be combined to a
+list, which makes up an actual function that can be evaluated:</p>
 <pre><code>&gt; (def function-name &#39;say-hi)
 &gt; (def args (vector &#39;to-whom))
 &gt; (def output (list &#39;println &quot;Hi,&quot; &#39;to-whom))
@@ -2554,8 +3151,13 @@ Hello, my dear!</code></pre>
 &gt; (eval whole-function) ; creates function say-hi
 &gt; (say-hi &quot;Joe&quot;)
 Hi, Joe</code></pre>
-<p>The two functions <code>read</code> and <code>eval</code> combined can be used to read Clojure code from an external source, say, user-specific settings from a config file. No extra language or syntax has to be made up: The full power of Clojure is supported out of the box.</p>
-<p>It’s also possible to define a very simple REPL using <code>read</code> and <code>eval</code>:</p>
+<p>The two functions <code>read</code> and <code>eval</code> combined
+can be used to read Clojure code from an external source, say,
+user-specific settings from a config file. No extra language or syntax
+has to be made up: The full power of Clojure is supported out of the
+box.</p>
+<p>It’s also possible to define a very simple REPL using
+<code>read</code> and <code>eval</code>:</p>
 <pre><code>(defn my-repl []
   (loop []
     (println (eval (read)))
@@ -2567,7 +3169,8 @@ Hello
 (println (+ 3 2))
 5
 ; Hit Ctrl-D to finish</code></pre>
-<p>A toy version of the function <code>eval</code> can be implemented as an ordinary Clojure function:</p>
+<p>A toy version of the function <code>eval</code> can be implemented as
+an ordinary Clojure function:</p>
 <pre><code>(defn my-eval [expr]
   (cond
     (string? expr) expr
@@ -2577,14 +3180,17 @@ Hello
     (vector? expr) (my-eval-vector expr)
     (list? expr) (my-eval-list expr)
     :else :unknown-expression))</code></pre>
-<p>Strings, keywords, and numbers just evaluate to themselves, so the <code>expr</code> is just returned.</p>
+<p>Strings, keywords, and numbers just evaluate to themselves, so the
+<code>expr</code> is just returned.</p>
 <p>Symbols need to be looked up in the current environment:</p>
 <pre><code>(defn my-eval-symbol [expr]
   (.get (ns-resolve *ns* expr)))</code></pre>
 <p>Vectors needs to be processed recursively:</p>
 <pre><code>(defn my-eval-vector [expr]
   (vec (map my-eval expr)))</code></pre>
-<p>And lists, which can be function calls, need to be separated into the function name <code>f</code> and the argument list <code>args</code>, which are then applied using <code>apply</code>:</p>
+<p>And lists, which can be function calls, need to be separated into the
+function name <code>f</code> and the argument list <code>args</code>,
+which are then applied using <code>apply</code>:</p>
 <pre><code>(defn my-eval-list [expr]
   (let [evaled-items (map my-eval expr)
         f (first evaled-items)
@@ -2593,18 +3199,33 @@ Hello
 
 &gt; (my-eval &#39;(println &quot;Hello&quot;))
 Hello</code></pre>
-<p>A real <code>eval</code> function <em>compiles</em> the given expression to Clojure code, which then can be executed a lot faster. Therefore, <code>eval</code> is not to be used as an everyday tool, but only for special cases: it is just <em>too powerful</em> and therefore <em>too dangerous</em>. It also is slower than regular Clojure code, due to the additional compilation step.</p>
-<p>Reading in code from arbitrary sources can also be very dangerous. Use the <code>read</code> function from <code>clojure.edn</code> if you don’t trust the source. But <code>read</code> is also not a tool for everyday use, so only use it if really needed.</p>
-<h1 data-number="20" id="macros"><span class="header-section-number">20</span> Macros</h1>
-<p>Code is both useful and painful: it solves problems, but also creates new problems of its own. Writing more <em>expressive</em> code leads to <em>less</em> code. The usefulnes of code is kept, but the pain is reduced; <em>less code, less pain</em>.</p>
-<p><em>Macros</em> are a powerful tool in LISP-like languages (such as Clojure) to automate some part of code writing.</p>
-<p>Consider a rating system in which numbers are interpreted in three categories:</p>
+<p>A real <code>eval</code> function <em>compiles</em> the given
+expression to Clojure code, which then can be executed a lot faster.
+Therefore, <code>eval</code> is not to be used as an everyday tool, but
+only for special cases: it is just <em>too powerful</em> and therefore
+<em>too dangerous</em>. It also is slower than regular Clojure code, due
+to the additional compilation step.</p>
+<p>Reading in code from arbitrary sources can also be very dangerous.
+Use the <code>read</code> function from <code>clojure.edn</code> if you
+don’t trust the source. But <code>read</code> is also not a tool for
+everyday use, so only use it if really needed.</p>
+<h1 data-number="20" id="macros"><span
+class="header-section-number">20</span> Macros</h1>
+<p>Code is both useful and painful: it solves problems, but also creates
+new problems of its own. Writing more <em>expressive</em> code leads to
+<em>less</em> code. The usefulnes of code is kept, but the pain is
+reduced; <em>less code, less pain</em>.</p>
+<p><em>Macros</em> are a powerful tool in LISP-like languages (such as
+Clojure) to automate some part of code writing.</p>
+<p>Consider a rating system in which numbers are interpreted in three
+categories:</p>
 <ul>
 <li>positive numbers: good</li>
 <li>zero: indifferent</li>
 <li>negative numbers: bad</li>
 </ul>
-<p>This rating system could be used to print a depiction of the rating in English:</p>
+<p>This rating system could be used to print a depiction of the rating
+in English:</p>
 <pre><code>(defn print-rating [rating]
   (cond
     (pos? rating) (println &quot;good&quot;)
@@ -2617,7 +3238,8 @@ good
 indifferent
 &gt; (print-rating -5)
 bad</code></pre>
-<p>Another implementation could be required to turn the rating number into a keyword for further programmatic processing:</p>
+<p>Another implementation could be required to turn the rating number
+into a keyword for further programmatic processing:</p>
 <pre><code>(defn evaluate-rating [rating]
   (cond
     (pos? rating) :good
@@ -2630,14 +3252,21 @@ bad</code></pre>
 :indifferent
 &gt; (evaluate-rating -1)
 :bad</code></pre>
-<p>Structurally, the two usages of <code>cond</code> are identical, they just have different consequences. The commonalities of the two functions could be factored out into a new function, <code>arithmetic-if</code>:</p>
+<p>Structurally, the two usages of <code>cond</code> are identical, they
+just have different consequences. The commonalities of the two functions
+could be factored out into a new function,
+<code>arithmetic-if</code>:</p>
 <pre><code>(defn arithmetic-if [n pos zero neg]
   (cond
     (pos? n) pos
     (zero? n) zero
     (neg? n) neg))</code></pre>
-<p>The function accepts both the number <code>n</code> to be categorized, and the three possible <em>consequences</em> of a match: <code>pos</code>, <code>zero</code>, and <code>neg</code>.</p>
-<p>This works great, if a value has to be returned, as in <code>evaluate-rating</code>, which can be refactored in terms of <code>arithmetic-if</code>:</p>
+<p>The function accepts both the number <code>n</code> to be
+categorized, and the three possible <em>consequences</em> of a match:
+<code>pos</code>, <code>zero</code>, and <code>neg</code>.</p>
+<p>This works great, if a value has to be returned, as in
+<code>evaluate-rating</code>, which can be refactored in terms of
+<code>arithmetic-if</code>:</p>
 <pre><code>(defn evaluate-rating [rating]
   (arithmetic-if rating :good :indifferent :bad))
 
@@ -2647,7 +3276,8 @@ bad</code></pre>
 :indifferent
 &gt; (evaluate-rating -7)
 :bad</code></pre>
-<p>The same refactoring applied to <code>print-rating</code>, however, produces surprising results:</p>
+<p>The same refactoring applied to <code>print-rating</code>, however,
+produces surprising results:</p>
 <pre><code>(defn print-rating [rating]
   (arithmetic-if rating
                  (println &quot;good&quot;)
@@ -2666,8 +3296,14 @@ bad
 good
 indifferent
 bad</code></pre>
-<p>All three <code>println</code> function calls are executed! When <code>arithmetic-if</code> is invoked, the arguments get evaluated. This is unproblematic for <code>n</code>, which is a number and, therefore, evaluates to itself. Function calls like <code>println</code>, however, are evaluated by their actual execution.</p>
-<p>If <code>arithmetic-if</code> expected functions as its last three parameters, <code>print-rating</code> could be implemented based on the former:</p>
+<p>All three <code>println</code> function calls are executed! When
+<code>arithmetic-if</code> is invoked, the arguments get evaluated. This
+is unproblematic for <code>n</code>, which is a number and, therefore,
+evaluates to itself. Function calls like <code>println</code>, however,
+are evaluated by their actual execution.</p>
+<p>If <code>arithmetic-if</code> expected functions as its last three
+parameters, <code>print-rating</code> could be implemented based on the
+former:</p>
 <pre><code>(defn arithmetic-if [n pos-f zero-f neg-f]
   (cond
     (pos? n) (pos-f)
@@ -2686,7 +3322,9 @@ good
 indifferent
 &gt; (print-rating -2)
 bad</code></pre>
-<p>However, the implementation of <code>evaluate-rating</code> now becomes more complicated, thwarting the gains made using <code>arithmetic-if</code> as an abstraction:</p>
+<p>However, the implementation of <code>evaluate-rating</code> now
+becomes more complicated, thwarting the gains made using
+<code>arithmetic-if</code> as an abstraction:</p>
 <pre><code>(defn evaluate-rating [rating]
   (arithmetic-if rating
                  #(identity :good)
@@ -2699,7 +3337,8 @@ bad</code></pre>
 :indifferent
 &gt; (evaluate-rating -5)
 :bad</code></pre>
-<p>What <code>arithmetic-if</code> is really supposed to do is to transform code written like this:</p>
+<p>What <code>arithmetic-if</code> is really supposed to do is to
+transform code written like this:</p>
 <pre><code>;; evaluate-rating
 (arithmetic-if rating
   :good
@@ -2723,12 +3362,14 @@ bad</code></pre>
   (pos? rating) (println &quot;good&quot;)
   (zero? rating) (println &quot;indifferent&quot;)
   :else (println &quot;bad&quot;))</code></pre>
-<p>Since Clojure code <em>is</em> just data, this transformation can be made using a function building up another function:</p>
+<p>Since Clojure code <em>is</em> just data, this transformation can be
+made using a function building up another function:</p>
 <pre><code>(defn arithmetic-if-to-cond [n pos zero neg]
   (list &#39;cond (list &#39;pos? n) pos
               (list &#39;zero? n) zero
               :else neg))</code></pre>
-<p>Fed with parameters protected with a single quote from evaluation, this function produces the desired <code>cond</code> forms:</p>
+<p>Fed with parameters protected with a single quote from evaluation,
+this function produces the desired <code>cond</code> forms:</p>
 <pre><code>&gt; (arithmetic-if-to-cond &#39;rating
                          &#39;(println &quot;good&quot;)
                          &#39;(println &quot;indifferent&quot;)
@@ -2746,12 +3387,15 @@ bad</code></pre>
   (pos? rating) :good
   (zero? rating) :indifferent
   :else :bad)</code></pre>
-<p>However, those <code>cond</code> forms are <em>still just data</em>, and not compiled code that actually can be used. Here, macros come into play, which are defined using <code>defmacro</code>:</p>
+<p>However, those <code>cond</code> forms are <em>still just data</em>,
+and not compiled code that actually can be used. Here, macros come into
+play, which are defined using <code>defmacro</code>:</p>
 <pre><code>(defmacro arithmetic-if [n pos zero neg]
   (list &#39;cond (list &#39;pos? n) pos
               (list &#39;zero? n) zero
               :else neg))</code></pre>
-<p><code>print-rating</code> can now be implemented without using lambdas or quotation:</p>
+<p><code>print-rating</code> can now be implemented without using
+lambdas or quotation:</p>
 <pre><code>(defn print-rating [rating]
   (arithmetic-if rating
                  (println &quot;good&quot;)
@@ -2777,16 +3421,32 @@ bad</code></pre>
 :indifferent
 &gt; (evaluate-rating -5)
 :bad</code></pre>
-<p>The Clojure compilation process works as follows: First, source code is read, i.e. turned into data structures (lists, vectors, etc.). Second, <em>macro expansion</em> is performed, modifying those data structures. Third, those modified data structures with expanded macros are turned into byte code by the actual compilation step.</p>
-<p>Unlike C, Clojure macros work on the code as a <em>data structures</em>, not on code as mere <em>program text</em>, which makes Clojure macros more powerful and <em>less</em> dangerous than C macros.</p>
-<p>The <code>arithmetic-if</code> macro from above requires a lot of quotes to prevent the expressions from being evaluated. Clojure provides a templating system called <em>syntax quoting</em>, which makes macros more readable:</p>
+<p>The Clojure compilation process works as follows: First, source code
+is read, i.e. turned into data structures (lists, vectors, etc.).
+Second, <em>macro expansion</em> is performed, modifying those data
+structures. Third, those modified data structures with expanded macros
+are turned into byte code by the actual compilation step.</p>
+<p>Unlike C, Clojure macros work on the code as a <em>data
+structures</em>, not on code as mere <em>program text</em>, which makes
+Clojure macros more powerful and <em>less</em> dangerous than C
+macros.</p>
+<p>The <code>arithmetic-if</code> macro from above requires a lot of
+quotes to prevent the expressions from being evaluated. Clojure provides
+a templating system called <em>syntax quoting</em>, which makes macros
+more readable:</p>
 <pre><code>(defmacro arithmetic-if [n pos zero neg]
   `(cond
      (pos? ~n) ~pos
      (zero? ~n) ~zero
      :else ~neg))</code></pre>
-<p>Syntax quoting starts with a backquote (before <code>cond</code>). Within the quoted form, expressions from the outside are referred to using a tilde prefix, which prevents them from being evalauted when the macro is expanded before compilation.</p>
-<p>There are a few other syntax specialities when it comes to using macros with syntax quoting. Consider the <code>conjunction</code> macro, which works like <code>and</code>—“conjunction” just being a fancy word for “and”:</p>
+<p>Syntax quoting starts with a backquote (before <code>cond</code>).
+Within the quoted form, expressions from the outside are referred to
+using a tilde prefix, which prevents them from being evalauted when the
+macro is expanded before compilation.</p>
+<p>There are a few other syntax specialities when it comes to using
+macros with syntax quoting. Consider the <code>conjunction</code> macro,
+which works like <code>and</code>—“conjunction” just being a fancy word
+for “and”:</p>
 <pre><code>(defmacro conjunction
   ([] true)
   ([x] x)
@@ -2795,29 +3455,51 @@ bad</code></pre>
       (if current# (conjunction ~@next) current#))))</code></pre>
 <p>The macro works as follows:</p>
 <ol type="1">
-<li>For an empty list of conditions, <code>true</code> is returned (first base case).</li>
-<li>For a single condition, the evaluated condition is returned (second base case).</li>
-<li>For a list of more than one condition (general case), the following logic is applied:
+<li>For an empty list of conditions, <code>true</code> is returned
+(first base case).</li>
+<li>For a single condition, the evaluated condition is returned (second
+base case).</li>
+<li>For a list of more than one condition (general case), the following
+logic is applied:
 <ol type="1">
-<li>The first condition is bound to <code>current#</code>; the suffix <code>#</code> being used to guarantee a unique symbol.</li>
-<li>If the <code>current#</code> condition evaluates to <code>true</code>, the <code>conjunction</code> macro is “called” recursively with the next condition in the list. This <code>next</code> symbol is prefixed both by <code>~</code> for syntax quoting, and an <code>@</code>—more of which later.</li>
-<li>Otherwise, if <code>current#</code> evaluates to <code>false</code>, <code>current#</code> itself is returned, which terminates the recursive process.</li>
+<li>The first condition is bound to <code>current#</code>; the suffix
+<code>#</code> being used to guarantee a unique symbol.</li>
+<li>If the <code>current#</code> condition evaluates to
+<code>true</code>, the <code>conjunction</code> macro is “called”
+recursively with the next condition in the list. This <code>next</code>
+symbol is prefixed both by <code>~</code> for syntax quoting, and an
+<code>@</code>—more of which later.</li>
+<li>Otherwise, if <code>current#</code> evaluates to <code>false</code>,
+<code>current#</code> itself is returned, which terminates the recursive
+process.</li>
 </ol></li>
 </ol>
-<p>In order to understand the <code>@</code> prefix, consider this alternative implementation of <code>defn</code> as a macro called <code>my-defn</code>:</p>
+<p>In order to understand the <code>@</code> prefix, consider this
+alternative implementation of <code>defn</code> as a macro called
+<code>my-defn</code>:</p>
 <pre><code>(defmacro my-defn [name args &amp; body]
   `(def ~name (fn ~args ~body)))</code></pre>
-<p>A function to add two numbers is created using <code>my-defn</code>:</p>
+<p>A function to add two numbers is created using
+<code>my-defn</code>:</p>
 <pre><code>(my-defn add-two-numbers [a b] (+ a b))</code></pre>
 <p>Unfortunately, the function won’t work:</p>
 <pre><code>&gt; (add-two-numbers 3 4)
 Execution error (ClassCastException) at user/add-two-numbers (REPL:1).
 java.lang.Long cannot be cast to clojure.lang.IFn</code></pre>
-<p>Let’s see what code the macro actually generated using <code>macroexpand-1</code>, the first tool to be grabbed if macros not behave as intended:</p>
+<p>Let’s see what code the macro actually generated using
+<code>macroexpand-1</code>, the first tool to be grabbed if macros not
+behave as intended:</p>
 <pre><code>&gt; (macroexpand-1 &#39;(my-defn add-two-numbers [a b] (+ a b)))
 (def add-two-numbers (clojure.core/fn [a b] ((+ a b))))</code></pre>
-<p>Notice the <code>((+ a b))</code> expression being wrapped in two sets of parentheses. Expression was created by <code>~body</code> in the macro template, which is itself a collection because it was declared as a variadic parameter (<code>&amp; body</code>). Thus, <code>body</code> is a list of one element containing another list: <code>((+ a b))</code>.</p>
-<p>The <code>@</code> prefix makes sure that the collection is expanded before being written into the code. Here’s a working version of <code>my-defn</code> with this expansion:</p>
+<p>Notice the <code>((+ a b))</code> expression being wrapped in two
+sets of parentheses. Expression was created by <code>~body</code> in the
+macro template, which is itself a collection because it was declared as
+a variadic parameter (<code>&amp; body</code>). Thus, <code>body</code>
+is a list of one element containing another list:
+<code>((+ a b))</code>.</p>
+<p>The <code>@</code> prefix makes sure that the collection is expanded
+before being written into the code. Here’s a working version of
+<code>my-defn</code> with this expansion:</p>
 <pre><code>(defmacro my-defn [name args &amp; body]
   `(def ~name (fn ~args ~@body)))</code></pre>
 <p>This creates the working code as intended:</p>
@@ -2827,7 +3509,9 @@ java.lang.Long cannot be cast to clojure.lang.IFn</code></pre>
 &gt; (my-defn add-two-numbers [a b] (+ a b))
 &gt; (add-two-numbers 1 2)
 3</code></pre>
-<p>Notice that macros are processed in a two-step process: First, they are <em>expanded</em>, second, the generated code is <em>evaluated</em>:</p>
+<p>Notice that macros are processed in a two-step process: First, they
+are <em>expanded</em>, second, the generated code is
+<em>evaluated</em>:</p>
 <pre><code>(defmacro two-step-process []
   (println &quot;This code is run upon macro expansion.&quot;)
   `(fn [] (println &quot;This code is run with the generated code.&quot;)))
@@ -2837,6 +3521,10 @@ This code is run upon macro expansion.
 
 &gt; (generated-code)
 This code is run with the generated code.</code></pre>
-<p>Also notice that macros do not exist at runtime, so their names can’t be found in a stack trace. Macros also can’t be used like a function given to a higher-order function such as <code>filter</code> or <code>map</code>. Only use macros if the code to be expressed is at odds with Clojure’s evaluation rules. Stick to functions otherwise.</p>
+<p>Also notice that macros do not exist at runtime, so their names can’t
+be found in a stack trace. Macros also can’t be used like a function
+given to a higher-order function such as <code>filter</code> or
+<code>map</code>. Only use macros if the code to be expressed is at odds
+with Clojure’s evaluation rules. Stick to functions otherwise.</p>
 </body>
 </html>
