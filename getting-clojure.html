@@ -153,6 +153,69 @@
     div.column{display: inline-block; vertical-align: top; width: 50%;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <!--[if lt IE 9]>
@@ -211,10 +274,10 @@ Read and Eval</a></li>
 Macros</a></li>
 </ul>
 </nav>
-<p><em>This is a rough summary of <a
+<p>This is a rough summary of <a
 href="https://pragprog.com/titles/roclojure/getting-clojure/">Getting
 Clojure</a> by Russ Olsen. Some examples have been taken from the
-original, some have been modified, and some have been made up.</em></p>
+original, some have been modified, and some have been made up.</p>
 <h1 data-number="1" id="hello-clojure"><span
 class="header-section-number">1</span> Hello, Clojure</h1>
 <p>Install Clojure and Leiningen on Arch Linux:</p>
@@ -226,13 +289,16 @@ class="header-section-number">1</span> Hello, Clojure</h1>
 Hello, World!
 nil</code></pre>
 <p>Write the same program with comments to <code>hello.clj</code>:</p>
-<pre><code>;; Hello World program in Clojure.
-
-(println &quot;Hello, World!&quot;) ; Say hi.</code></pre>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; Hello World program in Clojure.</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>(<span class="kw">println</span> <span class="st">&quot;Hello, World!&quot;</span>) <span class="co">; Say hi.</span></span></code></pre></div>
 <p>Comments start with a semicolon and end with the line. Comments that
 take up a whole line start with two semicolons by convention.</p>
 <p>Run the program:</p>
-<pre><code>$ clojure hello.clj
+<pre><code>$ clojure -M hello.clj
+Hello, World!</code></pre>
+<p>Or shorter:</p>
+<pre><code>$ clj -M hello.clj
 Hello, World!</code></pre>
 <p>Use basic arithmetic functions:</p>
 <pre><code>&gt; (+ 3 2)
@@ -257,24 +323,24 @@ Hello, World!</code></pre>
 &gt; (hello-world)
 Hello, World!</code></pre>
 <p>Use a single function parameter:</p>
-<pre><code>(defn greet [whom]
-  (println &quot;Hello,&quot; whom))
-
-&gt; (greet &quot;John&quot;)
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> greet </span>[whom]</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">println</span> <span class="st">&quot;Hello,&quot;</span> whom))</span></code></pre></div>
+<pre><code>&gt; (greet &quot;John&quot;)
 Hello, John</code></pre>
 <p>Use multiple function parameters:</p>
-<pre><code>(defn average [a b]
-  (/ (+ a b) 2))
-
-&gt; (average 10 4)
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> average </span>[a b]</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">/</span> (<span class="kw">+</span> a b) <span class="dv">2</span>))</span></code></pre></div>
+<pre><code>&gt; (average 10 4)
 7</code></pre>
 <p>Use multiple expressions in the function body:</p>
-<pre><code>(defn average [a b]
-  (def a-plus-b (+ a b))
-  (def half-the-sum (/ a-plus-b 2))
-  half-the-sum)
-
-&gt; (average 24 6)
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> average </span>[a b]</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  (<span class="bu">def</span><span class="fu"> a-plus-b </span>(<span class="kw">+</span> a b))</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  (<span class="bu">def</span><span class="fu"> half-the-sum </span>(<span class="kw">/</span> a-plus-b <span class="dv">2</span>))</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  half-the-sum)</span></code></pre></div>
+<pre><code>&gt; (average 24 6)
 15</code></pre>
 <p>The last expression of the function body (here:
 <code>half-the-sum</code>) is returned.</p>
@@ -285,15 +351,16 @@ $ lein run
 Hello, World!</code></pre>
 <p>Extend the example (<code>src/hello_world/core.clj</code>) as
 follows:</p>
-<pre><code>(ns hello-world.core
-  (:gen-class))
-
-(defn greet [app whom]
-  (println app &quot;greets&quot; whom))
-
-(defn -main
-  [&amp; args]
-  (greet &quot;Hello World&quot; &quot;the user&quot;))</code></pre>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">ns</span> hello-world.core</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  (<span class="at">:gen-class</span>))</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> greet </span>[app whom]</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">println</span> app <span class="st">&quot;greets&quot;</span> whom))</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> -main</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  [&amp; args]</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  (greet <span class="st">&quot;Hello World&quot;</span> <span class="st">&quot;the user&quot;</span>))</span></code></pre></div>
 <p>And run it again:</p>
 <pre><code>$ lein run
 Hello World greets the user</code></pre>

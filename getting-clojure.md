@@ -4,10 +4,10 @@ subtitle: 'Personal Summary'
 author: 'Patrick Bucher'
 ---
 
-_This is a rough summary of [Getting
+This is a rough summary of [Getting
 Clojure](https://pragprog.com/titles/roclojure/getting-clojure/) by Russ Olsen.
 Some examples have been taken from the original, some have been modified, and
-some have been made up._
+some have been made up.
 
 # Hello, Clojure
 
@@ -27,16 +27,22 @@ Write a "Hello World" program on the REPL:
 
 Write the same program with comments to `hello.clj`:
 
-    ;; Hello World program in Clojure.
-
-    (println "Hello, World!") ; Say hi.
+```clojure
+;; Hello World program in Clojure.
+(println "Hello, World!") ; Say hi.
+```
 
 Comments start with a semicolon and end with the line. Comments that take up a
 whole line start with two semicolons by convention.
 
 Run the program:
 
-    $ clojure hello.clj
+    $ clojure -M hello.clj
+    Hello, World!
+
+Or shorter:
+
+    $ clj -M hello.clj
     Hello, World!
 
 Use basic arithmetic functions:
@@ -71,26 +77,32 @@ Write and call the "Hello World" program as a function:
 
 Use a single function parameter:
 
-    (defn greet [whom]
-      (println "Hello," whom))
+```clojure
+(defn greet [whom]
+  (println "Hello," whom))
+```
 
     > (greet "John")
     Hello, John
 
 Use multiple function parameters:
 
-    (defn average [a b]
-      (/ (+ a b) 2))
+```clojure
+(defn average [a b]
+  (/ (+ a b) 2))
+```
 
     > (average 10 4)
     7
 
 Use multiple expressions in the function body:
 
-    (defn average [a b]
-      (def a-plus-b (+ a b))
-      (def half-the-sum (/ a-plus-b 2))
-      half-the-sum)
+```clojure
+(defn average [a b]
+  (def a-plus-b (+ a b))
+  (def half-the-sum (/ a-plus-b 2))
+  half-the-sum)
+```
 
     > (average 24 6)
     15
@@ -106,15 +118,17 @@ Create and run a proper application using Leiningen:
 
 Extend the example (`src/hello_world/core.clj`) as follows:
 
-    (ns hello-world.core
-      (:gen-class))
+```clojure
+(ns hello-world.core
+  (:gen-class))
 
-    (defn greet [app whom]
-      (println app "greets" whom))
+(defn greet [app whom]
+  (println app "greets" whom))
 
-    (defn -main
-      [& args]
-      (greet "Hello World" "the user"))
+(defn -main
+  [& args]
+  (greet "Hello World" "the user"))
+```
 
 And run it again:
 
