@@ -8,9 +8,6 @@
   <title>“Getting Clojure” by Russ Olsen</title>
   <style>
     html {
-      line-height: 1.5;
-      font-family: Georgia, serif;
-      font-size: 20px;
       color: #1a1a1a;
       background-color: #fdfdfd;
     }
@@ -29,13 +26,16 @@
     @media (max-width: 600px) {
       body {
         font-size: 0.9em;
-        padding: 1em;
+        padding: 12px;
       }
       h1 {
         font-size: 1.8em;
       }
     }
     @media print {
+      html {
+        background-color: white;
+      }
       body {
         background-color: transparent;
         color: black;
@@ -85,9 +85,10 @@
       color: #606060;
     }
     code {
-      font-family: Menlo, Monaco, 'Lucida Console', Consolas, monospace;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
       font-size: 85%;
       margin: 0;
+      hyphens: manual;
     }
     pre {
       margin: 1em 0;
@@ -149,10 +150,17 @@
     }
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
     pre > code.sourceCode { white-space: pre; position: relative; }
     pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -191,7 +199,7 @@
     code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
     code span.at { color: #7d9029; } /* Attribute */
     code span.bn { color: #40a070; } /* BaseN */
-    code span.bu { } /* BuiltIn */
+    code span.bu { color: #008000; } /* BuiltIn */
     code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
     code span.ch { color: #4070a0; } /* Char */
     code span.cn { color: #880000; } /* Constant */
@@ -204,7 +212,7 @@
     code span.ex { } /* Extension */
     code span.fl { color: #40a070; } /* Float */
     code span.fu { color: #06287e; } /* Function */
-    code span.im { } /* Import */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
     code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
     code span.kw { color: #007020; font-weight: bold; } /* Keyword */
     code span.op { color: #666666; } /* Operator */
@@ -216,7 +224,6 @@
     code span.va { color: #19177c; } /* Variable */
     code span.vs { color: #4070a0; } /* VerbatimString */
     code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
@@ -227,51 +234,56 @@
 <h1 class="title">“Getting Clojure” by Russ Olsen</h1>
 <p class="subtitle">Personal Summary</p>
 <p class="author">Patrick Bucher</p>
-<p class="date">2022-06-29</p>
+<p class="date">2023-06-10</p>
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
-<li><a href="#hello-clojure"><span class="toc-section-number">1</span>
-Hello, Clojure</a></li>
-<li><a href="#vectors-and-lists"><span
+<li><a href="#hello-clojure" id="toc-hello-clojure"><span
+class="toc-section-number">1</span> Hello, Clojure</a></li>
+<li><a href="#vectors-and-lists" id="toc-vectors-and-lists"><span
 class="toc-section-number">2</span> Vectors and Lists</a></li>
-<li><a href="#maps-keywords-and-sets"><span
+<li><a href="#maps-keywords-and-sets"
+id="toc-maps-keywords-and-sets"><span
 class="toc-section-number">3</span> Maps, Keywords, and Sets</a></li>
-<li><a href="#logic"><span class="toc-section-number">4</span>
-Logic</a></li>
-<li><a href="#more-capable-functions"><span
+<li><a href="#logic" id="toc-logic"><span
+class="toc-section-number">4</span> Logic</a></li>
+<li><a href="#more-capable-functions"
+id="toc-more-capable-functions"><span
 class="toc-section-number">5</span> More Capable Functions</a></li>
-<li><a href="#functional-things"><span
+<li><a href="#functional-things" id="toc-functional-things"><span
 class="toc-section-number">6</span> Functional Things</a></li>
-<li><a href="#let"><span class="toc-section-number">7</span>
-Let</a></li>
-<li><a href="#def-symbols-and-vars"><span
+<li><a href="#let" id="toc-let"><span
+class="toc-section-number">7</span> Let</a></li>
+<li><a href="#def-symbols-and-vars" id="toc-def-symbols-and-vars"><span
 class="toc-section-number">8</span> Def, Symbols, and Vars</a></li>
-<li><a href="#namespaces"><span class="toc-section-number">9</span>
-Namespaces</a></li>
-<li><a href="#sequences"><span class="toc-section-number">10</span>
-Sequences</a></li>
-<li><a href="#lazy-sequences"><span class="toc-section-number">11</span>
-Lazy Sequences</a></li>
-<li><a href="#destructuring"><span class="toc-section-number">12</span>
-Destructuring</a></li>
-<li><a href="#records-and-protocols"><span
+<li><a href="#namespaces" id="toc-namespaces"><span
+class="toc-section-number">9</span> Namespaces</a></li>
+<li><a href="#sequences" id="toc-sequences"><span
+class="toc-section-number">10</span> Sequences</a></li>
+<li><a href="#lazy-sequences" id="toc-lazy-sequences"><span
+class="toc-section-number">11</span> Lazy Sequences</a></li>
+<li><a href="#destructuring" id="toc-destructuring"><span
+class="toc-section-number">12</span> Destructuring</a></li>
+<li><a href="#records-and-protocols"
+id="toc-records-and-protocols"><span
 class="toc-section-number">13</span> Records and Protocols</a></li>
-<li><a href="#tests"><span class="toc-section-number">14</span>
-Tests</a></li>
-<li><a href="#spec"><span class="toc-section-number">15</span>
-Spec</a></li>
-<li><a href="#interoperating-with-java"><span
+<li><a href="#tests" id="toc-tests"><span
+class="toc-section-number">14</span> Tests</a></li>
+<li><a href="#spec" id="toc-spec"><span
+class="toc-section-number">15</span> Spec</a></li>
+<li><a href="#interoperating-with-java"
+id="toc-interoperating-with-java"><span
 class="toc-section-number">16</span> Interoperating with Java</a></li>
-<li><a href="#threads-promises-and-futures"><span
+<li><a href="#threads-promises-and-futures"
+id="toc-threads-promises-and-futures"><span
 class="toc-section-number">17</span> Threads, Promises, and
 Futures</a></li>
-<li><a href="#state"><span class="toc-section-number">18</span>
-State</a></li>
-<li><a href="#read-and-eval"><span class="toc-section-number">19</span>
-Read and Eval</a></li>
-<li><a href="#macros"><span class="toc-section-number">20</span>
-Macros</a></li>
+<li><a href="#state" id="toc-state"><span
+class="toc-section-number">18</span> State</a></li>
+<li><a href="#read-and-eval" id="toc-read-and-eval"><span
+class="toc-section-number">19</span> Read and Eval</a></li>
+<li><a href="#macros" id="toc-macros"><span
+class="toc-section-number">20</span> Macros</a></li>
 </ul>
 </nav>
 <p>This is a rough summary of <a
@@ -2834,7 +2846,7 @@ changed using <code>def</code> (notice the exclamation mark in
 <p>The <code>employees</code> vector was updated, however, <em>not in a
 thread-safe manner</em> (see previous chapter).</p>
 <p>Thread-safe state change can be achieved by using <em>atoms</em>,
-which wraps the value to be changed:</p>
+which wrap the value to be changed:</p>
 <pre><code>(def employees 
   (atom [{:name &quot;Dilbert&quot; :job &quot;Engineer&quot; :salary 120000}
          {:name &quot;Alice&quot; :job &quot;Engineer&quot; :salary 110000}
@@ -2843,7 +2855,7 @@ which wraps the value to be changed:</p>
 (defn hire! [employee]
   (swap! employees #(conj % employee)))</code></pre>
 <p>The <code>atom</code> function wraps the <code>employees</code>
-vector, which then can be updated in a thread-safe manner using the
+vector, which then can be updated in a thread-safe manner using
 <code>swap!</code>, which takes two arguments: first, the atom to be
 updated (<code>employees</code>), second, a function to be applied to
 produce the new value to be stored in the atom. Note that
@@ -2938,7 +2950,7 @@ instead of <code>atom</code> for the wrapping:</p>
 (def total-payroll (ref 0))
 
 (def total-staff (ref 0))</code></pre>
-<p>Second, <code>alter</code> is used instread of <code>swap!</code>.
+<p>Second, <code>alter</code> is used instead of <code>swap!</code>.
 And, third, all the updates belonging to the same transaction are
 grouped together using <code>dosync</code>:</p>
 <pre><code>(defn hire! [employee]
@@ -2997,7 +3009,7 @@ used to both update the agent, and to produce the side effect:</p>
 <p>Notice that an anonymous function (<code>fn</code>) has been used
 instead of a lambda expression. Every agent has its own queue of
 functions. When <code>hire!</code> gets called, the call to the
-anonymous function gets queued up. <code>send</code> worls
+anonymous function gets queued up. <code>send</code> works
 asynchronously, i.e. it returns immediately after the function was put
 into the queue. The agent pops an outstanding function call from the
 queue and executes it. The side effect (calling

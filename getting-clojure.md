@@ -3039,7 +3039,7 @@ exclamation mark in `hire!` to denote the side-effect):
 The `employees` vector was updated, however, _not in a thread-safe manner_ (see
 previous chapter).
 
-Thread-safe state change can be achieved by using _atoms_, which wraps the value
+Thread-safe state change can be achieved by using _atoms_, which wrap the value
 to be changed:
 
     (def employees 
@@ -3051,8 +3051,8 @@ to be changed:
       (swap! employees #(conj % employee)))
 
 The `atom` function wraps the `employees` vector, which then can be updated in a
-thread-safe manner using the `swap!`, which takes two arguments: first, the atom
-to be updated (`employees`), second, a function to be applied to produce the new
+thread-safe manner using `swap!`, which takes two arguments: first, the atom to
+be updated (`employees`), second, a function to be applied to produce the new
 value to be stored in the atom. Note that `employees` is no longer a vector, but
 a vector wrapped in an atom.
 
@@ -3157,7 +3157,7 @@ wrapping:
 
     (def total-staff (ref 0))
 
-Second, `alter` is used instread of `swap!`. And, third, all the updates
+Second, `alter` is used instead of `swap!`. And, third, all the updates
 belonging to the same transaction are grouped together using `dosync`:
 
     (defn hire! [employee]
@@ -3221,7 +3221,7 @@ the side effect:
 
 Notice that an anonymous function (`fn`) has been used instead of a lambda
 expression. Every agent has its own queue of functions. When `hire!` gets
-called, the call to the anonymous function gets queued up. `send` worls
+called, the call to the anonymous function gets queued up. `send` works
 asynchronously, i.e. it returns immediately after the function was put into the
 queue. The agent pops an outstanding function call from the queue and executes
 it. The side effect (calling `notify-new-hire`) and the update are then
