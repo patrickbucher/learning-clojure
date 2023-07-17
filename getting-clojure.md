@@ -25,12 +25,24 @@ Write a "Hello World" program on the REPL:
     Hello, World!
     nil
 
-Write the same program with comments to `hello.clj`:
+Install [Cider](https://cider.mx/) and Clojure Mode for Emacs:
+
+    M-x package-install RET clojure-mode RET
+    M-x package-install RET cider RET
+
+Write the same program with comments to `hello.clj` (using Emacs):
 
 ```clojure
 ;; Hello World program in Clojure.
 (println "Hello, World!") ; Say hi.
 ```
+
+Run the REPL in Emacs:
+
+    M-x cider-jack-in
+
+Use `C-c C-k` to evaluate the entire buffer, or just the expression in front of
+the curser using `C-c C-e`.
 
 Comments start with a semicolon and end with the line. Comments that take up a
 whole line start with two semicolons by convention.

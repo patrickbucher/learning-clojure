@@ -234,7 +234,7 @@
 <h1 class="title">“Getting Clojure” by Russ Olsen</h1>
 <p class="subtitle">Personal Summary</p>
 <p class="author">Patrick Bucher</p>
-<p class="date">2023-06-10</p>
+<p class="date">2023-07-17</p>
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
@@ -300,10 +300,19 @@ class="header-section-number">1</span> Hello, Clojure</h1>
 <pre><code>&gt; (println &quot;Hello, World!&quot;)
 Hello, World!
 nil</code></pre>
-<p>Write the same program with comments to <code>hello.clj</code>:</p>
-<div class="sourceCode" id="cb4"><pre
-class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; Hello World program in Clojure.</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>(<span class="kw">println</span> <span class="st">&quot;Hello, World!&quot;</span>) <span class="co">; Say hi.</span></span></code></pre></div>
+<p>Install <a href="https://cider.mx/">Cider</a> and Clojure Mode for
+Emacs:</p>
+<pre><code>M-x package-install RET clojure-mode RET
+M-x package-install RET cider RET</code></pre>
+<p>Write the same program with comments to <code>hello.clj</code> (using
+Emacs):</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">;; Hello World program in Clojure.</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>(<span class="kw">println</span> <span class="st">&quot;Hello, World!&quot;</span>) <span class="co">; Say hi.</span></span></code></pre></div>
+<p>Run the REPL in Emacs:</p>
+<pre><code>M-x cider-jack-in</code></pre>
+<p>Use <code>C-c C-k</code> to evaluate the entire buffer, or just the
+expression in front of the curser using <code>C-c C-e</code>.</p>
 <p>Comments start with a semicolon and end with the line. Comments that
 take up a whole line start with two semicolons by convention.</p>
 <p>Run the program:</p>
@@ -335,23 +344,23 @@ Hello, World!</code></pre>
 &gt; (hello-world)
 Hello, World!</code></pre>
 <p>Use a single function parameter:</p>
-<div class="sourceCode" id="cb11"><pre
-class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> greet </span>[whom]</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">println</span> <span class="st">&quot;Hello,&quot;</span> whom))</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> greet </span>[whom]</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">println</span> <span class="st">&quot;Hello,&quot;</span> whom))</span></code></pre></div>
 <pre><code>&gt; (greet &quot;John&quot;)
 Hello, John</code></pre>
 <p>Use multiple function parameters:</p>
-<div class="sourceCode" id="cb13"><pre
-class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> average </span>[a b]</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">/</span> (<span class="kw">+</span> a b) <span class="dv">2</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> average </span>[a b]</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">/</span> (<span class="kw">+</span> a b) <span class="dv">2</span>))</span></code></pre></div>
 <pre><code>&gt; (average 10 4)
 7</code></pre>
 <p>Use multiple expressions in the function body:</p>
-<div class="sourceCode" id="cb15"><pre
-class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> average </span>[a b]</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  (<span class="bu">def</span><span class="fu"> a-plus-b </span>(<span class="kw">+</span> a b))</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  (<span class="bu">def</span><span class="fu"> half-the-sum </span>(<span class="kw">/</span> a-plus-b <span class="dv">2</span>))</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  half-the-sum)</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> average </span>[a b]</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  (<span class="bu">def</span><span class="fu"> a-plus-b </span>(<span class="kw">+</span> a b))</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  (<span class="bu">def</span><span class="fu"> half-the-sum </span>(<span class="kw">/</span> a-plus-b <span class="dv">2</span>))</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  half-the-sum)</span></code></pre></div>
 <pre><code>&gt; (average 24 6)
 15</code></pre>
 <p>The last expression of the function body (here:
@@ -363,16 +372,16 @@ $ lein run
 Hello, World!</code></pre>
 <p>Extend the example (<code>src/hello_world/core.clj</code>) as
 follows:</p>
-<div class="sourceCode" id="cb18"><pre
-class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">ns</span> hello-world.core</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  (<span class="at">:gen-class</span>))</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> greet </span>[app whom]</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">println</span> app <span class="st">&quot;greets&quot;</span> whom))</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> -main</span></span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  [&amp; args]</span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  (greet <span class="st">&quot;Hello World&quot;</span> <span class="st">&quot;the user&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode clojure"><code class="sourceCode clojure"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>(<span class="kw">ns</span> hello-world.core</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  (<span class="at">:gen-class</span>))</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> greet </span>[app whom]</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  (<span class="kw">println</span> app <span class="st">&quot;greets&quot;</span> whom))</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>(<span class="bu">defn</span><span class="fu"> -main</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  [&amp; args]</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  (greet <span class="st">&quot;Hello World&quot;</span> <span class="st">&quot;the user&quot;</span>))</span></code></pre></div>
 <p>And run it again:</p>
 <pre><code>$ lein run
 Hello World greets the user</code></pre>
