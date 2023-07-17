@@ -7,7 +7,8 @@ author: 'Patrick Bucher'
 This is a rough summary of [Getting
 Clojure](https://pragprog.com/titles/roclojure/getting-clojure/) by Russ Olsen.
 Some examples have been taken from the original, some have been modified, and
-some have been made up.
+some have been made up. Instructions for Setup have been added for Arch Linux
+and Emacs.
 
 # Hello, Clojure
 
@@ -30,7 +31,7 @@ Install [Cider](https://cider.mx/) and Clojure Mode for Emacs:
     M-x package-install RET clojure-mode RET
     M-x package-install RET cider RET
 
-Write the same program with comments to `hello.clj` (using Emacs):
+Write the same program (with comments) to `hello.clj` (using Emacs):
 
 ```clojure
 ;; Hello World program in Clojure.
