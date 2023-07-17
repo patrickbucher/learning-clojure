@@ -412,8 +412,8 @@ function:</p>
 1
 &gt; (first [])
 nil</code></pre>
-<p><code>rest</code> returns all the elements of a vector but the first
-as a <em>sequence</em>:</p>
+<p><code>rest</code> returns all but the first elements of a vector as a
+<em>sequence</em>:</p>
 <pre><code>&gt; (rest [1 2 3 4])
 &gt; (rest [1])
 ()
@@ -467,6 +467,8 @@ lists. This has some implications:</p>
 <ul>
 <li>Appending to the front is fast for lists and slow for vectors.</li>
 <li>Appending to the end is fast for vectors and slow for lists.</li>
+<li>Accessing vector elements happens in constant time.</li>
+<li>Accessing list element n happens in n steps.</li>
 </ul>
 <p>The <code>conj</code> function therefore adds elements to the front
 of lists and to the end of vectors:</p>

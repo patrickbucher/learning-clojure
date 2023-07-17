@@ -185,7 +185,7 @@ Vectors can also be created using the `vector` function:
     > (first [])
     nil
 
-`rest` returns all the elements of a vector but the first as a _sequence_:
+`rest` returns all but the first elements of a vector as a _sequence_:
 
     > (rest [1 2 3 4])
     > (rest [1])
@@ -252,6 +252,8 @@ has some implications:
 
 - Appending to the front is fast for lists and slow for vectors.
 - Appending to the end is fast for vectors and slow for lists.
+- Accessing vector elements happens in constant time.
+- Accessing list element n happens in n steps.
 
 The `conj` function therefore adds elements to the front of lists and to the end
 of vectors:
