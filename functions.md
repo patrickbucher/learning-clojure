@@ -16,6 +16,8 @@
 - `zero?`
     - `(zero? 0)`: `true`
 
+TODO: `=`, `not=`, `>`, `<`, `number?`, `string?`, `keyword?`, `map?`, `vector?`
+
 # Arithmetic
 
 - `mod`
@@ -79,3 +81,7 @@
 
 - `println`
     - `(println "hello")`: `[outputs "hello"]`
+
+# Conditionals
+
+TODO: `if`, `do`, `when`. `cond`, `case`, `try`/`catch`, `throw`/`ex-info`
