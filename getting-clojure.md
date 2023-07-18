@@ -429,7 +429,7 @@ No error occurs if the element is missing:
     > (disj genres :comedy)
     #{:scifi :drama :action :love}
 
-Be aware taht `nil` is a valid set entry and map key:
+Be aware that `nil` is a valid set entry and map key:
 
     > (contains? #{:foo :bar nil} nil)
     true
