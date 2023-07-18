@@ -234,7 +234,7 @@
 <h1 class="title">“Getting Clojure” by Russ Olsen</h1>
 <p class="subtitle">Personal Summary</p>
 <p class="author">Patrick Bucher</p>
-<p class="date">2023-07-17</p>
+<p class="date">2023-07-18</p>
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
@@ -538,7 +538,7 @@ key-value pairs at once:</p>
 <p>Keys not found in the map will be ignored silently:</p>
 <pre><code>&gt; (dissoc employee :sex-appeal :girlfriend :hobbies)
 {:name &quot;Dilbert&quot;, :note &quot;smelly&quot;, :terminate &quot;Jan 2023&quot;}</code></pre>
-<p><code>keys</code> returns the map’s keys (in unspecified order:</p>
+<p><code>keys</code> returns the map’s keys (in unspecified order):</p>
 <pre><code>&gt; (def book {:title &quot;War and Peace&quot; :author &quot;Lev Tolstoy&quot; :year 1869})
 &gt; (keys book)
 (:title :author :year)</code></pre>
@@ -546,8 +546,8 @@ key-value pairs at once:</p>
 <pre><code>&gt; (def book (sorted-map :title &quot;War and Peace&quot; :author &quot;Lev Tolstoy&quot; :year 1869))
 &gt; (keys book)
 (:author :title :year)</code></pre>
-<p><code>keys</code> returns the map’s values in arbitrary, but matching
-the key’s order:</p>
+<p><code>keys</code> returns the map’s values in arbitrary order,
+matching the key’s order:</p>
 <pre><code>&gt; (vals book)
 (&quot;War and Peace&quot; &quot;Lev Tolstoy&quot; 1869)
 &gt; (keys book)
@@ -591,7 +591,8 @@ nil</code></pre>
 <p>A set can be extendes using <code>conj</code>:</p>
 <pre><code>&gt; (conj genres :western)
 #{:western :scifi :drama :action :love}</code></pre>
-<p>An element won’t be added a second time <em>without</em>) error:</p>
+<p>An element won’t be added a second time (<em>without</em> causing an
+error):</p>
 <pre><code>&gt; (conj genres :western)
 #{:western :scifi :drama :action :love}
 &gt; (conj genres :western)

@@ -343,7 +343,7 @@ Keys not found in the map will be ignored silently:
     > (dissoc employee :sex-appeal :girlfriend :hobbies)
     {:name "Dilbert", :note "smelly", :terminate "Jan 2023"}
 
-`keys` returns the map's keys (in unspecified order:
+`keys` returns the map's keys (in unspecified order):
 
     > (def book {:title "War and Peace" :author "Lev Tolstoy" :year 1869})
     > (keys book)
@@ -355,7 +355,7 @@ Use a `sorted-map` for specified key ordering:
     > (keys book)
     (:author :title :year)
 
-`keys` returns the map's values in arbitrary, but matching the key's order:
+`keys` returns the map's values in arbitrary order, matching the key's order:
 
     > (vals book)
     ("War and Peace" "Lev Tolstoy" 1869)
@@ -412,7 +412,7 @@ A set can be extendes using `conj`:
     > (conj genres :western)
     #{:western :scifi :drama :action :love}
 
-An element won't be added a second time _without_) error:
+An element won't be added a second time (_without_ causing an error):
 
     > (conj genres :western)
     #{:western :scifi :drama :action :love}
