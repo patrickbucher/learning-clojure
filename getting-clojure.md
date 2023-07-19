@@ -879,7 +879,7 @@ This can be used to created parametrized functions using a _lexical closure_:
     > (cheap-hire? dilbert)
     false
 
-The `apply` function applies a function for each argument:
+The `apply` function applies a function to each argument:
 
     > (apply + [1 2 3])
     6
@@ -951,7 +951,8 @@ etc. The highest-numbered argument defines the number of arguments:
 
 The arguments one to four (i.e. `[1 2 3 4]`) are ignored.
 
-If only a single argument is needed, it can be referred by `%` instead of `%1`:
+If only a single argument is needed, it can be referred to by `%` instead of
+`%1`:
 
     > (apply #(* 2 %) [123])
     246

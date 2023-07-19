@@ -9,6 +9,8 @@
     - `(reduce (fn [acc x] (+ acc x)) [1 2 3 4])`: `10`
     - `(reduce (fn [acc x] (+ acc x)) 0 [1 2 3 4])`: `10`
 
+TODO: `apply`, `partial`
+
 # Predicates
 
 - `some`
@@ -17,6 +19,10 @@
     - `(zero? 0)`: `true`
 
 TODO: `=`, `not=`, `>`, `<`, `number?`, `string?`, `keyword?`, `map?`, `vector?`
+
+## Higher-Order Predicates
+
+TODO: `complement`, `every-pred`
 
 # Arithmetic
 
@@ -79,6 +85,8 @@ TODO: `=`, `not=`, `>`, `<`, `number?`, `string?`, `keyword?`, `map?`, `vector?`
     - `(contains? #{"Alice" "Bob" "Charlene"} "Alice")`: `true`
 - `disj`
     - `(disj #{"Alice" "Bob" "Charlene"} "Bob")`: `#{"Alice" "Charlene"}`
+
+TODO: `update`, `update-in`, `assoc-in`
 
 # Input/Output
 
