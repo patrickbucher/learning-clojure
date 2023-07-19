@@ -234,7 +234,7 @@
 <h1 class="title">“Getting Clojure” by Russ Olsen</h1>
 <p class="subtitle">Personal Summary</p>
 <p class="author">Patrick Bucher</p>
-<p class="date">2023-07-18</p>
+<p class="date">2023-07-19</p>
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
@@ -603,7 +603,7 @@ error):</p>
 <p>No error occurs if the element is missing:</p>
 <pre><code>&gt; (disj genres :comedy)
 #{:scifi :drama :action :love}</code></pre>
-<p>Be aware taht <code>nil</code> is a valid set entry and map key:</p>
+<p>Be aware that <code>nil</code> is a valid set entry and map key:</p>
 <pre><code>&gt; (contains? #{:foo :bar nil} nil)
 true</code></pre>
 <h1 data-number="4" id="logic"><span
@@ -997,7 +997,7 @@ true
 
 &gt; (cheap-hire? dilbert)
 false</code></pre>
-<p>The <code>apply</code> function applies a function for each
+<p>The <code>apply</code> function applies a function to each
 argument:</p>
 <pre><code>&gt; (apply + [1 2 3])
 6</code></pre>
@@ -1060,7 +1060,7 @@ defines the number of arguments:</p>
 11</code></pre>
 <p>The arguments one to four (i.e. <code>[1 2 3 4]</code>) are
 ignored.</p>
-<p>If only a single argument is needed, it can be referred by
+<p>If only a single argument is needed, it can be referred to by
 <code>%</code> instead of <code>%1</code>:</p>
 <pre><code>&gt; (apply #(* 2 %) [123])
 246</code></pre>
@@ -1141,7 +1141,7 @@ bonus by looking up their bonus rate in a map:</p>
 
 &gt; (compute-bonus 200000 &quot;Dogbert&quot; employee-bonus-rates 10000)
 50000.0</code></pre>
-<p>The map of <code>employee-bonus-rates</code> has to be carried away
+<p>The map of <code>employee-bonus-rates</code> has to be carried along
 wherever a bonus has to be calculated. A better approach is to return
 individual functions by employee that have their bonus rate
 parametrized:</p>
@@ -1279,7 +1279,7 @@ affected by calls of <code>def</code>.</p>
 &gt; (def employees [:dilbert :alice :wally])
 #&#39;dilbertix/employees</code></pre>
 <p>Calling <code>ns</code> with an existing namespace makes that
-namespace the current, without changing it:</p>
+namespace the current one, without changing it:</p>
 <pre><code>&gt; (ns user)
 &gt; (def today &quot;Sunday&quot;)
 #&#39;user/today</code></pre>
@@ -1353,7 +1353,7 @@ expressions:</p>
 <pre><code>(println dilbertix.employees/job-satisfaction)</code></pre>
 <p>Aliases don’t mask ordinary bindings, so an <code>employees</code>
 var would still be visible.</p>
-<p>Using <code>:refer</code>, vars from anothe rnamespace are pulled
+<p>Using <code>:refer</code>, vars from another namespace are pulled
 into the current namespace:</p>
 <pre><code>(require &#39;[dilbertix.employees :refer [employees job-satisfaction])</code></pre>
 <p>Which would mask an existing <code>employees</code> binding in the
@@ -1428,7 +1428,7 @@ elements of a sequence:</p>
 &gt; (next [1 2 3])
 (2 3)</code></pre>
 <p><em>Unlike</em> <code>rest</code>, <code>next</code> returns
-<code>nil</code> the remainder is an empty sequence:</p>
+<code>nil</code> if the remainder is an empty sequence:</p>
 <pre><code>&gt; (rest [1])
 ()
 &gt; (next [1])

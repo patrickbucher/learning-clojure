@@ -1048,9 +1048,9 @@ bonus rate in a map:
     > (compute-bonus 200000 "Dogbert" employee-bonus-rates 10000)
     50000.0
 
-The map of `employee-bonus-rates` has to be carried away wherever a bonus has to
-be calculated. A better approach is to return individual functions by employee
-that have their bonus rate parametrized:
+The map of `employee-bonus-rates` has to be carried along wherever a bonus has
+to be calculated. A better approach is to return individual functions by
+employee that have their bonus rate parametrized:
 
     (defn mk-compute-bonus-func [employee-name bonus-rates min-bonus]
       (let [bonus-rate (bonus-rates employee-name)]
@@ -1208,7 +1208,7 @@ A new namespace can be created and made the current namespace using `ns`:
     > (def employees [:dilbert :alice :wally])
     #'dilbertix/employees
 
-Calling `ns` with an existing namespace makes that namespace the current,
+Calling `ns` with an existing namespace makes that namespace the current one,
 without changing it:
 
     > (ns user)
@@ -1308,7 +1308,7 @@ Instead of:
 Aliases don't mask ordinary bindings, so an `employees` var would still be
 visible.
 
-Using `:refer`, vars from anothe rnamespace are pulled into the current
+Using `:refer`, vars from another namespace are pulled into the current
 namespace:
 
     (require '[dilbertix.employees :refer [employees job-satisfaction])
@@ -1403,7 +1403,7 @@ Like `rest`, `next` returns all but the first elements of a sequence:
     > (next [1 2 3])
     (2 3)
 
-_Unlike_ `rest`, `next` returns `nil` the remainder is an empty sequence:
+_Unlike_ `rest`, `next` returns `nil` if the remainder is an empty sequence:
 
     > (rest [1])
     ()
