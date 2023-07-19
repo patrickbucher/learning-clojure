@@ -45,11 +45,14 @@ TODO: `=`, `not=`, `>`, `<`, `number?`, `string?`, `keyword?`, `map?`, `vector?`
 - `cons`
     - `(cons 0 '(1 2 3))`: `(0 1 2 3)`
 
-## Properties
+## Properties/Predicates
 
 - `count`
     - `(count [1 2 3])`: `3`
     - `(count {:page 53, :direction "up", :speed 3.1, :ready true})`: `4`
+- `empty?`
+    - `(empty? [1 2 3])`: `false`
+    - `(empty? [])`: `true`
 
 ## Accessors/Modifiers
 
@@ -84,4 +87,5 @@ TODO: `=`, `not=`, `>`, `<`, `number?`, `string?`, `keyword?`, `map?`, `vector?`
 
 # Conditionals
 
-TODO: `if`, `do`, `when`. `cond`, `case`, `try`/`catch`, `throw`/`ex-info`
+TODO: `if`, `do`, `when`. `cond`, `case`, `try`/`catch`, `throw`/`ex-info`,
+`loop`/`recur`
