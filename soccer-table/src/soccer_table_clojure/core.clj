@@ -33,6 +33,7 @@
           :else (assoc result :won 0 :tied 1 :lost 0 :points 1))))
 
 (defn merge-table-rows
+  "Merges two table rows by adding up the number fields, ignoring the team name."
   [acc row]
   (let [team (:team row)
         acc (dissoc acc :team)
@@ -40,6 +41,7 @@
     (assoc (merge-with + acc row) :team team)))
 
 (defn accumulate-by-team
+  "Accumulates a team's table rows by merging them."
   [acc row]
   (let [team (:team row)]
     (if (contains? acc team)
@@ -47,6 +49,7 @@
       (assoc acc team row))))
 
 (defn rank
+  "Adds a rank field to every of the sorted rows."
   [rows]
   (let [n (count rows)
         ranks (range 1 (inc n))]
@@ -71,7 +74,7 @@
                  (:rank %) (:team %) (:points %)
                  (:won %) (:tied %) (:lost %)
                  (:goals+ %) (:goals- %) (:diff %)))
-   (cons (format "%2s %-30s %3s %2s %2s %2s %3s %3s %3s"
+   (cons (format " %2s %-30s %3s %2s %2s %2s %3s %3s %3s"
                  "#" "Team" "P" "W" "T" "L" "+" "-" "="))
    (interpose "\n")
    (apply println)))
