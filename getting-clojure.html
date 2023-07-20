@@ -234,7 +234,7 @@
 <h1 class="title">“Getting Clojure” by Russ Olsen</h1>
 <p class="subtitle">Personal Summary</p>
 <p class="author">Patrick Bucher</p>
-<p class="date">2023-07-19</p>
+<p class="date">2023-07-20</p>
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
@@ -1661,7 +1661,7 @@ sequence endlessly:</p>
 (1 2 3 1 2 3 1)</code></pre>
 <p><code>iterate</code> creates a lazy sequence based on a function. The
 first argument is a function to be called for each subsequent iteration;
-the secund argument is a starting value:</p>
+the second argument is a starting value:</p>
 <pre><code>&gt; (def counter (iterate inc 1))
 &gt; (take 3 counter)
 (1 2 3)
@@ -1706,6 +1706,17 @@ sequence:</p>
 <pre><code>&gt; (def numbers (lazy-seq [1 2 3]))
 (take 2 numbers)
 (1 2)</code></pre>
+<p>The following function generates an infinite number of Fibonacci
+numbers as a lazy sequence:</p>
+<pre><code>(defn fibs
+  ([] (fibs 1 1))
+  ([a b] (cons a (lazy-seq (fibs b (+ a b))))))</code></pre>
+<p>The implementation of arity 0 just calls the implementation of arity
+2 with the first two Fibonacci numbers. The current element is
+<code>cons</code>ed onto the sequence; the next element is then computed
+using a recursive call by increasing the numbers:</p>
+<pre><code>&gt; (take 10 (fibs))
+(1 1 2 3 5 8 13 21 34 55)</code></pre>
 <p>Never output lazy sequences as if they were finite:</p>
 <pre><code>&gt; (def counter (iterate inc 1))
 &gt; counter ; bad idea</code></pre>
@@ -1730,8 +1741,8 @@ Current iteration 5</code></pre>
 <p>Infinite sequences should not be sorted or reduced.</p>
 <p>Many functions are lazy, such as <code>take</code>.</p>
 <p>Notice that working with lazy sequences opens a timely gap between
-when the instruction to do something is given and when it is actyally
-done. This can cause troubles when working with side-effects (e.g. files
+when the instruction to do something is given and when it is actually
+done. This can cause trouble when working with side-effects (e.g. files
 read/written with <code>slurp</code>/<code>spit</code> whose content
 changes in the meantime).</p>
 <h1 data-number="12" id="destructuring"><span

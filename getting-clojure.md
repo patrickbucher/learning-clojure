@@ -1671,7 +1671,7 @@ only created when used:
     (1 2 3 1 2 3 1)
 
 `iterate` creates a lazy sequence based on a function. The first argument is a
-function to be called for each subsequent iteration; the secund argument is a
+function to be called for each subsequent iteration; the second argument is a
 starting value:
 
     > (def counter (iterate inc 1))
@@ -1727,6 +1727,21 @@ possible ways (permutations):
     (take 2 numbers)
     (1 2)
 
+The following function generates an infinite number of Fibonacci numbers as a
+lazy sequence:
+
+    (defn fibs
+      ([] (fibs 1 1))
+      ([a b] (cons a (lazy-seq (fibs b (+ a b))))))
+
+The implementation of arity 0 just calls the implementation of arity 2 with the
+first two Fibonacci numbers. The current element is `cons`ed onto the sequence;
+the next element is then computed using a recursive call by increasing the
+numbers:
+
+    > (take 10 (fibs))
+    (1 1 2 3 5 8 13 21 34 55)
+
 Never output lazy sequences as if they were finite:
 
     > (def counter (iterate inc 1))
@@ -1760,8 +1775,8 @@ Infinite sequences should not be sorted or reduced.
 Many functions are lazy, such as `take`.
 
 Notice that working with lazy sequences opens a timely gap between when the
-instruction to do something is given and when it is actyally done. This can
-cause troubles when working with side-effects (e.g. files read/written with
+instruction to do something is given and when it is actually done. This can
+cause trouble when working with side-effects (e.g. files read/written with
 `slurp`/`spit` whose content changes in the meantime).
 
 # Destructuring
