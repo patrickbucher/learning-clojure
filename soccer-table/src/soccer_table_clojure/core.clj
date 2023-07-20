@@ -17,16 +17,14 @@
 
 (defn convert-to-team-results
   "Converts a single match result to two team result hash maps."
-  [result]
-  [{:team (:home-team result) :goals+ (:home-goals result) :goals- (:away-goals result)}
-   {:team (:away-team result) :goals+ (:away-goals result) :goals- (:home-goals result)}])
+  [{ht :home-team at :away-team hg :home-goals ag :away-goals}]
+  [{:team ht :goals+ hg :goals- ag}
+   {:team at :goals+ ag :goals- hg}])
 
 (defn convert-to-table-row
   "Converts a team's result hash map to a table row representing a single result."
   [result]
-  (let [team (:team result)
-        goals+ (:goals+ result)
-        goals- (:goals- result)
+  (let [{team :team goals+ :goals+ goals- :goals-} result
         result (assoc result :diff (- goals+ goals-))]
     (cond (> goals+ goals-) (assoc result :won 1 :tied 0 :lost 0 :points 3)
           (< goals+ goals-) (assoc result :won 0 :tied 0 :lost 1 :points 0)
