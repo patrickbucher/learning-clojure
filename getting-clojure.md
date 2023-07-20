@@ -1896,7 +1896,8 @@ A common tradeoff in programming is between _generic_ and _specialized_
 solutions. Maps are _generic_ and very flexible. They can deal with arbitrary
 keys, which comes with a runtime penalty when dealing with huge amounts of data.
 
-_Records_ are specialized data structures dealing only a set of predefined keys:
+_Records_ are specialized data structures dealing only with a set of predefined
+keys:
 
     > (defrecord Employee [name age job salary])
 
