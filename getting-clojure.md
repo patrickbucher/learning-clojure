@@ -1593,7 +1593,7 @@ Since Clojure provides so many ways of processing sequences, turning something
 into a sequence can be a big step to solving that problem.
 
 `line-seq` turns the lines of a text file into a (lazy) sequence. Given this CSV
-employee data base (`employees.txt`):
+employee database (`employees.txt`):
 
     Pointy Haired Boss;Manager;58;250000
     Dilbert;Engineer;42;120000
@@ -2204,7 +2204,7 @@ Random data can then be created using _generators_:
 
 `gen/string-alphanumeric` generates an endless stream of alphanumeric strings
 (including empty ones), `gen/sample` takes a sample of that stream. In order to
-test the functions for the employee data base, the constrained generators for
+test the functions for the employee database, the constrained generators for
 the following map keywords are needed:
 
 - `:name`: alphanumeric, non-empty
@@ -2375,15 +2375,15 @@ Here's the whole property-based test for the employee database
 While unit tests are easier to implement and understand, they often cover only a
 few hand-picked examples, leaving much of the input space untested.
 Property-based testing is harder to implement and understand, but covers a much
-wider space of possible inputs. However, one might jump to the wrong conclusion
+wider range of possible inputs. However, one might jump to the wrong conclusion
 that _all_ possibilities are covered, where generators probably miss some basic
 but crucial cases (e.g. picking 0 as a random number for testing division by
 zero).
 
-Therefore, it's a good idea to start with some unit tests covering the basic
-cases (say, all combinations of a devision with positive and negative numbers,
-and zero). Property-based tests can then be introduced to cover more of the
-input space.
+Therefore, it's a good idea to start with some unit tests covering the basic and
+corner cases (say, all combinations of a devision with positive and negative
+numbers, and zero). Property-based tests can then be introduced to cover more of
+the input space.
 
 Notice that property-based tests are non-deterministic. Re-starting a failed
 test pipeline might yield a test run without errors, but the underlying error
