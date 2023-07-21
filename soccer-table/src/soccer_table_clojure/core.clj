@@ -1,7 +1,7 @@
 (ns soccer-table-clojure.core
   (:gen-class))
 
-(def pattern (re-pattern #"^(.+) (\d)+:(\d)+ (.+)$"))
+(def pattern (re-pattern #"^(.+) (\d+):(\d+) (.+)$"))
 
 (defn parse-result
   "Parses a line of the form 'Home Team 3:2 Away Team' to a hash map."

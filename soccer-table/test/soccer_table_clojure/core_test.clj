@@ -1,5 +1,10 @@
 (ns soccer-table-clojure.core-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.string :as str]
+            [clojure.test :refer :all]
+            [clojure.test.check :as tc]
+            [clojure.test.check.clojure-test :as ctest]
+            [clojure.test.check.generators :as gen]
+            [clojure.test.check.properties :as prop]
             [soccer-table-clojure.core :refer :all]))
 
 (deftest test-parsing-results
@@ -17,6 +22,24 @@
     {:home-team "FCL" :away-team "FCB" :home-goals 3 :away-goals 2}
     (parse-result "Schalke 04 1:4 1. FC Köln")
     {:home-team "Schalke 04" :away-team "1. FC Köln" :home-goals 1 :away-goals 4}))
+
+(def team-name-gen (gen/such-that not-empty gen/string-alphanumeric))
+
+(def result-gen
+  (gen/let [home-team team-name-gen
+            away-team team-name-gen
+            home-goals gen/pos-int
+            away-goals gen/pos-int]
+    (format "%s %d:%d %s" home-team home-goals away-goals away-team)))
+
+(ctest/defspec test-parsing-results-gen
+ 100
+ (prop/for-all [result result-gen]
+               (let [{:keys [home-team away-team home-goals away-goals]} (parse-result result)]
+                 (and
+                  (str/starts-with? result home-team)
+                  (str/ends-with? result away-team)
+                  (str/includes? result (format "%d:%d" home-goals away-goals))))))
 
 (deftest test-converting-to-team-results
   (is (= (convert-to-team-results
