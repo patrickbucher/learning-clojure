@@ -9,6 +9,15 @@
           :home-goals 4
           :away-goals 1})))
 
+(deftest test-parsing-results-multiple
+  (are [actual expected] (= actual expected)
+    (parse-result "Foo 0:0 Bar")
+    {:home-team "Foo" :away-team "Bar" :home-goals 0 :away-goals 0}
+    (parse-result "FCL 3:2 FCB")
+    {:home-team "FCL" :away-team "FCB" :home-goals 3 :away-goals 2}
+    (parse-result "Schalke 04 1:4 1. FC Köln")
+    {:home-team "Schalke 04" :away-team "1. FC Köln" :home-goals 1 :away-goals 4}))
+
 (deftest test-converting-to-team-results
   (is (= (convert-to-team-results
           {:home-team "Atlantis"
