@@ -1,15 +1,15 @@
 (ns matchmaking.core
   (:require [clojure.math :refer [pow]])
-  (:require [clojure.set :refer [intersection]]))
+  (:require [clojure.set :refer [intersection difference union]]))
 
 (defn bitcount
   "Counts the number of 1 bits in the given number."
   ([x]
-   (popcount x 0))
+   (bitcount x 0))
   ([x acc]
    (if (= x 0)
      acc
-     (popcount (bit-shift-right x 1)
+     (bitcount (bit-shift-right x 1)
                (if (= (bit-and x 1) 1)
                  (inc acc)
                  acc)))))
@@ -42,16 +42,19 @@
 (defn make-matchday
   "Creates a matchday from pairs, each featuring two elements of coll."
   ([coll pairs]
-   (make-matchday coll pairs []))
+   (make-matchday coll pairs #{}))
   ([coll pairs acc]
-   (cond (empty? pairs) {:pairs #{} :matches acc}
-         (empty? coll) {:pairs pairs :matches acc}
-         :else
-         (let [p (first pairs)
-               rest-coll (filter (complement p) coll)
-               rest-pairs (filter #(empty? (intersection p %) pairs))
+   (if (empty? coll)
+     {:pairs pairs :matches acc}
+     (let [used-coll (set (flatten (map vec acc)))
+           usable-pairs (filter #(empty? (intersection used-coll %)) pairs)]
+       (if (empty? usable-pairs)
+         {:pairs pairs :matches acc}
+         (let [p (first usable-pairs)
+               rest-pairs (difference pairs #{p})
+               rest-coll (flatten (filter (complement used-coll) coll))
                acc (conj acc p)]
-           (make-matchday rest-coll rest-pairs acc)))))
+           (make-matchday rest-coll rest-pairs acc)))))))
 
 (defn make-matchdays
   "Creates matchdays for coll (even number of elements)."
@@ -59,8 +62,8 @@
    (let [pairs (n-choose-k coll 2)]
      (make-matchdays coll pairs [])))
   ([coll pairs acc]
-   (let [{rest-pairs :pairs day-acc :matches} (make-matchday coll pairs)
-         acc (conj acc day-acc)]
-     (if (empty? rest-pairs)
-       acc
+   (if (empty? pairs)
+     acc
+     (let [{rest-pairs :pairs day-acc :matches} (make-matchday coll pairs)
+           acc (conj acc day-acc)]
        (make-matchdays coll rest-pairs acc)))))
