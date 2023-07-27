@@ -2,6 +2,28 @@
   (:require [clojure.math :refer [pow]])
   (:require [clojure.set :refer [intersection difference union]]))
 
+(defn rotate
+  "Creates a new vector with the first element put at its end."
+  [v]
+  (if (or (empty? v) (= (count v) 1))
+    v
+    (let [head (first v)
+          tail (rest v)]
+      (flatten (vector tail head)))))
+
+(defn pair-up
+  "Pairs up each of the given teams against each other."
+  ([teams]
+   (let [anchor (first teams)
+         remainder (rest teams)
+         phases (count remainder)
+         wheel (take phases (iterate rotate remainder))
+         rotated-teams (map #(flatten (vector anchor %)) wheel)]
+     (map #(partition 2 %) rotated-teams))))
+
+;; The algorithm below yields all the pairings, but not balanced
+;; matchdays in all cases.
+
 (defn bitcount
   "Counts the number of 1 bits in the given number."
   ([x]
