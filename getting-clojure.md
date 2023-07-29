@@ -2736,7 +2736,7 @@ Clojure REPL is also a great tool to explore Java APIs.
 Java offers the class `java.io.File`, which abstracts the concept of a file.
 The [JavaDoc](https://docs.oracle.com/javase/8/docs/api/java/io/File.html) shows
 that there is a constructor expecting a `pathname`. A file can, thus, created as
-follows (note the additional dot after `java.io.File`).
+follows (note the additional dot after `java.io.File`):
 
     > (def employees-file (java.io.File. "employees.txt"))
 
@@ -2811,7 +2811,7 @@ handy to figure out the package structure):
 
 Second, a `Gson` object needs to be initialized:
 
-    > (def gson-obj  (Gson.))
+    > (def gson-obj (Gson.))
 
 Now Clojure values can be turned into JSON strings:
 
