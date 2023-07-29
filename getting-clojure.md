@@ -3428,8 +3428,8 @@ Clojure code looks a lot like data literals:
        (wally ratbert
          (dogbert "some characters from dilbert...")))
 
-Just replace the Dilbert character names by some other symbols, and almost have
-Clojure code:
+Just replace the Dilbert character names by some other symbols, and you almost
+have Clojure code:
 
     '(defn say-hello [friendly]
        (if friendly
@@ -3808,7 +3808,7 @@ expansion_ is performed, modifying those data structures. Third, those modified
 data structures with expanded macros are turned into byte code by the actual
 compilation step.
 
-Unlike C, Clojure macros work on the code as a _data structures_, not on code as
+Unlike C, Clojure macros work on the code as a _data structure_, not on code as
 mere _program text_, which makes Clojure macros more powerful and _less_
 dangerous than C macros.
 
