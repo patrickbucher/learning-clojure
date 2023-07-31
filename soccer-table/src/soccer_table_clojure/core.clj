@@ -71,7 +71,7 @@
                  (:rank %) (:team %) (:points %)
                  (:won %) (:tied %) (:lost %)
                  (:goals+ %) (:goals- %) (:diff %)))
-   (cons (format " %2s %-30s %3s %2s %2s %2s %3s %3s %3s"
+   (cons (clojure.string/join (repeat 58 "-")))
+   (cons (format "%2s %-30s %3s %2s %2s %2s %3s %3s %3s"
                  "#" "Team" "P" "W" "T" "L" "+" "-" "="))
-   (interpose "\n")
-   (apply println)))
+   (run! println)))
