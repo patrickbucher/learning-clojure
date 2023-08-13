@@ -3012,7 +3012,7 @@ that brings its own thread along:
 A function call wrapped using `future` will be executed in its own thread and
 deliver its return value to be grabbed using `deref` or `@`.
 
-In general, prefer futures over promises, because they don't require dealign
+In general, prefer futures over promises, because they don't require dealing
 with threads directly. For more fine-grained control, consider using Java's
 thread-pool facilities (`java.util.concurrent.Executors`).
 
