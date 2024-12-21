@@ -48,3 +48,12 @@ Run in Emacs:
     M-x cider-jack-in
 
 Start LISPing.
+
+## Links
+
+- [Clojure](https://clojure.org/)
+    - [Reference](https://clojure.org/reference/reader)
+- [CIDER](https://cider.mx/)
+    - [CIDER Docs](https://docs.cider.mx/cider/index.html)
+- [Emacs](https://www.gnu.org/software/emacs/)
+    - [Emacs Documentation](https://www.gnu.org/software/emacs/documentation.html)
