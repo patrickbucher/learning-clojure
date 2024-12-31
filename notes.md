@@ -18,3 +18,13 @@ respectively.
 => (cons 0 [1 2 3])
 (0 1 2 3)
 ```
+
+For lists, prepending is much more efficient than appending, so both `cons`
+_and_ `conj` add the new element to the front:
+
+```clojure
+=> (cons 0 '(1 2 3))
+(0 1 2 3)
+=> (conj '(1 2 3) 0)
+(0 1 2 3)
+```
