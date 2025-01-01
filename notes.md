@@ -28,3 +28,10 @@ _and_ `conj` add the new element to the front:
 => (conj '(1 2 3) 0)
 (0 1 2 3)
 ```
+
+The naming of the predicates `every?`, `some`, `some?`, and `any?` is a bit
+confusing. Both `every?` and `some` expect a predicate function and a collection
+of items on which the predicate function will be applied. The function `any?`
+returns `true` for _any_ argument, the function `some?` returns `true` for any
+argument other than `nil`.
+
