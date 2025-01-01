@@ -35,3 +35,5 @@ of items on which the predicate function will be applied. The function `any?`
 returns `true` for _any_ argument, the function `some?` returns `true` for any
 argument other than `nil`.
 
+Notice that functions ending with a `?` always return a boolean, whereas `some`
+returns the first match.
