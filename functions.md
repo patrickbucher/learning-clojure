@@ -14,6 +14,15 @@
 - def
 - defn
 
+## Functions
+
+- defmulti
+- defmethod
+- recur
+- loop
+- :pre
+- :post
+
 ## Collections
 
 - count
