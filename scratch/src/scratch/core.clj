@@ -1,6 +1,19 @@
 (ns scratch.core
   (:gen-class))
 
+(defn fact [n]
+  {:pre [(>= n 0)]}
+  (if (= n 0)
+    1
+    (* n (fact (dec n)))))
+
+(defn factiter [n]
+  {:pre [(>= n 0)]}
+  (loop [i n acc 1]
+    (if (= i 0)
+      acc
+      (recur (dec i) (* i acc)))))
+
 (defn fib [n]
   {:pre [(>= n 0)]}
   (cond
