@@ -22,6 +22,11 @@
 - loop
 - :pre
 - :post
+- fn
+- apply
+- partial
+- complement
+- every-pred
 
 ## Collections
 
@@ -42,6 +47,9 @@
 - contains?
 - disj
 - hash-set
+- update
+- update-in
+- assoc-in
 
 ## Program Flow
 

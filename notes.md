@@ -37,3 +37,7 @@ argument other than `nil`.
 
 Notice that functions ending with a `?` always return a boolean, whereas `some`
 returns the first match.
+
+The functions `update` and `update-in` update an existing value using a
+function, whereas `assoc` and `assoc-in` just replace an existing value with a
+value.
