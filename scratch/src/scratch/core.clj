@@ -14,3 +14,10 @@
     (if (= i n)
       a
       (recur (inc i) b (+ a b)))))
+
+(defn round [value granularity]
+  {:pre [(> granularity 0)]
+   :post [(<= % (+ value (/ granularity 2)))
+          (>= % (- value (/ granularity 2)))]}
+  (let [factor (/ 1 granularity)]
+    (/ (Math/round (* value factor)) factor)))
