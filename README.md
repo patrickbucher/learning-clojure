@@ -27,10 +27,12 @@ Re-open Emacs to install Clojure Mode, CIDER, and the Material theme (personal c
     M-x package-install [RET] cider [RET]
     M-x package-install [RET] material-theme [RET]
 
-Load the Material theme automatically (add this line to `~/.emacs`):
+Load the Material theme automatically  and show line numbers automatically (add
+this line to `~/.emacs`):
 
 ```elisp
 (load-theme 'material)
+(global-display-line-numbers-mode)
 ```
 
 ### Leiningen, CIDER, and Emacs Interplay
@@ -47,7 +49,20 @@ Run in Emacs:
 
     M-x cider-jack-in
 
-Start LISPing.
+Or shorter:
+
+    M-x -jac
+
+Some useful key bindings:
+
+- `C-c C-k`: evaluate current buffer
+- `C-c C-e`: evaluate expression before point
+- `C-c C-d d`: show doc of symbol at point
+- `C-c C-d j`: show javadoc of symbol at point
+- `C-c C-d w`: show doc of symbol at point in web browser
+- `C-c C-t t`: run test at point
+- `C-c M-p`: switch to REPL
+- `M-<TAB>`: complete expression below point
 
 ## Links
 
